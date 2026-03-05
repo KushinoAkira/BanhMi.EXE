@@ -1,0 +1,344 @@
+[gd_scene load_steps=18 format=3 uid="uid://main_scene"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/banh_mi_cart.gd" id="2_cart"]
+[ext_resource type="Script" path="res://scripts/customer_spawner.gd" id="3_spawner"]
+[ext_resource type="Script" path="res://scripts/ui_manager.gd" id="4_ui"]
+[ext_resource type="Script" path="res://scripts/cloud_drift.gd" id="5_cloud"]
+[ext_resource type="PackedScene" uid="uid://customer_scene" path="res://scenes/customer.tscn" id="6_customer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/banh_mi_cart.png" id="7_cart_tex"]
+[ext_resource type="Texture2D" path="res://assets/sprites/props/shadow_blob.png" id="8_shadow"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sky/sky_background.png" id="9_sky"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sky/sun.png" id="10_sun"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sky/cloud_1.png" id="11_c1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sky/cloud_2.png" id="12_c2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sky/cloud_3.png" id="13_c3"]
+[ext_resource type="Texture2D" path="res://assets/tiles/iso_tiles_atlas.png" id="14_atlas"]
+[ext_resource type="Texture2D" path="res://assets/ui/panel_bg.png" id="15_panel"]
+[ext_resource type="Script" path="res://scripts/camera.gd" id="16_cam"]
+[ext_resource type="Script" path="res://scripts/bird_flock.gd" id="17_bird"]
+[ext_resource type="Script" path="res://scripts/sun_spin.gd" id="18_sun"]
+[ext_resource type="Texture2D" path="res://assets/ui/minigames/icon_chess.png" id="19_chess"]
+[ext_resource type="Texture2D" path="res://assets/ui/minigames/icon_candy.png" id="20_candy"]
+[ext_resource type="Texture2D" path="res://assets/ui/minigames/icon_tetris.png" id="21_tetris"]
+[ext_resource type="AudioStream" path="res://assets/Music/Background_Music.mp3" id="22_bgm"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
+texture = ExtResource("14_atlas")
+texture_region_size = Vector2i(128, 64)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_iso"]
+tile_shape = 1
+tile_layout = 1
+tile_size = Vector2i(128, 64)
+sources/0 = SubResource("TileSetAtlasSource_1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_panel"]
+texture = ExtResource("15_panel")
+texture_margin_left = 16.0
+texture_margin_top = 16.0
+texture_margin_right = 16.0
+texture_margin_bottom = 16.0
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+script = ExtResource("16_cam")
+
+[node name="SkyFill" type="CanvasLayer" parent="."]
+layer = -120
+
+[node name="SkyColor" type="ColorRect" parent="SkyFill"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.53, 0.75, 0.88, 1)
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="SkyLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0, 0)
+
+[node name="SkyBG" type="Sprite2D" parent="ParallaxBackground/SkyLayer"]
+position = Vector2(640, 115)
+scale = Vector2(1.0, 0.75)
+texture = ExtResource("9_sky")
+z_index = -1
+
+[node name="Sun" type="Sprite2D" parent="ParallaxBackground/SkyLayer"]
+position = Vector2(550, 60)
+scale = Vector2(0.20, 0.20)
+texture = ExtResource("10_sun")
+z_index = 1
+script = ExtResource("18_sun")
+rotation_speed = 0.5
+
+[node name="BirdFlock" type="Node2D" parent="ParallaxBackground/SkyLayer"]
+script = ExtResource("17_bird")
+flock_size = 12
+
+[node name="CloudLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.15, 0)
+script = ExtResource("5_cloud")
+
+[node name="C1" type="Sprite2D" parent="ParallaxBackground/CloudLayer"]
+position = Vector2(50, 50)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("11_c1")
+z_index = 1
+
+[node name="C2" type="Sprite2D" parent="ParallaxBackground/CloudLayer"]
+position = Vector2(220, 90)
+scale = Vector2(0.18, 0.18)
+texture = ExtResource("12_c2")
+z_index = 1
+
+[node name="C3" type="Sprite2D" parent="ParallaxBackground/CloudLayer"]
+position = Vector2(400, 40)
+scale = Vector2(0.24, 0.24)
+texture = ExtResource("13_c3")
+z_index = 1
+
+[node name="C4" type="Sprite2D" parent="ParallaxBackground/CloudLayer"]
+position = Vector2(560, 80)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("11_c1")
+z_index = 1
+
+[node name="C5" type="Sprite2D" parent="ParallaxBackground/CloudLayer"]
+position = Vector2(720, 55)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("12_c2")
+z_index = 1
+
+[node name="C6" type="Sprite2D" parent="ParallaxBackground/CloudLayer"]
+position = Vector2(880, 95)
+scale = Vector2(0.18, 0.18)
+texture = ExtResource("13_c3")
+z_index = 1
+
+[node name="C7" type="Sprite2D" parent="ParallaxBackground/CloudLayer"]
+position = Vector2(1020, 45)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("11_c1")
+z_index = 1
+
+[node name="C8" type="Sprite2D" parent="ParallaxBackground/CloudLayer"]
+position = Vector2(1180, 75)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("12_c2")
+z_index = 1
+
+[node name="GroundTileMap" type="TileMapLayer" parent="."]
+y_sort_enabled = true
+tile_set = SubResource("TileSet_iso")
+
+[node name="CityObjects" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="BanhMiCart" type="Node2D" parent="CityObjects"]
+position = Vector2(640, 400)
+script = ExtResource("2_cart")
+
+[node name="Sprite2D" type="Sprite2D" parent="CityObjects/BanhMiCart"]
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("7_cart_tex")
+offset = Vector2(0, -274)
+
+[node name="Shadow" type="Sprite2D" parent="CityObjects/BanhMiCart"]
+position = Vector2(0, 5)
+scale = Vector2(0.9, 0.45)
+texture = ExtResource("8_shadow")
+z_index = -1
+
+[node name="ServiceTimer" type="Timer" parent="CityObjects/BanhMiCart"]
+one_shot = true
+
+[node name="QueuePositions" type="Node2D" parent="CityObjects/BanhMiCart"]
+
+[node name="Pos0" type="Marker2D" parent="CityObjects/BanhMiCart/QueuePositions"]
+position = Vector2(40, 20)
+
+[node name="Pos1" type="Marker2D" parent="CityObjects/BanhMiCart/QueuePositions"]
+position = Vector2(65, 32)
+
+[node name="Pos2" type="Marker2D" parent="CityObjects/BanhMiCart/QueuePositions"]
+position = Vector2(90, 44)
+
+[node name="Pos3" type="Marker2D" parent="CityObjects/BanhMiCart/QueuePositions"]
+position = Vector2(115, 56)
+
+[node name="Pos4" type="Marker2D" parent="CityObjects/BanhMiCart/QueuePositions"]
+position = Vector2(140, 68)
+
+[node name="Pos5" type="Marker2D" parent="CityObjects/BanhMiCart/QueuePositions"]
+position = Vector2(165, 80)
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+
+[node name="CustomerSpawner" type="Node" parent="."]
+script = ExtResource("3_spawner")
+customer_scene = ExtResource("6_customer")
+
+[node name="SpawnTimer" type="Timer" parent="CustomerSpawner"]
+wait_time = 3.0
+
+[node name="WanderPoints" type="Node2D" parent="."]
+
+[node name="SpawnPoints" type="Node2D" parent="."]
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 10
+script = ExtResource("4_ui")
+
+[node name="MoneyLabel" type="Label" parent="UILayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 40.0
+text = "💰 0đ"
+horizontal_alignment = 2
+
+[node name="MinigamesBox" type="VBoxContainer" parent="UILayer"]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -120.0
+offset_right = -16.0
+offset_bottom = 120.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="BtnChess" type="TextureButton" parent="UILayer/MinigamesBox"]
+layout_mode = 2
+texture_normal = ExtResource("19_chess")
+ignore_texture_size = true
+stretch_mode = 5
+custom_minimum_size = Vector2(64, 64)
+
+[node name="BtnCandy" type="TextureButton" parent="UILayer/MinigamesBox"]
+layout_mode = 2
+texture_normal = ExtResource("20_candy")
+ignore_texture_size = true
+stretch_mode = 5
+custom_minimum_size = Vector2(64, 64)
+
+[node name="BtnTetris" type="TextureButton" parent="UILayer/MinigamesBox"]
+layout_mode = 2
+texture_normal = ExtResource("21_tetris")
+ignore_texture_size = true
+stretch_mode = 5
+custom_minimum_size = Vector2(64, 64)
+
+[node name="MinigamePopup" type="Control" parent="UILayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Overlay" type="ColorRect" parent="UILayer/MinigamePopup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="Window" type="PanelContainer" parent="UILayer/MinigamePopup"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -100.0
+offset_right = 150.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_panel")
+
+[node name="VBox" type="VBoxContainer" parent="UILayer/MinigamePopup/Window"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="UILayer/MinigamePopup/Window/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Minigame"
+horizontal_alignment = 1
+
+[node name="Message" type="Label" parent="UILayer/MinigamePopup/Window/VBox"]
+layout_mode = 2
+text = "Đang chơi... Bấm Thắng để nhận thưởng!"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="UILayer/MinigamePopup/Window/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="BtnWin" type="Button" parent="UILayer/MinigamePopup/Window/VBox/HBox"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "Thắng (+500đ)"
+
+[node name="BtnClose" type="Button" parent="UILayer/MinigamePopup/Window/VBox/HBox"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "Đóng"
+
+[node name="BottomBar" type="MarginContainer" parent="UILayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -150.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="PanelBG" type="Panel" parent="UILayer/BottomBar"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_panel")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UILayer/BottomBar"]
+layout_mode = 2
+horizontal_scroll_mode = 1
+vertical_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer/BottomBar/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("22_bgm")

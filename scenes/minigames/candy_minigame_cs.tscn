@@ -1,0 +1,287 @@
+[gd_scene format=3 uid="uid://candy4cs001"]
+
+[ext_resource type="Script" path="res://scripts/minigames/candy_cs/CandyBoard.cs" id="1_board"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.05, 0.03, 0.12, 0.95)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.8, 0.3, 0.9, 1)
+border_blend = true
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0.8, 0.3, 0.9, 0.5)
+shadow_size = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stat"]
+bg_color = Color(0.1, 0.05, 0.2, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7, 0.3, 0.9, 0.7)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_win"]
+bg_color = Color(0.0, 0.4, 0.1, 0.93)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.2, 0.9, 0.4, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lose"]
+bg_color = Color(0.4, 0.05, 0.05, 0.93)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.9, 0.2, 0.2, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="SystemFont" id="SystemFont_mono"]
+font_names = PackedStringArray("Consolas", "Courier New", "Monospace")
+font_weight = 700
+
+[node name="CandyMinigameCS" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_mono")
+script = ExtResource("1_board")
+LblScorePath = NodePath("Overlay/Window/VBox/StatBar/ScorePanel/LblScore")
+LblTargetPath = NodePath("Overlay/Window/VBox/StatBar/TargetPanel/LblTarget")
+LblMovesPath = NodePath("Overlay/Window/VBox/StatBar/MovesPanel/LblMoves")
+BoardContainerPath = NodePath("Overlay/Window/VBox/BoardContainer")
+VictoryScreenPath = NodePath("Overlay/VictoryScreen")
+LoseScreenPath = NodePath("Overlay/LoseScreen")
+LblVictoryStarsPath = NodePath("Overlay/VictoryScreen/VBox/LblStars")
+LblVictoryRewardPath = NodePath("Overlay/VictoryScreen/VBox/LblReward")
+BtnClosePath = NodePath("Overlay/Window/VBox/TitleRow/BtnClose")
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="Window" type="PanelContainer" parent="Overlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -330.0
+offset_right = 260.0
+offset_bottom = 330.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="VBox" type="VBoxContainer" parent="Overlay/Window"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleRow" type="HBoxContainer" parent="Overlay/Window/VBox"]
+layout_mode = 2
+
+[node name="LblTitle" type="Label" parent="Overlay/Window/VBox/TitleRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.5, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "🍭 Kẹo_Crush.exe"
+horizontal_alignment = 1
+
+[node name="BtnClose" type="Button" parent="Overlay/Window/VBox/TitleRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(36, 36)
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 18
+text = "✕"
+
+[node name="StatBar" type="HBoxContainer" parent="Overlay/Window/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ScorePanel" type="PanelContainer" parent="Overlay/Window/VBox/StatBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_stat")
+
+[node name="LblScore" type="Label" parent="Overlay/Window/VBox/StatBar/ScorePanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_font_sizes/font_size = 16
+text = "Điểm: 0"
+horizontal_alignment = 1
+
+[node name="TargetPanel" type="PanelContainer" parent="Overlay/Window/VBox/StatBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_stat")
+
+[node name="LblTarget" type="Label" parent="Overlay/Window/VBox/StatBar/TargetPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 0.5, 1)
+theme_override_font_sizes/font_size = 16
+text = "Mục tiêu: 500"
+horizontal_alignment = 1
+
+[node name="MovesPanel" type="PanelContainer" parent="Overlay/Window/VBox/StatBar"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_stat")
+
+[node name="LblMoves" type="Label" parent="Overlay/Window/VBox/StatBar/MovesPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.6, 0.3, 1)
+theme_override_font_sizes/font_size = 16
+text = "Lượt: 30"
+horizontal_alignment = 1
+
+[node name="BoardContainer" type="Control" parent="Overlay/Window/VBox"]
+custom_minimum_size = Vector2(480, 480)
+layout_mode = 2
+size_flags_horizontal = 4
+clip_contents = true
+
+[node name="BtnClose2" type="Button" parent="Overlay/Window/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+text = "BỎ CUỘC VỀ"
+
+[node name="VictoryScreen" type="PanelContainer" parent="Overlay"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -140.0
+offset_right = 180.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_win")
+
+[node name="VBox" type="VBoxContainer" parent="Overlay/VictoryScreen"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="LblWin" type="Label" parent="Overlay/VictoryScreen/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 1, 0.5, 1)
+theme_override_font_sizes/font_size = 32
+text = "CHIẾN THẮNG! 🎉"
+horizontal_alignment = 1
+
+[node name="LblStars" type="Label" parent="Overlay/VictoryScreen/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "★★★"
+horizontal_alignment = 1
+
+[node name="LblReward" type="Label" parent="Overlay/VictoryScreen/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 24
+text = "+500đ"
+horizontal_alignment = 1
+
+[node name="BtnRow" type="HBoxContainer" parent="Overlay/VictoryScreen/VBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="BtnNextLevel" type="Button" parent="Overlay/VictoryScreen/VBox/BtnRow"]
+custom_minimum_size = Vector2(140, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 1, 0.4, 1)
+theme_override_font_sizes/font_size = 16
+text = "▶ Chơi tiếp"
+
+[node name="BtnExitWin" type="Button" parent="Overlay/VictoryScreen/VBox/BtnRow"]
+custom_minimum_size = Vector2(140, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 16
+text = "✕ Thoát"
+
+[node name="LoseScreen" type="PanelContainer" parent="Overlay"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -120.0
+offset_right = 180.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lose")
+
+[node name="VBox" type="VBoxContainer" parent="Overlay/LoseScreen"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="LblLose" type="Label" parent="Overlay/LoseScreen/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
+theme_override_font_sizes/font_size = 32
+text = "HẾT LƯỢT! 💔"
+horizontal_alignment = 1
+
+[node name="LblTryAgain" type="Label" parent="Overlay/LoseScreen/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.8)
+text = "Hãy thử lại nhé!"
+horizontal_alignment = 1
+
+[node name="LoseBtnRow" type="HBoxContainer" parent="Overlay/LoseScreen/VBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="BtnRetry" type="Button" parent="Overlay/LoseScreen/VBox/LoseBtnRow"]
+custom_minimum_size = Vector2(140, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.2, 1)
+theme_override_font_sizes/font_size = 16
+text = "↺ Thử lại"
+
+[node name="BtnExitLose" type="Button" parent="Overlay/LoseScreen/VBox/LoseBtnRow"]
+custom_minimum_size = Vector2(140, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 16
+text = "✕ Thoát"
