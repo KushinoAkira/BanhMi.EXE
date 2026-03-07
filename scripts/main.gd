@@ -41,11 +41,22 @@ const BUILDING_SCALE := 0.45
 @onready var nav_region: NavigationRegion2D = $NavigationRegion2D
 @onready var camera: Camera2D = $Camera2D
 
+@onready var day_night_mod: CanvasModulate = $DayNightModulate
+@onready var sky_color: ColorRect = $SkyFill/SkyColor
+@onready var day_sky_sprite: Sprite2D = $ParallaxBackground/SkyLayer/SkyBG
+@onready var night_sky_sprite: Sprite2D = $ParallaxBackground/SkyLayer/NightSkyBG
+@onready var sun_sprite: Sprite2D = $ParallaxBackground/SkyLayer/Sun
+@onready var moon_sprite: Sprite2D = $ParallaxBackground/SkyLayer/Moon
+@onready var cart_light: PointLight2D = $CityObjects/BanhMiCart/CartLight
+
 var shadow_tex: Texture2D
 var tree_tex: Texture2D
 var lamp_tex: Texture2D
 var _cell_type: Dictionary = {}       # Vector2i -> "road" / "sidewalk"
 var _building_cells: Dictionary = {}  # Vector2i -> true
+
+var _lamp_lights: Array[PointLight2D] = []
+var _lamp_light_tex: GradientTexture2D
 
 # ─── READY ─────────────────────────────────────────────────
 func _ready() -> void:
@@ -58,6 +69,10 @@ func _ready() -> void:
 	lamp_tex = load("res://assets/sprites/props/prop_streetlamp.png")
 
 	_classify_cells()
+	_create_lamp_texture()
+	
+	if cart_light:
+		cart_light.texture = _lamp_light_tex
 	
 	tile_map.position = GRID_OFFSET
 	city_objects.y_sort_enabled = true
@@ -86,11 +101,99 @@ func _ready() -> void:
 	customer_spawner.game_world = city_objects
 	banh_mi_cart.customer_served.connect(_on_customer_served)
 	GameManager.add_money(100)
+	
+	if moon_sprite: moon_sprite.visible = true
+	
 	print("[Main] ✅ City ready! %d wander, %d spawn" % [wps.size(), sps.size()])
+
+func _process(_delta: float) -> void:
+	if not day_night_mod or not sky_color or not sun_sprite or not moon_sprite: return
+	
+	var time: float = GameManager.time_of_day
+	
+	var daylight_factor: float = 0.0
+	if time >= 6.0 and time <= 17.0:
+		daylight_factor = 1.0
+	elif time >= 5.0 and time < 6.0:
+		daylight_factor = time - 5.0
+	elif time > 17.0 and time <= 18.0:
+		daylight_factor = 18.0 - time
+		
+	var night_factor: float = 1.0 - daylight_factor
+	
+	var night_mod := Color(0.3, 0.3, 0.5, 1.0)
+	var day_mod := Color(1.0, 1.0, 1.0, 1.0)
+	
+	# Transitioning Modulate
+	day_night_mod.color = night_mod.lerp(day_mod, daylight_factor)
+	
+	# Smoothly crossfade Day Sky and Night Sky background layer
+	if day_sky_sprite:
+		day_sky_sprite.modulate.a = daylight_factor
+	if night_sky_sprite:
+		night_sky_sprite.modulate.a = night_factor
+		
+	# Smoothly crossfade Sun and Moon
+	sun_sprite.modulate.a = daylight_factor
+	# Moon stays slightly visible at day, but mostly opaque at night.
+	moon_sprite.modulate = Color(1.2, 1.2, 1.5, night_factor)
+	
+	# ─── SUN AND MOON TRAJECTORY ─────────────────────────────
+	# Màn hình điện thoại bề ngang 700px (Center = 350)
+	var center_x := 350.0
+	var center_y := 400.0
+	var radius_x := 320.0 # Bán kính ngang thu hẹp lại
+	var radius_y := 350.0
+	
+	# Tính góc cho Mặt Trời (mọc lúc 05:00, lặn lúc 18:00)
+	# 05:00 -> góc PI (bên trái), 18:00 -> góc 0 (bên phải)
+	if time >= 5.0 and time <= 18.0:
+		sun_sprite.visible = true
+		var sun_progress = (time - 5.0) / 13.0 # 0.0 to 1.0
+		var sun_angle = PI - (sun_progress * PI)
+		sun_sprite.position.x = center_x + cos(sun_angle) * radius_x
+		sun_sprite.position.y = center_y - sin(sun_angle) * radius_y
+	else:
+		sun_sprite.visible = false
+		
+	# Tính góc cho Mặt Trăng (mọc lúc 18:00, lặn lúc 05:00 sáng)
+	# 18:00 -> góc PI, 05:00 (+24) -> góc 0
+	var moon_time = time
+	if moon_time < 5.0:
+		moon_time += 24.0 # 0-5h sáng được dời thành 24-29h
+		
+	if moon_time >= 18.0 and moon_time <= 29.0:
+		moon_sprite.visible = true
+		var moon_progress = (moon_time - 18.0) / 11.0 # 0.0 to 1.0
+		var moon_angle = PI - (moon_progress * PI)
+		moon_sprite.position.x = center_x + cos(moon_angle) * radius_x
+		moon_sprite.position.y = center_y - sin(moon_angle) * radius_y
+	else:
+		moon_sprite.visible = false
+	
+	# Update streetlamp lights (Fade in heavily as night falls)
+	var lamp_energy = clampf((night_factor - 0.4) * 2.0, 0.0, 1.0)
+	for light in _lamp_lights:
+		if is_instance_valid(light):
+			light.energy = lamp_energy * 1.5 # max energy 1.5
+	if cart_light:
+		cart_light.energy = lamp_energy * 1.5
 
 # ─── ISO HELPER ───────────────────────────────────────────
 func _get_local_pos(col: int, row: int) -> Vector2:
 	return tile_map.map_to_local(Vector2i(col, row)) + tile_map.position
+
+func _create_lamp_texture() -> void:
+	_lamp_light_tex = GradientTexture2D.new()
+	_lamp_light_tex.fill = GradientTexture2D.FILL_RADIAL
+	_lamp_light_tex.fill_from = Vector2(0.5, 0.5)
+	_lamp_light_tex.fill_to = Vector2(1.0, 0.5)
+	_lamp_light_tex.width = 400
+	_lamp_light_tex.height = 400
+	var grad = Gradient.new()
+	grad.set_color(0, Color(1.0, 0.8, 0.4, 0.9)) # Warm yellow light inside
+	grad.set_color(1, Color(1.0, 0.8, 0.4, 0.0)) # Transparent outside
+	_lamp_light_tex.gradient = grad
 
 # ─── CELL CLASSIFICATION (modulo grid) ───────────────────
 func _classify_cells() -> void:
@@ -229,6 +332,16 @@ func _place_sidewalk_props() -> void:
 				l.scale = Vector2(0.15, 0.15)
 				l.offset = Vector2(0, -268)
 				l.y_sort_enabled = true
+				
+				var light := PointLight2D.new()
+				light.texture = _lamp_light_tex
+				light.position = Vector2(0, -450) # Tương đương đầu cột đèn
+				light.energy = 0.0
+				light.blend_mode = Light2D.BLEND_MODE_ADD
+				light.z_index = 2
+				l.add_child(light)
+				_lamp_lights.append(light)
+				
 				city_objects.add_child(l)
 				lamps += 1
 

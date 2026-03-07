@@ -5,12 +5,20 @@ extends Node
 # ─── SIGNALS ───────────────────────────────────────────────
 signal money_changed(new_amount: int)
 signal upgrade_purchased(upgrade_id: String)
+signal time_changed(hour: int, minute: int)
 
 # ─── CURRENCY ──────────────────────────────────────────────
 var money: int = 0:
 	set(value):
 		money = value
 		money_changed.emit(money)
+
+# ─── TIME & DAY/NIGHT ──────────────────────────────────────
+# ─── TIME & DAY/NIGHT ──────────────────────────────────────
+var time_of_day: float = 8.0 # Bắt đầu từ 8:00 sáng
+var time_scale: float = 24.0 / 900.0   # 15 phút thực tế = 900 giây = 24 giờ game
+var current_hour: int = 8
+var current_minute: int = 0
 
 # ─── MINIGAME PROGRESS ───────────────────────────────────────
 # Lưu trạng thái xem video intro và hướng dẫn
@@ -152,6 +160,20 @@ func _ready() -> void:
 	# Khởi tạo level = 0 cho tất cả upgrade
 	for upg in UPGRADES:
 		upgrade_levels[upg.id] = 0
+
+func _process(delta: float) -> void:
+	# Cập nhật thời gian
+	time_of_day += delta * time_scale
+	if time_of_day >= 24.0:
+		time_of_day -= 24.0
+		
+	var new_hour: int = int(time_of_day)
+	var new_minute: int = int((time_of_day - new_hour) * 60)
+	
+	if new_minute != current_minute or new_hour != current_hour:
+		current_hour = new_hour
+		current_minute = new_minute
+		time_changed.emit(current_hour, current_minute)
 
 func add_money(amount: int) -> void:
 	money += amount
