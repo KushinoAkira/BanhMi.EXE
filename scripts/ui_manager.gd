@@ -7,6 +7,7 @@ const UpgradeCardScript = preload("res://scripts/upgrade_card.gd")
 
 # ─── ONREADY NODES ────────────────────────────────────────
 @onready var money_label: Label = $MoneyLabel
+@onready var time_label: Label = $TimeLabel
 @onready var bottom_bar: MarginContainer = $BottomBar
 @onready var panel_bg: Panel = $BottomBar/PanelBG
 @onready var scroll_container: ScrollContainer = $BottomBar/ScrollContainer
@@ -29,11 +30,14 @@ var tutorial_tween: Tween
 # ─── READY ─────────────────────────────────────────────────
 func _ready() -> void:
 	_setup_money_label()
+	_setup_time_label()
 	_setup_bottom_bar()
 	_populate_upgrade_cards()
 
 	GameManager.money_changed.connect(_on_money_changed)
 	_update_money_display(GameManager.money)
+	GameManager.time_changed.connect(_on_time_changed)
+	_update_time_display(GameManager.current_hour, GameManager.current_minute)
 	
 	_setup_minigames()
 	_create_toggle_button()
@@ -429,6 +433,21 @@ func _setup_money_label() -> void:
 	money_label.offset_right = -10
 	money_label.offset_bottom = 40
 	money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+
+func _setup_time_label() -> void:
+	if not time_label: return
+	time_label.add_theme_font_size_override("font_size", 24)
+	time_label.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0))
+	time_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
+	time_label.add_theme_constant_override("shadow_offset_x", 2)
+	time_label.add_theme_constant_override("shadow_offset_y", 2)
+
+func _update_time_display(hour: int, minute: int) -> void:
+	if not time_label: return
+	time_label.text = "🕒 %02d:%02d" % [hour, minute]
+
+func _on_time_changed(hour: int, minute: int) -> void:
+	_update_time_display(hour, minute)
 
 func _setup_bottom_bar() -> void:
 	# Áp dụng style cho PanelBG (fallback nếu texture không load)

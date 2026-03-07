@@ -22,6 +22,10 @@
 [ext_resource type="Texture2D" path="res://assets/ui/minigames/icon_candy.png" id="20_candy"]
 [ext_resource type="Texture2D" path="res://assets/ui/minigames/icon_tetris.png" id="21_tetris"]
 [ext_resource type="AudioStream" path="res://assets/Music/Background_Music.mp3" id="22_bgm"]
+[ext_resource type="Script" path="res://scripts/hayz_vendor.gd" id="99_hayz"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sky/moon.png" id="100_moon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sky/sky_night_background.png" id="101_night_sky"]
+
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("14_atlas")
@@ -48,6 +52,9 @@ texture_margin_bottom = 16.0
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
+
+[node name="DayNightModulate" type="CanvasModulate" parent="."]
+color = Color(1, 1, 1, 1)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(640, 360)
@@ -76,6 +83,12 @@ scale = Vector2(1.0, 0.75)
 texture = ExtResource("9_sky")
 z_index = -1
 
+[node name="NightSkyBG" type="Sprite2D" parent="ParallaxBackground/SkyLayer"]
+position = Vector2(640, 115)
+scale = Vector2(2.0, 0.75)
+texture = ExtResource("101_night_sky")
+z_index = -1
+
 [node name="Sun" type="Sprite2D" parent="ParallaxBackground/SkyLayer"]
 position = Vector2(550, 60)
 scale = Vector2(0.20, 0.20)
@@ -83,6 +96,14 @@ texture = ExtResource("10_sun")
 z_index = 1
 script = ExtResource("18_sun")
 rotation_speed = 0.5
+
+[node name="Moon" type="Sprite2D" parent="ParallaxBackground/SkyLayer"]
+position = Vector2(550, 60)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("100_moon")
+visible = false
+z_index = 1
+modulate = Color(1.2, 1.2, 1.5, 1)
 
 [node name="BirdFlock" type="Node2D" parent="ParallaxBackground/SkyLayer"]
 script = ExtResource("17_bird")
@@ -151,10 +172,24 @@ y_sort_enabled = true
 position = Vector2(640, 400)
 script = ExtResource("2_cart")
 
+[node name="HayzVendor" type="AnimatedSprite2D" parent="CityObjects/BanhMiCart"]
+position = Vector2(-30, -30)
+scale = Vector2(0.24, 0.24)
+offset = Vector2(0, -135)
+script = ExtResource("99_hayz")
+
 [node name="Sprite2D" type="Sprite2D" parent="CityObjects/BanhMiCart"]
 scale = Vector2(0.15, 0.15)
 texture = ExtResource("7_cart_tex")
 offset = Vector2(0, -274)
+
+[node name="CartLight" type="PointLight2D" parent="CityObjects/BanhMiCart"]
+position = Vector2(0, -90)
+color = Color(1, 0.9, 0.7, 1)
+energy = 0.0
+blend_mode = 0
+texture_scale = 0.8
+z_index = 2
 
 [node name="Shadow" type="Sprite2D" parent="CityObjects/BanhMiCart"]
 position = Vector2(0, 5)
@@ -201,6 +236,14 @@ wait_time = 3.0
 [node name="UILayer" type="CanvasLayer" parent="."]
 layer = 10
 script = ExtResource("4_ui")
+
+[node name="TimeLabel" type="Label" parent="UILayer"]
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 150.0
+offset_bottom = 50.0
+text = "hh:mm"
 
 [node name="MoneyLabel" type="Label" parent="UILayer"]
 anchors_preset = 1
