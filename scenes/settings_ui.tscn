@@ -1,0 +1,136 @@
+[gd_scene format=3 uid="uid://ixys2owxcsii"]
+
+[ext_resource type="Script" uid="uid://b4wssn782vnud" path="res://scripts/settings_ui.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.12, 0.14, 0.22, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.6, 1, 0.7)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="SettingsUI" type="CanvasLayer" unique_id=503171539]
+process_mode = 3
+layer = 120
+script = ExtResource("1_script")
+
+[node name="GearButton" type="Button" parent="." unique_id=1360863581]
+offset_left = 517.0
+offset_top = 1.0
+offset_right = 569.0
+offset_bottom = 54.0
+theme_override_font_sizes/font_size = 32
+text = "⚙"
+
+[node name="SettingsPanel" type="PanelContainer" parent="." unique_id=1183952468]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -200.0
+offset_right = 250.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="MarginContainer" type="MarginContainer" parent="SettingsPanel" unique_id=1236595885]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsPanel/MarginContainer" unique_id=812185072]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Header" type="HBoxContainer" parent="SettingsPanel/MarginContainer/VBoxContainer" unique_id=2101055715]
+layout_mode = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="SettingsPanel/MarginContainer/VBoxContainer/Header" unique_id=1888774529]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 28
+text = "Cài đặt"
+horizontal_alignment = 1
+
+[node name="BtnClose" type="Button" parent="SettingsPanel/MarginContainer/VBoxContainer/Header" unique_id=2092878720]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "X"
+
+[node name="QualityContainer" type="HBoxContainer" parent="SettingsPanel/MarginContainer/VBoxContainer" unique_id=73864850]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/MarginContainer/VBoxContainer/QualityContainer" unique_id=1344160193]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Chất lượng:"
+
+[node name="QualityOption" type="OptionButton" parent="SettingsPanel/MarginContainer/VBoxContainer/QualityContainer" unique_id=1602291791]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+selected = 2
+item_count = 3
+popup/item_0/text = "Thấp"
+popup/item_0/id = 0
+popup/item_1/text = "Trung bình"
+popup/item_1/id = 1
+popup/item_2/text = "Cao"
+popup/item_2/id = 2
+
+[node name="MusicContainer" type="HBoxContainer" parent="SettingsPanel/MarginContainer/VBoxContainer" unique_id=1677636036]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/MarginContainer/VBoxContainer/MusicContainer" unique_id=1658501753]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Nhạc nền:"
+
+[node name="MusicSlider" type="HSlider" parent="SettingsPanel/MarginContainer/VBoxContainer/MusicContainer" unique_id=1402666216]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="MusicMute" type="CheckBox" parent="SettingsPanel/MarginContainer/VBoxContainer/MusicContainer" unique_id=1315586352]
+layout_mode = 2
+text = "Tắt"
+
+[node name="SFXContainer" type="HBoxContainer" parent="SettingsPanel/MarginContainer/VBoxContainer" unique_id=1556718550]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/MarginContainer/VBoxContainer/SFXContainer" unique_id=1418147869]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Hiệu ứng âm:"
+
+[node name="SFXSlider" type="HSlider" parent="SettingsPanel/MarginContainer/VBoxContainer/SFXContainer" unique_id=1556859070]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="SFXMute" type="CheckBox" parent="SettingsPanel/MarginContainer/VBoxContainer/SFXContainer" unique_id=647869795]
+layout_mode = 2
+text = "Tắt"

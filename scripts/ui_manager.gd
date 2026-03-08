@@ -48,10 +48,13 @@ func _ready() -> void:
 	call_deferred("_hide_bar_instant")
 	
 	if not GameManager.has_played_intro:
+		SettingsUI.btn_gear.hide()
 		call_deferred("_play_intro_video")
 	elif not GameManager.has_played_tutorial:
+		SettingsUI.btn_gear.show()
 		call_deferred("_start_tutorial")
 	else:
+		SettingsUI.btn_gear.show()
 		if background_music:
 			background_music.play()
 
@@ -116,6 +119,7 @@ func _process(_delta: float) -> void:
 		# Once the story finishes, free the video layer entirely and start tutorial
 		story_node.story_finished.connect(func(): 
 			video_layer.queue_free()
+			SettingsUI.btn_gear.show()
 			call_deferred("_start_tutorial")
 		)
 		
