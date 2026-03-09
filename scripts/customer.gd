@@ -53,6 +53,7 @@ var queue_index: int = -1
 var target_position: Vector2 = Vector2.ZERO
 var _ready_frames: int = 0
 var _has_nav_target: bool = false  ## True after we set a navigation target
+var is_vip: bool = false
 
 # References (set bởi Spawner)
 var banh_mi_cart: Node2D = null
@@ -121,9 +122,17 @@ func _randomize_appearance() -> void:
 		sprite_frames.remove_animation("default")
 
 	anim_sprite.sprite_frames = sprite_frames
-	anim_sprite.modulate = NPC_TINTS.pick_random()
+	
+	is_vip = (randf() < 0.15) # 15% tỷ lệ ra VIP
+	
+	if is_vip:
+		anim_sprite.modulate = Color(1.0, 0.8, 0.2) # Màu Vàng Gold đặc trưng
+		speed = speed * randf_range(0.85, 1.15) * 1.5 # Đi nhanh hơn gấp rưỡi
+	else:
+		anim_sprite.modulate = NPC_TINTS.pick_random()
+		speed = speed * randf_range(0.85, 1.15)
+		
 	anim_sprite.play("idle")
-	speed = speed * randf_range(0.85, 1.15)
 
 # ─── NAVIGATION FINISHED SIGNAL ──────────────────────────
 ## Called by NavigationAgent2D when it reaches the target
