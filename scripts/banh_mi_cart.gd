@@ -95,6 +95,11 @@ func _on_service_timer_timeout() -> void:
 
 	# Cộng tiền
 	var price: int = GameManager.get_sell_price()
+	
+	if served_customer != null and is_instance_valid(served_customer) and served_customer.get("is_vip"):
+		price *= 3 # Nhận gấp 3 tiền nếu là khách VIP!
+		print("[BanhMiCart] Phục vụ KHÁCH VIP! Nhân 3 tiền.")
+		
 	GameManager.add_money(price)
 	customer_served.emit(price)
 
