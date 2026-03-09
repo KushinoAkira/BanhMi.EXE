@@ -66,19 +66,27 @@ func get_queue_position(index: int) -> Vector2:
 
 # ─── SERVING LOGIC ────────────────────────────────────────
 
+## NPC gọi hàm này khi họ đã thực sự đi đến vị trí đầu hàng
+func notify_customer_arrived() -> void:
+	if queue.is_empty() or is_serving:
+		return
+	
+	_start_serving()
+
 func _start_serving() -> void:
 	if queue.is_empty():
 		is_serving = false
 		return
 
-	is_serving = true
 	var front_customer = queue[0]
+	if front_customer == null or not is_instance_valid(front_customer):
+		queue.pop_front()
+		_advance_queue()
+		return
 
-	# Thông báo customer chuyển sang trạng thái BUYING
-	if front_customer != null and is_instance_valid(front_customer):
-		front_customer.start_buying()
+	is_serving = true
+	front_customer.start_buying()
 
-	# Thời gian phục vụ lấy từ GameManager (bị ảnh hưởng bởi upgrades)
 	var serve_time: float = GameManager.get_service_time()
 	service_timer.wait_time = serve_time
 	service_timer.start()
@@ -90,29 +98,42 @@ func _on_service_timer_timeout() -> void:
 		is_serving = false
 		return
 
-	# Lấy khách đầu tiên ra
 	var served_customer = queue.pop_front()
-
-	# Cộng tiền
-	var price: int = GameManager.get_sell_price()
+	var base_price: int = GameManager.get_sell_price()
+	var final_money: int = base_price
 	
-	if served_customer != null and is_instance_valid(served_customer) and served_customer.get("is_vip"):
-		price *= 3 # Nhận gấp 3 tiền nếu là khách VIP!
-		print("[BanhMiCart] Phục vụ KHÁCH VIP! Nhân 3 tiền.")
-		
-	GameManager.add_money(price)
-	customer_served.emit(price)
-
-	print("[BanhMiCart] Đã phục vụ xong! +%dđ (Tổng: %dđ)" % [price, GameManager.money])
-
-	# Yêu cầu khách rời đi
 	if served_customer != null and is_instance_valid(served_customer):
+		# 1. Kiểm tra VIP
+		var is_vip = served_customer.get("is_vip") == true
+		if is_vip:
+			final_money *= 3
+			print("[BanhMiCart] Phục vụ KHÁCH VIP! Nhân 3 tiền.")
+		
+		# 2. Tiền Tip dựa trên độ kiên nhẫn còn lại
+		var c_tip_chance = served_customer.get("tip_chance")
+		if c_tip_chance == null: c_tip_chance = 0.1
+		
+		var c_patience = served_customer.get("patience")
+		var c_max_patience = served_customer.get("max_patience")
+		
+		# Nếu phục vụ nhanh (kiên nhẫn còn > 70%)
+		if c_patience != null and c_max_patience != null and c_patience / c_max_patience > 0.7:
+			# Khách VIP luôn cho tip nếu phục vụ nhanh, khách thường thì ngẫu nhiên
+			if is_vip or randf() < c_tip_chance:
+				var tip_amount = int(base_price * randf_range(0.3, 0.6))
+				final_money += tip_amount
+				print("[BanhMiCart] Phục vụ nhanh! Nhận Tip: +%dđ" % tip_amount)
+		
+		GameManager.add_money(final_money)
+		GameManager.record_customer_served()
+		customer_served.emit(final_money)
+		
+		print("[BanhMiCart] Đã phục vụ xong! +%dđ (Tổng: %dđ)" % [final_money, GameManager.money])
 		served_customer.finish_buying()
 
-	# Dịch chuyển tất cả NPC còn lại lên một bước
 	_advance_queue()
-
-	# Phục vụ người tiếp theo
+	
+	# Kiểm tra người tiếp theo đã đến nơi chưa để phục vụ tiếp
 	if not queue.is_empty():
 		_start_serving()
 	else:

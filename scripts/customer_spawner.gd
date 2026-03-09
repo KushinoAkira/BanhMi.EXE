@@ -38,6 +38,8 @@ func _ready() -> void:
 
 # ─── SPAWN LOGIC ──────────────────────────────────────────
 func _on_spawn_timer_timeout() -> void:
+	if not GameManager.is_shop_open:
+		return
 	if active_customers >= max_customers:
 		return
 	if spawn_points.is_empty() or customer_scene == null:
