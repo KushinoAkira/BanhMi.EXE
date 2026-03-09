@@ -58,6 +58,16 @@ const UPGRADES: Array[Dictionary] = [
 		"effect_key": "service_time",
 		"effect_value": -0.2,
 	},
+	{
+    "id": "tuong_ot_chinsu",
+    "name": "Tương ớt thần thánh",
+    "icon": "🌶️",
+    "description": "Tăng giá bán thêm 5đ",
+    "base_cost": 10,
+    "cost_multiplier": 1.15,
+    "effect_key": "sell_price",
+    "effect_value": 5,
+	}, 
 	# ─── TIER 2: Early-Mid (nền tảng kinh doanh) ────────────
 	{
 		"id": "banh_mi_premium",
