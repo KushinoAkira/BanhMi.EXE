@@ -54,6 +54,10 @@ var target_position: Vector2 = Vector2.ZERO
 var _ready_frames: int = 0
 var _has_nav_target: bool = false  ## True after we set a navigation target
 var is_vip: bool = false
+var patience: float = 30.0
+var max_patience: float = 30.0
+var tip_chance: float = 0.1
+var patience_bar: ColorRect
 
 # References (set bởi Spawner)
 var banh_mi_cart: Node2D = null
@@ -76,6 +80,7 @@ func _ready() -> void:
 
 	_randomize_appearance()
 	_create_shadow()
+	_create_patience_bar()
 
 	wander_count_before_shop = randi_range(2, 4)
 	current_state = State.IDLE
@@ -92,11 +97,40 @@ func _create_shadow() -> void:
 		shadow_sprite.name = "Shadow"
 		add_child(shadow_sprite)
 
-## Tạo SpriteFrames dynamically — chỉ dùng walk frames
+## Tạo thanh hiển thị độ kiên nhẫn
+func _create_patience_bar() -> void:
+	patience_bar = ColorRect.new()
+	patience_bar.size = Vector2(30, 3)
+	patience_bar.position = Vector2(-15, -45)
+	patience_bar.color = Color.GREEN
+	patience_bar.visible = false
+	add_child(patience_bar)
+
+## Tạo SpriteFrames dynamically — thiết lập chỉ số theo loại NPC
 func _randomize_appearance() -> void:
 	var npc_data: Dictionary = NPC_WALK_FOLDERS.pick_random()
-	var sprite_frames := SpriteFrames.new()
+	
+	match npc_data.prefix:
+		"npc_student_walk":
+			max_patience = randf_range(15.0, 22.0)
+			tip_chance = 0.05
+			speed = 95.0
+		"npc_office_worker_walk":
+			max_patience = randf_range(25.0, 35.0)
+			tip_chance = 0.20
+			speed = 80.0
+		"npc_elderly_man_walk":
+			max_patience = randf_range(50.0, 75.0)
+			tip_chance = 0.10
+			speed = 55.0
+		"npc_young_woman_walk":
+			max_patience = randf_range(30.0, 45.0)
+			tip_chance = 0.15
+			speed = 75.0
+	
+	patience = max_patience
 
+	var sprite_frames := SpriteFrames.new()
 	var walk_textures: Array[Texture2D] = []
 	for i in range(1, 9):
 		var frame_path: String = "%s/%s_%d.png" % [
@@ -118,19 +152,16 @@ func _randomize_appearance() -> void:
 	for tex in walk_textures:
 		sprite_frames.add_frame("walk", tex)
 
-	if sprite_frames.has_animation("default"):
-		sprite_frames.remove_animation("default")
-
 	anim_sprite.sprite_frames = sprite_frames
 	
-	is_vip = (randf() < 0.15) # 15% tỷ lệ ra VIP
-	
+	is_vip = (randf() < 0.15)
 	if is_vip:
-		anim_sprite.modulate = Color(1.0, 0.8, 0.2) # Màu Vàng Gold đặc trưng
-		speed = speed * randf_range(0.85, 1.15) * 1.5 # Đi nhanh hơn gấp rưỡi
+		anim_sprite.modulate = Color(1.0, 0.8, 0.2)
+		speed *= 1.4
+		tip_chance += 0.25
 	else:
 		anim_sprite.modulate = NPC_TINTS.pick_random()
-		speed = speed * randf_range(0.85, 1.15)
+		speed = speed * randf_range(0.9, 1.1)
 		
 	anim_sprite.play("idle")
 
@@ -159,14 +190,14 @@ func _on_navigation_finished() -> void:
 			queue_free()
 
 # ─── PHYSICS PROCESS ──────────────────────────────────────
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	match current_state:
 		State.IDLE:
 			_process_idle()
 		State.WANDERING, State.GOING_TO_SHOP, State.LEAVING:
 			_process_moving()
 		State.WAITING_IN_LINE:
-			_process_waiting_in_line()
+			_process_waiting_in_line(delta)
 		State.BUYING:
 			pass
 
@@ -208,7 +239,20 @@ func _request_queue_slot() -> void:
 	_has_nav_target = true
 
 # ─── WAITING IN LINE STATE ────────────────────────────────
-func _process_waiting_in_line() -> void:
+func _process_waiting_in_line(delta: float) -> void:
+	# Update patience
+	patience_bar.visible = true
+	patience -= delta
+	patience_bar.size.x = (patience / max_patience) * 30.0
+	patience_bar.color = Color.GREEN.lerp(Color.RED, 1.0 - (patience / max_patience))
+	
+	if patience <= 0:
+		if banh_mi_cart:
+			banh_mi_cart.remove_customer(self)
+		GameManager.record_customer_lost()
+		_change_state(State.LEAVING)
+		return
+
 	if _has_nav_target and not nav_agent.is_navigation_finished():
 		_move_along_path()
 	else:

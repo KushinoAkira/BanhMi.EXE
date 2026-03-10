@@ -13,6 +13,7 @@ const UpgradeCardScript = preload("res://scripts/upgrade_card.gd")
 @onready var scroll_container: ScrollContainer = $BottomBar/ScrollContainer
 @onready var card_container: HBoxContainer = $BottomBar/ScrollContainer/HBoxContainer
 
+var report_panel: PanelContainer
 var last_money: int = 0
 var _bar_open := false
 var _bar_height: float = 0.0
@@ -39,8 +40,12 @@ func _ready() -> void:
 	GameManager.time_changed.connect(_on_time_changed)
 	_update_time_display(GameManager.current_hour, GameManager.current_minute)
 	
+	GameManager.daily_report_ready.connect(_on_daily_report_ready)
+	GameManager.shop_status_changed.connect(_on_shop_status_changed)
+	
 	_setup_minigames()
 	_create_toggle_button()
+	_create_report_ui()
 	
 	# Start with bar hidden
 	_bar_open = false
@@ -134,6 +139,72 @@ func _process(_delta: float) -> void:
 	
 	player.finished.connect(on_video_end)
 	player.play()
+
+func _create_report_ui() -> void:
+	report_panel = PanelContainer.new()
+	report_panel.custom_minimum_size = Vector2(400, 250)
+	add_child(report_panel)
+	
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.05, 0.07, 0.12, 0.95)
+	style.set_border_width_all(4)
+	style.border_color = Color(1.0, 0.84, 0.0) # Gold
+	style.set_corner_radius_all(20)
+	style.content_margin_top = 20
+	style.content_margin_bottom = 20
+	style.content_margin_left = 20
+	style.content_margin_right = 20
+	report_panel.add_theme_stylebox_override("panel", style)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 15)
+	vbox.name = "VBox"
+	report_panel.add_child(vbox)
+	
+	var title = Label.new()
+	title.name = "Title"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 32)
+	title.add_theme_color_override("font_color", Color(1.0, 0.84, 0.0))
+	vbox.add_child(title)
+	
+	var details = Label.new()
+	details.name = "Details"
+	details.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	details.add_theme_font_size_override("font_size", 20)
+	details.add_theme_color_override("font_color", Color.WHITE)
+	vbox.add_child(details)
+	
+	var footer = Label.new()
+	footer.text = "\n🌙 Xe đang nghỉ ngơi...\nSẽ mở cửa lại lúc 05:30 sáng"
+	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	footer.add_theme_font_size_override("font_size", 14)
+	footer.modulate = Color(0.6, 0.8, 1.0, 0.8)
+	vbox.add_child(footer)
+	
+	report_panel.visible = false
+	_update_report_position()
+	get_viewport().size_changed.connect(_update_report_position)
+
+func _update_report_position() -> void:
+	if report_panel:
+		var screen = get_viewport().get_visible_rect().size
+		report_panel.position = (screen - report_panel.size) / 2.0
+
+func _on_daily_report_ready(data: Dictionary) -> void:
+	var title = report_panel.find_child("Title", true, false)
+	var details = report_panel.find_child("Details", true, false)
+	
+	if title: title.text = "TỔNG KẾT NGÀY %d" % data.day
+	if details: details.text = "\n💰 Doanh thu: %dđ\n✅ Phục vụ: %d khách\n❌ Bỏ lỡ: %d khách" % [
+		data.money, data.served, data.lost
+	]
+	report_panel.visible = true
+	_update_report_position()
+
+func _on_shop_status_changed(is_open: bool) -> void:
+	if is_open and report_panel:
+		report_panel.visible = false
 
 func _hide_bar_instant() -> void:
 	# Reset anchors so we can control position.y directly

@@ -6,6 +6,8 @@ extends Node
 signal money_changed(new_amount: int)
 signal upgrade_purchased(upgrade_id: String)
 signal time_changed(hour: int, minute: int)
+signal shop_status_changed(is_open: bool) # Tín hiệu đóng/mở cửa
+signal daily_report_ready(data: Dictionary) # Gửi dữ liệu tổng kết
 
 # ─── CURRENCY ──────────────────────────────────────────────
 var money: int = 0:
@@ -13,7 +15,13 @@ var money: int = 0:
 		money = value
 		money_changed.emit(money)
 
-# ─── TIME & DAY/NIGHT ──────────────────────────────────────
+# ─── DAILY TRACKING ────────────────────────────────────────
+var daily_money: int = 0
+var daily_served_count: int = 0
+var daily_lost_count: int = 0
+var is_shop_open: bool = true
+var current_day: int = 1
+
 # ─── TIME & DAY/NIGHT ──────────────────────────────────────
 var time_of_day: float = 8.0 # Bắt đầu từ 8:00 sáng
 var time_scale: float = 24.0 / 900.0   # 15 phút thực tế = 900 giây = 24 giờ game
@@ -176,6 +184,7 @@ func _process(delta: float) -> void:
 	time_of_day += delta * time_scale
 	if time_of_day >= 24.0:
 		time_of_day -= 24.0
+		current_day += 1
 		
 	var new_hour: int = int(time_of_day)
 	var new_minute: int = int((time_of_day - new_hour) * 60)
@@ -184,9 +193,43 @@ func _process(delta: float) -> void:
 		current_hour = new_hour
 		current_minute = new_minute
 		time_changed.emit(current_hour, current_minute)
+		_check_shop_schedule(current_hour, current_minute)
+
+## Kiểm tra lịch đóng/mở cửa hàng
+func _check_shop_schedule(hour: int, minute: int) -> void:
+	# ĐÓNG CỬA & TỔNG KẾT: 01:00 Sáng
+	if hour == 1 and minute == 0 and is_shop_open:
+		is_shop_open = false
+		shop_status_changed.emit(false)
+		
+		var report = {
+			"day": current_day,
+			"money": daily_money,
+			"served": daily_served_count,
+			"lost": daily_lost_count
+		}
+		daily_report_ready.emit(report)
+		print("[GameManager] 🌙 Đến 01:00 - Đóng cửa & Tổng kết Ngày %d" % current_day)
+	
+	# MỞ CỬA NGÀY MỚI: 05:30 Sáng
+	if hour == 5 and minute == 30 and not is_shop_open:
+		is_shop_open = true
+		daily_money = 0
+		daily_served_count = 0
+		daily_lost_count = 0
+		shop_status_changed.emit(true)
+		print("[GameManager] ☀️ Đến 05:30 - Bắt đầu Ngày mới!")
 
 func add_money(amount: int) -> void:
 	money += amount
+	if is_shop_open:
+		daily_money += amount
+
+func record_customer_served() -> void:
+	daily_served_count += 1
+
+func record_customer_lost() -> void:
+	daily_lost_count += 1
 
 func get_upgrade_cost(upgrade_id: String) -> int:
 	for upg in UPGRADES:
