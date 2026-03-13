@@ -2,6 +2,7 @@ extends CanvasLayer
 
 @onready var panel: PanelContainer = $SettingsPanel
 @onready var btn_gear: Button = $GearButton
+@onready var btn_missions: Button = $MissionsButton
 
 @onready var btn_close: Button = $SettingsPanel/MarginContainer/VBoxContainer/Header/BtnClose
 @onready var opt_quality: OptionButton = $SettingsPanel/MarginContainer/VBoxContainer/QualityContainer/QualityOption
@@ -16,6 +17,7 @@ func _ready() -> void:
 	panel.hide()
 	
 	btn_gear.pressed.connect(_on_gear_pressed)
+	btn_missions.pressed.connect(func(): PopupManager.toggle_missions_panel())
 	btn_close.pressed.connect(_on_close_pressed)
 	
 	opt_quality.item_selected.connect(_on_quality_selected)

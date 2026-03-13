@@ -87,14 +87,17 @@ public partial class CandyBoard : Control
 
 		_sfxSwap = new AudioStreamPlayer();
 		_sfxSwap.Stream = GD.Load<AudioStream>("res://assets/Music/text_boop.mp3");
+		_sfxSwap.Bus = "SFX";
 		AddChild(_sfxSwap);
 
 		_sfxPop = new AudioStreamPlayer();
 		_sfxPop.Stream = GD.Load<AudioStream>("res://assets/Music/Purchase_SFX.mp3");
+		_sfxPop.Bus = "SFX";
 		AddChild(_sfxPop);
 
 		_bgmPlayer = new AudioStreamPlayer();
 		_bgmPlayer.Stream = GD.Load<AudioStream>("res://assets/Music/Sugar Puzzle Carousel.mp3");
+		_bgmPlayer.Bus = "Music";
 		AddChild(_bgmPlayer);
 		_bgmPlayer.Play();
 
@@ -685,6 +688,11 @@ public partial class CandyBoard : Control
 		{
 			int pts = toDestroy.Count * 50;
 			_level.AddScore(pts);
+			
+			// Cộng Boost Energy cho Fever Mode (mỗi viên nổ tính 1.0 energy)
+			Node gameManager = GetNode("/root/GameManager");
+			gameManager.Call("add_boost_energy", (float)toDestroy.Count * 1.0f);
+			
 			UpdateUI();
 
 			foreach (var item in toDestroy)

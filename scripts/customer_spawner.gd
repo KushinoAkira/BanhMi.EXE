@@ -36,6 +36,12 @@ func _ready() -> void:
 		_spawn_customer()
 		await get_tree().create_timer(0.2).timeout
 
+func _process(_delta: float) -> void:
+	# Cập nhật liên tục tốc độ spawn theo Fever Mode
+	var current_req_time: float = GameManager.get_spawn_interval()
+	if spawn_timer.wait_time != current_req_time:
+		spawn_timer.wait_time = current_req_time
+
 # ─── SPAWN LOGIC ──────────────────────────────────────────
 func _on_spawn_timer_timeout() -> void:
 	if not GameManager.is_shop_open:
