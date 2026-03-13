@@ -38,6 +38,7 @@ var unlocked_menu_items: Array[String] = ["banh_mi_thit"]
 const MENU_ITEMS = {
 	"banh_mi_thit": {"name": "Bánh Mì Thịt", "price": 15, "rep_cost": 0},
 	"banh_mi_pate": {"name": "Bánh Mì Pa-tê", "price": 25, "rep_cost": 100},
+	"banh_mi_cha_ca": {"name": "Bánh Mì Chả Cá", "price": 30, "rep_cost": 250},
 	"banh_mi_heo_quay": {"name": "Bánh Mì Heo Quay", "price": 40, "rep_cost": 500}
 }
 
