@@ -20,12 +20,23 @@ layer = 120
 script = ExtResource("1_script")
 
 [node name="GearButton" type="Button" parent="." unique_id=1360863581]
-offset_left = 517.0
-offset_top = 1.0
-offset_right = 569.0
-offset_bottom = 54.0
-theme_override_font_sizes/font_size = 32
+anchors_preset = 0
+offset_left = 160.0
+offset_top = 10.0
+offset_right = 210.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 26
 text = "⚙"
+
+[node name="MissionsButton" type="Button" parent="."]
+anchors_preset = 0
+offset_left = 215.0
+offset_top = 10.0
+offset_right = 265.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 22
+text = "📋"
+tooltip_text = "Nhiệm vụ hôm nay"
 
 [node name="SettingsPanel" type="PanelContainer" parent="." unique_id=1183952468]
 visible = false

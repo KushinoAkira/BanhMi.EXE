@@ -106,6 +106,21 @@ func _create_patience_bar() -> void:
 	patience_bar.visible = false
 	add_child(patience_bar)
 
+## Hiển thị emoji reaction nổi lên và fade out
+func _show_reaction(emoji: String) -> void:
+	var lbl := Label.new()
+	lbl.text = emoji
+	lbl.add_theme_font_size_override("font_size", 22)
+	lbl.position = Vector2(-12, -60)
+	get_parent().add_child(lbl)  # Add to parent để không bị clip
+	lbl.global_position = global_position + Vector2(-12, -60)
+	# Tween: nổi lên và fade
+	var tween := create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(lbl, "position:y", lbl.position.y - 40, 1.0)
+	tween.tween_property(lbl, "modulate:a", 0.0, 1.0)
+	tween.chain().tween_callback(lbl.queue_free)
+
 ## Tạo SpriteFrames dynamically — thiết lập chỉ số theo loại NPC
 func _randomize_appearance() -> void:
 	var npc_data: Dictionary = NPC_WALK_FOLDERS.pick_random()
@@ -210,6 +225,12 @@ func _process_idle() -> void:
 # ─── GENERIC MOVEMENT — used by WANDERING, GOING_TO_SHOP, LEAVING
 func _process_moving() -> void:
 	if _has_nav_target and not nav_agent.is_navigation_finished():
+		# Fever mode boost di chuyển
+		if GameManager.is_fever_mode:
+			nav_agent.max_speed = speed * 2.0
+		else:
+			nav_agent.max_speed = speed
+			
 		_move_along_path()
 	elif not _has_nav_target:
 		_play_animation("idle")
@@ -250,6 +271,7 @@ func _process_waiting_in_line(delta: float) -> void:
 		if banh_mi_cart:
 			banh_mi_cart.remove_customer(self)
 		GameManager.record_customer_lost()
+		_show_reaction("😡")  # Bờ đi vì chờ lâu quá
 		_change_state(State.LEAVING)
 		return
 
@@ -269,6 +291,16 @@ func start_buying() -> void:
 	_change_state(State.BUYING)
 
 func finish_buying() -> void:
+	# Phản ứng khi được phục vụ
+	if is_vip:
+		_show_reaction("⭐")  # VIP hài lòng
+	else:
+		var patience_ratio := patience / max_patience
+		if patience_ratio > 0.5:
+			_show_reaction("😊")  # Phục vụ nhanh
+		else:
+			_show_reaction("😐")  # Phục vụ chậm hơn một chút
+	GameManager.record_customer_served(is_vip)
 	_change_state(State.LEAVING)
 
 # ─── LEAVING STATE ─────────────────────────────────────────

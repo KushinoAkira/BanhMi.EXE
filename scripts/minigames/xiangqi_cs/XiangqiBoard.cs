@@ -101,14 +101,17 @@ namespace BanhMiExe.Minigames.Xiangqi
 
 			_sfxMove = new AudioStreamPlayer();
 			_sfxMove.Stream = GD.Load<AudioStream>("res://assets/Music/Wooden_Clack.mp3");
+			_sfxMove.Bus = "SFX";
 			AddChild(_sfxMove);
 
 			_sfxCapture = new AudioStreamPlayer();
 			_sfxCapture.Stream = GD.Load<AudioStream>("res://assets/Music/Purchase_SFX.mp3");
+			_sfxCapture.Bus = "SFX";
 			AddChild(_sfxCapture);
 
 			_bgmPlayer = new AudioStreamPlayer();
 			_bgmPlayer.Stream = GD.Load<AudioStream>("res://assets/Music/Quiet Rooms Between Thoughts.mp3");
+			_bgmPlayer.Bus = "Music";
 			AddChild(_bgmPlayer);
 			_bgmPlayer.Play();
 

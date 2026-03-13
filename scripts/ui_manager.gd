@@ -19,6 +19,14 @@ var _bar_open := false
 var _bar_height: float = 0.0
 var _toggle_btn: Button
 
+# ─── FEVER BAR ───────────────────────────────────────────
+var fever_bar: ProgressBar
+var fever_particle: CPUParticles2D
+
+# ─── MENU UI ───────────────────────────────────────────────
+var _menu_btn: Button
+var menu_ui_instance: Control
+
 # ─── TUTORIAL STATE ───────────────────────────────────────
 var tutorial_bg: ColorRect
 var tutorial_arrow: TextureRect
@@ -45,7 +53,9 @@ func _ready() -> void:
 	
 	_setup_minigames()
 	_create_toggle_button()
+	_create_menu_button()
 	_create_report_ui()
+	_create_fever_bar()
 	
 	# Start with bar hidden
 	_bar_open = false
@@ -214,7 +224,10 @@ func _hide_bar_instant() -> void:
 	bottom_bar.anchor_right = 1.0
 	bottom_bar.offset_top = 0
 	bottom_bar.offset_bottom = bottom_bar.size.y
-	_bar_height = bottom_bar.size.y
+	
+	# Fallback chiều cao nếu size chưa kịp load ở frame đầu tiên
+	_bar_height = maxf(bottom_bar.size.y, 150.0)
+	
 	bottom_bar.position.y = get_viewport().get_visible_rect().size.y
 
 func _create_toggle_button() -> void:
@@ -248,6 +261,108 @@ func _create_toggle_button() -> void:
 func _update_toggle_position() -> void:
 	var screen = get_viewport().get_visible_rect().size
 	_toggle_btn.position = Vector2(screen.x - 66, screen.y - 66)
+	if _menu_btn:
+		_menu_btn.position = Vector2(screen.x - 132, screen.y - 66)
+	if fever_bar:
+		# Đặt góc trên trái, dưới cụm hiển thị giờ (TimeLabel)
+		fever_bar.position = Vector2(20, 70)
+
+func _create_menu_button() -> void:
+	_menu_btn = Button.new()
+	_menu_btn.text = "🍔"
+	_menu_btn.size = Vector2(56, 56)
+	_menu_btn.add_theme_font_size_override("font_size", 24)
+	
+	var style = _toggle_btn.get_theme_stylebox("normal").duplicate()
+	_menu_btn.add_theme_stylebox_override("normal", style)
+	
+	var hover = _toggle_btn.get_theme_stylebox("hover").duplicate()
+	_menu_btn.add_theme_stylebox_override("hover", hover)
+	
+	var pressed = _toggle_btn.get_theme_stylebox("pressed").duplicate()
+	_menu_btn.add_theme_stylebox_override("pressed", pressed)
+	
+	_menu_btn.pressed.connect(_on_menu_pressed)
+	add_child(_menu_btn)
+	_update_toggle_position()
+
+func _on_menu_pressed() -> void:
+	if menu_ui_instance == null:
+		var scene = load("res://scenes/menu_upgrade_ui.tscn")
+		if scene:
+			menu_ui_instance = scene.instantiate()
+			add_child(menu_ui_instance)
+		else:
+			push_warning("Không tìm thấy cảnh res://scenes/menu_upgrade_ui.tscn")
+			return
+	
+	menu_ui_instance.show()
+
+func _create_fever_bar() -> void:
+	fever_bar = ProgressBar.new()
+	fever_bar.custom_minimum_size = Vector2(150, 16)
+	fever_bar.max_value = 100.0
+	fever_bar.value = 0.0
+	fever_bar.show_percentage = false
+	fever_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	fever_bar.hide() # Ẩn đi khi chưa có điểm Boost
+	
+	var style_bg = StyleBoxFlat.new()
+	style_bg.bg_color = Color(0.1, 0.1, 0.1, 0.8)
+	style_bg.set_corner_radius_all(8)
+	style_bg.set_border_width_all(1)
+	style_bg.border_color = Color(0.5, 0.5, 0.5, 0.5)
+	
+	var style_fg = StyleBoxFlat.new()
+	style_fg.bg_color = Color(1.0, 0.4, 0.0, 1.0) # Orange Fire
+	style_fg.set_corner_radius_all(8)
+	
+	fever_bar.add_theme_stylebox_override("background", style_bg)
+	fever_bar.add_theme_stylebox_override("fill", style_fg)
+	
+	fever_particle = CPUParticles2D.new()
+	fever_particle.emitting = false
+	fever_particle.amount = 20
+	fever_particle.lifetime = 0.6
+	fever_particle.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	fever_particle.emission_rect_extents = Vector2(75, 5)
+	fever_particle.direction = Vector2(0, -1)
+	fever_particle.spread = 20
+	fever_particle.gravity = Vector2(0, 0)
+	fever_particle.initial_velocity_min = 30
+	fever_particle.initial_velocity_max = 80
+	fever_particle.scale_amount_min = 2.0
+	fever_particle.scale_amount_max = 5.0
+	fever_particle.color = Color(1.0, 0.8, 0.0, 0.8)
+	fever_particle.position = Vector2(75, 8)
+	
+	fever_bar.add_child(fever_particle)
+	add_child(fever_bar)
+	_update_toggle_position()
+
+func _process(delta: float) -> void:
+	if fever_bar:
+		var target := GameManager.boost_energy
+		if GameManager.is_fever_mode: 
+			target = (GameManager.fever_timer / GameManager.MAX_FEVER_TIME) * 100.0
+		
+		# Ẩn thanh Fever nếu hoàn toàn không có tí năng lượng nào, hiện nếu > 0
+		if target <= 0.01 and not GameManager.is_fever_mode:
+			fever_bar.hide()
+			fever_particle.emitting = false
+		else:
+			fever_bar.show()
+			
+		fever_bar.value = lerp(fever_bar.value, float(target), delta * 5.0)
+		
+		# Chuyển màu khi đầy/kích hoạt
+		var fg: StyleBoxFlat = fever_bar.get_theme_stylebox("fill")
+		if GameManager.is_fever_mode:
+			fg.bg_color = Color(1.0, 0.8, 0.0, 1.0) # Vàng rực
+			fever_particle.emitting = true
+		else:
+			fg.bg_color = Color(1.0, 0.4, 0.0, 1.0) # Cam
+			fever_particle.emitting = false
 
 func _on_toggle_pressed() -> void:
 	if _bar_open:
