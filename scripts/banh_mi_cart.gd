@@ -16,6 +16,13 @@ var is_serving: bool = false
 # ─── ONREADY NODES ────────────────────────────────────────
 @onready var service_timer: Timer = $ServiceTimer
 @onready var queue_positions_node: Node2D = $QueuePositions
+@onready var cart_sprite: Sprite2D = $Sprite2D
+@onready var cart_light: PointLight2D = $CartLight
+
+# ─── TEXTURES ──────────────────────────────────────────────
+var tex_lvl1 = preload("res://assets/sprites/banh_mi_cart.png")
+var tex_lvl2 = preload("res://assets/sprites/banh_mi_cart.png") # TODO: Cần người thiết kế cung cấp lvl2
+var tex_lvl3 = preload("res://assets/sprites/banh_mi_cart.png") # TODO: Cần người thiết kế cung cấp lvl3
 
 # Mảng vị trí Vector2 lấy từ các Marker2D con
 var queue_positions: Array[Vector2] = []
@@ -31,7 +38,50 @@ func _ready() -> void:
 	service_timer.one_shot = true
 	service_timer.timeout.connect(_on_service_timer_timeout)
 
+	# Lắng nghe sự kiện Level Up xe từ GameManager
+	GameManager.cart_level_changed.connect(_on_cart_level_changed)
+
 	print("[BanhMiCart] Đã khởi tạo với %d vị trí xếp hàng" % queue_positions.size())
+
+# ─── VISUAL PROGRESSION ───────────────────────────────────
+func _on_cart_level_changed(new_level: int) -> void:
+	match new_level:
+		1:
+			cart_sprite.texture = tex_lvl1
+			cart_light.energy = 0.0
+		2:
+			cart_sprite.texture = tex_lvl2 # Tạm dùng lvl1
+			cart_sprite.modulate = Color(1.1, 1.1, 1.2) # Làm sáng lên xíu
+			cart_light.energy = 0.5
+		3:
+			cart_sprite.texture = tex_lvl3 # Tạm dùng lvl1
+			cart_sprite.modulate = Color(1.2, 1.1, 1.0) # Vàng ấm
+			cart_light.energy = 1.0
+			cart_light.color = Color(1.0, 0.8, 0.2)
+			
+	print("[BanhMiCart] Xe Bánh Mì đã được nâng cấp chói lọi lên Cấp %d!" % new_level)
+	
+	# Hiệu ứng Particle khi nâng cấp
+	_spawn_upgrade_particles()
+
+func _spawn_upgrade_particles() -> void:
+	var req = CPUParticles2D.new()
+	req.emitting = false
+	req.one_shot = true
+	req.amount = 40
+	req.lifetime = 1.0
+	req.explosiveness = 0.8
+	req.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
+	req.emission_sphere_radius = 50.0
+	req.gravity = Vector2(0, -98)
+	req.scale_amount_min = 2.0
+	req.scale_amount_max = 6.0
+	req.color = Color(1.0, 0.84, 0.0) # Gold
+	add_child(req)
+	req.emitting = true
+	
+	await get_tree().create_timer(1.2).timeout
+	req.queue_free()
 
 # ─── QUEUE MANAGEMENT ─────────────────────────────────────
 

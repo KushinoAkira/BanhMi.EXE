@@ -48,6 +48,7 @@ const BUILDING_SCALE := 0.45
 @onready var sun_sprite: Sprite2D = $ParallaxBackground/SkyLayer/Sun
 @onready var moon_sprite: Sprite2D = $ParallaxBackground/SkyLayer/Moon
 @onready var cart_light: PointLight2D = $CityObjects/BanhMiCart/CartLight
+@onready var background_music: AudioStreamPlayer = $BackgroundMusic
 
 var shadow_tex: Texture2D
 var tree_tex: Texture2D
@@ -57,6 +58,9 @@ var _building_cells: Dictionary = {}  # Vector2i -> true
 
 var _lamp_lights: Array[PointLight2D] = []
 var _lamp_light_tex: GradientTexture2D
+var _was_music_paused: bool = false
+var _rain_particles: CPUParticles2D
+var _event_label: Label
 
 # ─── READY ─────────────────────────────────────────────────
 func _ready() -> void:
@@ -103,8 +107,117 @@ func _ready() -> void:
 	GameManager.add_money(100)
 	
 	if moon_sprite: moon_sprite.visible = true
+
+	# Kết nối quality settings để bật/tắt đèn
+	SettingsManager.quality_changed.connect(_on_quality_changed)
+	_on_quality_changed(SettingsManager.quality_level)
+	
+	_setup_event_system()
+	GameManager.event_started.connect(_on_event_started)
 	
 	print("[Main] ✅ City ready! %d wander, %d spawn" % [wps.size(), sps.size()])
+
+# ─── EVENT SYSTEM ──────────────────────────────────────────
+func _setup_event_system() -> void:
+	# Mưa
+	_rain_particles = CPUParticles2D.new()
+	_rain_particles.emitting = false
+	_rain_particles.amount = 500
+	_rain_particles.lifetime = 1.5
+	_rain_particles.speed_scale = 2.0
+	_rain_particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	_rain_particles.emission_rect_extents = Vector2(1000, 10)
+	_rain_particles.direction = Vector2(-0.2, 1) # Mưa chéo
+	_rain_particles.spread = 5
+	_rain_particles.gravity = Vector2(0, 800)
+	_rain_particles.initial_velocity_min = 400
+	_rain_particles.initial_velocity_max = 600
+	_rain_particles.scale_amount_min = 1.0
+	_rain_particles.scale_amount_max = 3.0
+	_rain_particles.color = Color(0.6, 0.7, 0.9, 0.4)
+	_rain_particles.z_index = 100 # Luôn đè lên trên tất cả
+	
+	# Gắn mưa dính vào camera
+	camera.add_child(_rain_particles)
+	_rain_particles.position = Vector2(0, -600) 
+	
+	# Label thông báo
+	_event_label = Label.new()
+	var ui_layer = get_node_or_null("UILayer")
+	if ui_layer:
+		ui_layer.add_child(_event_label)
+		_event_label.add_theme_font_size_override("font_size", 32)
+		_event_label.add_theme_color_override("font_color", Color(1, 0.9, 0, 1))
+		_event_label.add_theme_color_override("font_outline_color", Color.BLACK)
+		_event_label.add_theme_constant_override("outline_size", 8)
+		_event_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_event_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+		_event_label.offset_top = 150 # Dịch xuống dưới một chút để không đè UI mây/options
+		_event_label.text = ""
+		_event_label.hide()
+
+func _on_event_started(event_type: String) -> void:
+	if event_type == "none":
+		_rain_particles.emitting = false
+		return
+		
+	if event_type == "rain":
+		_rain_particles.emitting = true
+		_show_event_popup("🌧️ TRỜI MƯA TO! Khách ít đi, nhưng trả tiền nhiều hơn!")
+	elif event_type == "rush_hour":
+		_show_event_popup("🏃 GIỜ CAO ĐIỂM! Khách đông nghịt!")
+
+func _show_event_popup(msg: String) -> void:
+	if not _event_label: return
+	_event_label.text = msg
+	_event_label.show()
+	_event_label.modulate.a = 0.0
+	
+	var tw = create_tween()
+	tw.tween_property(_event_label, "modulate:a", 1.0, 0.5)
+	tw.tween_interval(3.0)
+	tw.tween_property(_event_label, "modulate:a", 0.0, 0.5)
+	tw.tween_callback(_event_label.hide)
+
+## Bật/tắt đèn đường + đèn xe tùy quality
+func _on_quality_changed(level: int) -> void:
+	# Ở chế độ Thấp (0): tắt hết PointLight2D để tiết kiệm GPU
+	var lights_enabled := level >= 1
+	for light in _lamp_lights:
+		if is_instance_valid(light):
+			light.enabled = lights_enabled
+	if cart_light:
+		cart_light.enabled = lights_enabled
+
+# ─── APP LIFECYCLE (Mobile) ────────────────────────────────
+## Xử lý khi có cuộc gọi, lock screen, chuyển app
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_APPLICATION_FOCUS_OUT:
+			# App bị minimize / có cuộc gọi / tắt màn hình
+			get_tree().paused = true
+			if background_music and background_music.playing:
+				_was_music_paused = true
+				background_music.stream_paused = true
+			SettingsManager.save_settings()  # Lưu settings khi thoát app
+			
+		NOTIFICATION_APPLICATION_RESUMED, NOTIFICATION_APPLICATION_FOCUS_IN:
+			# Quay lại game
+			get_tree().paused = false
+			if background_music and _was_music_paused and not SettingsManager.music_muted:
+				background_music.stream_paused = false
+				_was_music_paused = false
+
+		NOTIFICATION_WM_GO_BACK_REQUEST:
+			# Nút Back trên Android
+			_on_android_back_pressed()
+
+func _on_android_back_pressed() -> void:
+	# Nếu settings panel đang mở → đóng lại
+	if SettingsUI and SettingsUI.panel.visible:
+		SettingsUI.panel.hide()
+		return
+	# Không làm gì khác (tránh thoát game đột ngột)
 
 func _process(_delta: float) -> void:
 	if not day_night_mod or not sky_color or not sun_sprite or not moon_sprite: return
@@ -123,6 +236,10 @@ func _process(_delta: float) -> void:
 	
 	var night_mod := Color(0.3, 0.3, 0.5, 1.0)
 	var day_mod := Color(1.0, 1.0, 1.0, 1.0)
+	
+	# Nếu trời mưa, ban ngày cũng âm u
+	if GameManager.current_event_type == "rain" and daylight_factor > 0.0:
+		day_mod = Color(0.6, 0.6, 0.7, 1.0)
 	
 	# Transitioning Modulate
 	day_night_mod.color = night_mod.lerp(day_mod, daylight_factor)
@@ -173,6 +290,11 @@ func _process(_delta: float) -> void:
 	
 	# Update streetlamp lights (Fade in heavily as night falls)
 	var lamp_energy = clampf((night_factor - 0.4) * 2.0, 0.0, 1.0)
+	
+	# Nếu mưa thì đèn đường cũng bật nhẹ ban ngày
+	if GameManager.current_event_type == "rain":
+		lamp_energy = maxf(lamp_energy, 0.5)
+		
 	for light in _lamp_lights:
 		if is_instance_valid(light):
 			light.energy = lamp_energy * 1.5 # max energy 1.5

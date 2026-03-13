@@ -8,6 +8,9 @@ var music_muted: bool = false
 var sfx_muted: bool = false
 var quality_level: int = 2 # 0: Low, 1: Medium, 2: High
 
+## Phát signal này khi quality thay đổi để các scene cập nhật lights/particles
+signal quality_changed(level: int)
+
 func _ready() -> void:
 	load_settings()
 	apply_all_settings()
@@ -49,16 +52,27 @@ func apply_audio_settings() -> void:
 		AudioServer.set_bus_volume_db(sfx_bus_index, linear_to_db(max(sfx_volume, 0.001)))
 
 func apply_video_settings() -> void:
+	var vp = get_viewport()
 	match quality_level:
-		0: # Low
+		0: # Thấp — ưu tiên hiệu năng & pin
 			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
-			get_viewport().msaa_2d = Viewport.MSAA_DISABLED
-		1: # Medium
+			vp.msaa_2d = Viewport.MSAA_DISABLED
+			vp.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
+			vp.scaling_3d_scale = 0.75
+			Engine.max_fps = 30   # ⚡ Tiết kiệm pin tối đa
+		1: # Trung bình
 			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
-			get_viewport().msaa_2d = Viewport.MSAA_2X
-		2: # High
+			vp.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR
+			vp.scaling_3d_scale = 1.0
+			Engine.max_fps = 60
+		2: # Cao
 			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
-			get_viewport().msaa_2d = Viewport.MSAA_4X
+			vp.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+			vp.scaling_3d_scale = 1.0
+			Engine.max_fps = 60
+	
+	# Thông báo cho các scene cập nhật lights/particles
+	quality_changed.emit(quality_level)
 
 func set_music_volume(v: float) -> void:
 	music_volume = v

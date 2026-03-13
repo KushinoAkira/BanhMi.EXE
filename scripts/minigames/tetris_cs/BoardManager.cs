@@ -111,14 +111,17 @@ public partial class BoardManager : Control
 
         _sfxMove = new AudioStreamPlayer();
         _sfxMove.Stream = GD.Load<AudioStream>("res://assets/Music/text_boop.mp3");
+        _sfxMove.Bus = "SFX";
         AddChild(_sfxMove);
 
         _sfxClear = new AudioStreamPlayer();
         _sfxClear.Stream = GD.Load<AudioStream>("res://assets/Music/Purchase_SFX.mp3");
+        _sfxClear.Bus = "SFX";
         AddChild(_sfxClear);
 
         _bgmPlayer = new AudioStreamPlayer();
         _bgmPlayer.Stream = GD.Load<AudioStream>("res://assets/Music/Aerial City, Chika - Main Menu Music, Extended.mp3");
+        _bgmPlayer.Bus = "Music";
         AddChild(_bgmPlayer);
         _bgmPlayer.Play();
 
@@ -637,6 +640,10 @@ public partial class BoardManager : Control
             case 4: reward = 800 * _levelManager.CurrentLevel; break; // Tetris
         }
         _score += reward;
+
+        // Cấp năng lượng Boost cho Shop chính ngoài game (10 energy / hàng)
+        Node gameManager = GetNode("/root/GameManager");
+        gameManager.Call("add_boost_energy", 10.0f * lines);
 
         UpdateUI();
         DrawBoard(); // Redraw with shifted positions
