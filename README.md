@@ -1,14 +1,13 @@
-# 🥖 Bánh Mì .EXE
+# 🥖 BANHMI.EXE
 
 > *"NullReferenceException: Career not found."*
 
-You are **Hayz** — a former IT developer who just got laid off by the very AI systems you helped build. Armed with a lifetime of optimization skills and a street cart, there's only one logical next step: **sell bánh mì on the sidewalk**.
+You are Hayz — a former IT developer who just got laid off by the very AI systems you helped build. Armed with a lifetime of optimization skills and a humble street cart, there's only one logical next step: disrupt the sidewalk bánh mì industry.
 
-Earn capital by playing minigames (Tetris, Candy Crush, Xiangqi) at the street corner, then invest in upgrades — from hiring an intern and buying an Overclocked Oven, to running Facebook Ads and deploying a fully automated **AI Sandwich Assembler**!
+Earn capital by grinding minigames at the street corner, then reinvest your "VC funding" (sandwich money) into upgrades—from hiring an underpaid intern and buying an Overclocked Oven, to running Facebook Ads and deploying a fully automated AI Sandwich Assembler!
 
----
 
-## 📥 Download
+## Download
 
 ### Android (APK)
 
@@ -22,7 +21,7 @@ Earn capital by playing minigames (Tetris, Candy Crush, Xiangqi) at the street c
    - Go to **Settings** → **Security**
    - Enable **Unknown Sources**, or allow your browser/file manager to install APKs.
 4. Tap **Install** and wait for it to finish.
-5. Open the game and **Compile & Run!** 🚀
+5. Open the game and **Compile & Run!** 
 
 **Requirements:**
 - Android 6.0 (API 23) or higher
@@ -38,7 +37,7 @@ Link: *(will be updated after deployment)*
 
 ---
 
-## 🎮 How to Play
+## How to Play
 
 | Step | Description |
 |------|-------------|
@@ -48,14 +47,24 @@ Link: *(will be updated after deployment)*
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Engine:** Godot 4.6 .NET
 - **Languages:** GDScript + C#
 - **Platforms:** Android, Web
 
 ---
+## Demo UI
+
+
+---
 
 ## 👨‍💻 Author
 
-Made with ❤️ (and a lot of bánh mì) by **Hayz**.
+Made with ❤️ by team: 
+1. Dang Minh Hoang
+2. Nguyen Duy Hieu
+3. Tran Phuong Huyen
+4. Nguyen Anh Khoa
+5. Pham Ngoc Trung Nhan 
+
