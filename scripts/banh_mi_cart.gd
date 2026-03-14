@@ -45,19 +45,28 @@ func _ready() -> void:
 
 # ─── VISUAL PROGRESSION ───────────────────────────────────
 func _on_cart_level_changed(new_level: int) -> void:
+	var decor_lvl2 = get_node_or_null("DecorationsLevel2")
+	var decor_lvl3 = get_node_or_null("DecorationsLevel3")
+	
 	match new_level:
 		1:
 			cart_sprite.texture = tex_lvl1
 			cart_light.energy = 0.0
+			if decor_lvl2: decor_lvl2.hide()
+			if decor_lvl3: decor_lvl3.hide()
 		2:
 			cart_sprite.texture = tex_lvl2 # Tạm dùng lvl1
 			cart_sprite.modulate = Color(1.1, 1.1, 1.2) # Làm sáng lên xíu
 			cart_light.energy = 0.5
+			if decor_lvl2: decor_lvl2.show()
+			if decor_lvl3: decor_lvl3.hide()
 		3:
 			cart_sprite.texture = tex_lvl3 # Tạm dùng lvl1
 			cart_sprite.modulate = Color(1.2, 1.1, 1.0) # Vàng ấm
 			cart_light.energy = 1.0
 			cart_light.color = Color(1.0, 0.8, 0.2)
+			if decor_lvl2: decor_lvl2.show()
+			if decor_lvl3: decor_lvl3.show()
 			
 	print("[BanhMiCart] Xe Bánh Mì đã được nâng cấp chói lọi lên Cấp %d!" % new_level)
 	

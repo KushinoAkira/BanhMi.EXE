@@ -25,6 +25,9 @@
 [ext_resource type="Script" uid="uid://dmice67sj5td8" path="res://scripts/hayz_vendor.gd" id="99_hayz"]
 [ext_resource type="Texture2D" uid="uid://7iuc87v0cp5a" path="res://assets/sprites/sky/moon.png" id="100_moon"]
 [ext_resource type="Texture2D" uid="uid://cld3sipk5ttoo" path="res://assets/sprites/sky/sky_night_background.png" id="101_night_sky"]
+[ext_resource type="Texture2D" path="res://assets/sprites/props/plastic_table.png" id="tex_table"]
+[ext_resource type="Texture2D" path="res://assets/sprites/props/plastic_chair.png" id="tex_chair"]
+[ext_resource type="Texture2D" path="res://assets/sprites/props/party_lights.png" id="tex_lights"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
 texture = ExtResource("14_atlas")
@@ -192,6 +195,51 @@ z_index = -1
 position = Vector2(0, 5)
 scale = Vector2(0.9, 0.45)
 texture = ExtResource("8_shadow")
+
+[node name="DecorationsLevel2" type="Node2D" parent="CityObjects/BanhMiCart"]
+visible = false
+y_sort_enabled = true
+
+[node name="Table1" type="Sprite2D" parent="CityObjects/BanhMiCart/DecorationsLevel2"]
+position = Vector2(-50, 25)
+texture = ExtResource("tex_table")
+offset = Vector2(0, -18)
+
+[node name="Chair1a" type="Sprite2D" parent="CityObjects/BanhMiCart/DecorationsLevel2"]
+position = Vector2(-30, 35)
+texture = ExtResource("tex_chair")
+offset = Vector2(0, -16)
+flip_h = true
+
+[node name="Chair1b" type="Sprite2D" parent="CityObjects/BanhMiCart/DecorationsLevel2"]
+position = Vector2(-70, 15)
+texture = ExtResource("tex_chair")
+offset = Vector2(0, -16)
+
+[node name="DecorationsLevel3" type="Node2D" parent="CityObjects/BanhMiCart"]
+visible = false
+y_sort_enabled = true
+
+[node name="Table2" type="Sprite2D" parent="CityObjects/BanhMiCart/DecorationsLevel3"]
+position = Vector2(-90, 45)
+texture = ExtResource("tex_table")
+offset = Vector2(0, -18)
+
+[node name="Chair2a" type="Sprite2D" parent="CityObjects/BanhMiCart/DecorationsLevel3"]
+position = Vector2(-70, 55)
+texture = ExtResource("tex_chair")
+offset = Vector2(0, -16)
+flip_h = true
+
+[node name="Chair2b" type="Sprite2D" parent="CityObjects/BanhMiCart/DecorationsLevel3"]
+position = Vector2(-110, 35)
+texture = ExtResource("tex_chair")
+offset = Vector2(0, -16)
+
+[node name="Lights" type="Sprite2D" parent="CityObjects/BanhMiCart/DecorationsLevel3"]
+position = Vector2(-40, -150)
+texture = ExtResource("tex_lights")
+z_index = 3
 
 [node name="ServiceTimer" type="Timer" parent="CityObjects/BanhMiCart" unique_id=1833595071]
 one_shot = true
