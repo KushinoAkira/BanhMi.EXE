@@ -32,7 +32,7 @@ func setup(data: Dictionary) -> void:
 
 func _build_ui() -> void:
 	# ── Style cho PanelContainer ──
-	custom_minimum_size = Vector2(220, 160)
+	custom_minimum_size = Vector2(200, 145)
 
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.12, 0.14, 0.18, 0.95)
@@ -63,10 +63,7 @@ func _build_ui() -> void:
 
 	icon_label = Label.new()
 	icon_label.text = upgrade_data.get("icon", "❓")
-	icon_label.add_theme_font_size_override("font_size", 80)
-	icon_label.custom_minimum_size = Vector2(96, 96)
-	icon_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	icon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	icon_label.add_theme_font_size_override("font_size", 36)
 	header.add_child(icon_label)
 
 	name_label = Label.new()
