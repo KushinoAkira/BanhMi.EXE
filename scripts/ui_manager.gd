@@ -233,15 +233,15 @@ func _hide_bar_instant() -> void:
 func _create_toggle_button() -> void:
 	_toggle_btn = Button.new()
 	_toggle_btn.text = "🛒"
-	_toggle_btn.size = Vector2(56, 56)
-	_toggle_btn.add_theme_font_size_override("font_size", 24)
+	_toggle_btn.size = Vector2(96, 96)
+	_toggle_btn.add_theme_font_size_override("font_size", 48)
 	
 	# Style the button
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.12, 0.14, 0.22, 0.95)
 	style.border_color = Color(0.3, 0.6, 1.0, 0.7)
 	style.set_border_width_all(2)
-	style.set_corner_radius_all(28)
+	style.set_corner_radius_all(48)
 	_toggle_btn.add_theme_stylebox_override("normal", style)
 	
 	var hover_style := style.duplicate()
@@ -260,9 +260,9 @@ func _create_toggle_button() -> void:
 
 func _update_toggle_position() -> void:
 	var screen = get_viewport().get_visible_rect().size
-	_toggle_btn.position = Vector2(screen.x - 66, screen.y - 66)
+	_toggle_btn.position = Vector2(screen.x - 106, screen.y - 106)
 	if _menu_btn:
-		_menu_btn.position = Vector2(screen.x - 132, screen.y - 66)
+		_menu_btn.position = Vector2(screen.x - 212, screen.y - 106)
 	if fever_bar:
 		# Đặt góc trên trái, dưới cụm hiển thị giờ (TimeLabel)
 		fever_bar.position = Vector2(20, 70)
@@ -270,8 +270,8 @@ func _update_toggle_position() -> void:
 func _create_menu_button() -> void:
 	_menu_btn = Button.new()
 	_menu_btn.text = "🍔"
-	_menu_btn.size = Vector2(56, 56)
-	_menu_btn.add_theme_font_size_override("font_size", 24)
+	_menu_btn.size = Vector2(96, 96)
+	_menu_btn.add_theme_font_size_override("font_size", 48)
 	
 	var style = _toggle_btn.get_theme_stylebox("normal").duplicate()
 	_menu_btn.add_theme_stylebox_override("normal", style)
@@ -379,7 +379,7 @@ func _slide_bar_up() -> void:
 	var tween = create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(bottom_bar, "position:y", target_y, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	tween.tween_property(_toggle_btn, "position:y", target_y - 66, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(_toggle_btn, "position:y", target_y - 106, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 
 func _slide_bar_down() -> void:
 	_bar_open = false
@@ -388,7 +388,7 @@ func _slide_bar_down() -> void:
 	var tween = create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(bottom_bar, "position:y", screen_h, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-	tween.tween_property(_toggle_btn, "position:y", screen_h - 66, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	tween.tween_property(_toggle_btn, "position:y", screen_h - 106, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 
 # ─── INTERACTIVE TUTORIAL ─────────────────────────────────
 func _start_tutorial() -> void:
