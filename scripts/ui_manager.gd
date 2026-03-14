@@ -380,6 +380,7 @@ func _slide_bar_up() -> void:
 	tween.set_parallel(true)
 	tween.tween_property(bottom_bar, "position:y", target_y, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(_toggle_btn, "position:y", target_y - 106, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(_menu_btn, "position:y", target_y - 106, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 
 func _slide_bar_down() -> void:
 	_bar_open = false
@@ -389,6 +390,7 @@ func _slide_bar_down() -> void:
 	tween.set_parallel(true)
 	tween.tween_property(bottom_bar, "position:y", screen_h, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 	tween.tween_property(_toggle_btn, "position:y", screen_h - 106, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	tween.tween_property(_menu_btn, "position:y", screen_h - 106, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 
 # ─── INTERACTIVE TUTORIAL ─────────────────────────────────
 func _start_tutorial() -> void:
