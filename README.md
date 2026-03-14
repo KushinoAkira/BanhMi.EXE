@@ -68,3 +68,73 @@ Made with ❤️ by team:
 4. Nguyen Anh Khoa
 5. Pham Ngoc Trung Nhan 
 
+---
+# VIE
+
+# 🥖 BANHMI.EXE
+
+> *"NullReferenceException: Career not found."*
+
+Bạn vào vai **Hayz** — một cựu lập trình viên vừa bị "bay màu" bởi chính hệ thống AI mà mình từng góp công xây dựng. Với kỹ năng tối ưu hóa tích lũy cả đời và một chiếc xe đẩy cũ, chỉ có một con đường logic duy nhất để tồn tại: **Startup bánh mì vỉa hè.**
+
+Kiếm vốn bằng cách cày cuốc các minigame tại góc phố, sau đó tái đầu tư vào các gói nâng cấp — từ việc thuê thực tập sinh (Intern), mua Lò Nướng Overclock, cho đến chạy Facebook Ads và triển khai hệ thống **AI Lắp Ráp Bánh Mì** tự động hoàn toàn!
+
+---
+
+## Hướng dẫn tải về
+
+### Android (APK)
+
+> **Lưu ý bảo mật:** Bản APK này được đóng gói trực tiếp từ mã nguồn của dự án. Bạn cần cấp quyền "Cài đặt ứng dụng từ nguồn không xác định" trên thiết bị để cài đặt.
+
+**Các bước cài đặt:**
+
+1. **Tải tệp APK** từ trang [Releases](https://www.google.com/search?q=../../releases/latest).
+2. **Mở tệp APK** trên thiết bị Android của bạn.
+3. Nếu hệ thống hỏi về "Cài đặt từ nguồn không xác định":
+* Đi tới **Cài đặt** → **Bảo mật**
+* Bật **Nguồn không xác định**, hoặc cho phép trình duyệt/trình quản lý tệp cài đặt ứng dụng.
+
+
+4. Nhấn **Cài đặt** và chờ quá trình hoàn tất.
+5. Mở game và chọn **Compile & Run!** 🚀
+
+**Yêu cầu hệ thống:**
+
+* Android 6.0 (API 23) trở lên.
+* Bộ nhớ trống: ~100MB.
+
+---
+
+### Web 
+
+Link: *(Sẽ được cập nhật sau khi triển khai)*
+
+**Trình duyệt hỗ trợ:** Các phiên bản mới nhất của Chrome, Firefox, Edge (Safari hiện chưa được hỗ trợ đầy đủ).
+
+---
+
+## Cách chơi
+
+| Bước | Mô tả |
+| --- | --- |
+| **1** | Chơi **minigames** (Tetris / Candy Crush / Cờ tướng) tại góc phố để kiếm vốn lưu động. |
+| **2** | Dùng vốn để mua các bản **Nâng cấp** nhằm tăng giá bán và giảm thời gian phục vụ. |
+| **3** | **Tối ưu hóa lợi nhuận/giây** và xây dựng đế chế bánh mì của riêng bạn! |
+
+---
+
+## Công nghệ sử dụng 
+
+* **Engine:** Godot 4.3+ .NET
+* **Ngôn ngữ:** GDScript + C#
+* **Nền tảng:** Android, Web
+
+---
+
+## Tác giả
+1. Dang Minh Hoang
+2. Nguyen Duy Hieu
+3. Tran Phuong Huyen
+4. Nguyen Anh Khoa
+5. Pham Ngoc Trung Nhan 
