@@ -51,10 +51,16 @@ func _launch_level(level_id: int) -> void:
 	# The C# LevelManager handles speeds and targets based on level_id.
 	game.set("StartLevel", level_id)
 	
+	if game.has_signal("MiniGameWon"):
+		game.connect("MiniGameWon", _on_game_won)
 	if game.has_signal("MinigameClosed"):
 		game.connect("MinigameClosed", _on_game_closed)
 	add_child(game)
 	$Window.visible = false
+
+func _on_game_won(_level_id: int, _reward: int) -> void:
+	GameManager.activate_tetris_buff()
+	_on_game_closed()
 
 func _on_game_closed() -> void:
 	$Window.visible = true

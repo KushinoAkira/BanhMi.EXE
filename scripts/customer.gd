@@ -169,7 +169,7 @@ func _randomize_appearance() -> void:
 
 	anim_sprite.sprite_frames = sprite_frames
 	
-	is_vip = (randf() < 0.15)
+	is_vip = (randf() < GameManager.get_vip_chance())
 	if is_vip:
 		anim_sprite.modulate = Color(1.0, 0.8, 0.2)
 		speed *= 1.4
