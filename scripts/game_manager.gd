@@ -35,10 +35,59 @@ var reputation: int = 0:
 		reputation_changed.emit(reputation)
 
 var unlocked_menu_items: Array[String] = ["banh_mi_thit"]
+
+## ─── MENU ITEMS DATABASE ─────────────────────────────────────
+## Mỗi món có:
+##   name        : Tên hiển thị
+##   price       : Giá bán (đ)
+##   prep_time   : Thời gian chế biến (giây) — ảnh hưởng service_time
+##   unlock_level: Cấp độ mở khóa (dùng cho progression gating)
+##   rep_cost    : Chi phí Danh tiếng để mở khóa
+##   money_cost  : Chi phí Tiền để mở khóa (0 = miễn phí / chỉ cần rep)
+##   category    : "food" hoặc "drink"
 const MENU_ITEMS = {
-	"banh_mi_thit": {"name": "Bánh Mì Thịt", "price": 15, "rep_cost": 0},
-	"banh_mi_pate": {"name": "Bánh Mì Pa-tê", "price": 25, "rep_cost": 100},
-	"banh_mi_heo_quay": {"name": "Bánh Mì Heo Quay", "price": 40, "rep_cost": 500}
+	# ─── BÁNH MÌ (Food) ──────────────────────────────────────
+	"banh_mi_thit": {
+		"name": "Bánh Mì Thịt", "price": 15, "prep_time": 3.0,
+		"unlock_level": 0, "rep_cost": 0, "money_cost": 0, "category": "food"
+	},
+	"banh_mi_pate": {
+		"name": "Bánh Mì Pa-tê", "price": 25, "prep_time": 3.5,
+		"unlock_level": 2, "rep_cost": 100, "money_cost": 50, "category": "food"
+	},
+	"banh_mi_heo_quay": {
+		"name": "Bánh Mì Heo Quay", "price": 40, "prep_time": 4.0,
+		"unlock_level": 5, "rep_cost": 500, "money_cost": 200, "category": "food"
+	},
+	"banh_mi_cha_ca": {
+		"name": "Bánh Mì Chả Cá", "price": 35, "prep_time": 3.8,
+		"unlock_level": 4, "rep_cost": 350, "money_cost": 150, "category": "food"
+	},
+	"banh_mi_bo_kho": {
+		"name": "Bánh Mì Bò Kho", "price": 50, "prep_time": 5.0,
+		"unlock_level": 7, "rep_cost": 800, "money_cost": 400, "category": "food"
+	},
+	"banh_mi_ga_xe": {
+		"name": "Bánh Mì Gà Xé", "price": 45, "prep_time": 4.2,
+		"unlock_level": 6, "rep_cost": 600, "money_cost": 300, "category": "food"
+	},
+	"banh_mi_xiu_mai": {
+		"name": "Bánh Mì Xíu Mại", "price": 55, "prep_time": 4.5,
+		"unlock_level": 8, "rep_cost": 1000, "money_cost": 500, "category": "food"
+	},
+	# ─── ĐỒ UỐNG (Drinks) ───────────────────────────────────
+	"tra_da": {
+		"name": "Trà Đá", "price": 5, "prep_time": -0.3,
+		"unlock_level": 1, "rep_cost": 50, "money_cost": 20, "category": "drink"
+	},
+	"nuoc_mia": {
+		"name": "Nước Mía", "price": 10, "prep_time": -0.5,
+		"unlock_level": 3, "rep_cost": 200, "money_cost": 80, "category": "drink"
+	},
+	"ca_phe_sua_da": {
+		"name": "Cà Phê Sữa Đá", "price": 20, "prep_time": -0.8,
+		"unlock_level": 5, "rep_cost": 400, "money_cost": 150, "category": "drink"
+	},
 }
 
 # ─── TIME & FEVER ──────────────────────────────────────────
@@ -200,10 +249,23 @@ func get_upgrade_effect_sum(effect_key: String) -> float:
 
 func get_service_time() -> float:
 	var actual_time := base_service_time + get_upgrade_effect_sum("service_time")
+	# Bonus từ đồ uống đã mở khóa (prep_time âm = giảm thời gian)
+	actual_time += get_prep_time_bonus()
 	actual_time = maxf(actual_time, 0.5)  # Cap min
 	if is_fever_mode:
 		return actual_time / 3.0
 	return actual_time
+
+## Tính tổng bonus prep_time từ các đồ uống đã mở khóa
+## Đồ uống có prep_time âm → giảm thời gian phục vụ
+func get_prep_time_bonus() -> float:
+	var bonus: float = 0.0
+	for item_id in unlocked_menu_items:
+		if MENU_ITEMS.has(item_id):
+			var item = MENU_ITEMS[item_id]
+			if item.category == "drink":
+				bonus += item.prep_time  # prep_time âm cho drink
+	return bonus
 
 func get_spawn_interval() -> float:
 	var t := base_spawn_interval
@@ -544,16 +606,29 @@ func start_fever_mode() -> void:
 	print("[GameManager] 🔥 KÍCH HOẠT FEVER MODE! 🔥 Tốc độ x3 trong 30s")
 
 # ─── REPUTATION & MENU CONTROLS ─────────────────────────────
-func unlock_menu_item(menu_id: String) -> bool:
+
+## Kiểm tra xem món ăn có thể mở khóa hay chưa (đủ rep + tiền)
+func can_unlock_item(menu_id: String) -> bool:
 	if not MENU_ITEMS.has(menu_id): return false
 	if unlocked_menu_items.has(menu_id): return false
+	var item = MENU_ITEMS[menu_id]
+	return reputation >= item.rep_cost and money >= item.money_cost
+
+## Mở khóa món mới — kiểm tra cả Danh tiếng + Tiền
+## Trả về true nếu mở khóa thành công
+func unlock_menu_item(menu_id: String) -> bool:
+	if not can_unlock_item(menu_id):
+		return false
 	
-	var cost = MENU_ITEMS[menu_id].rep_cost
-	if reputation < cost: return false
+	var item = MENU_ITEMS[menu_id]
+	# Trừ chi phí
+	reputation -= item.rep_cost
+	money -= item.money_cost
 	
-	reputation -= cost
 	unlocked_menu_items.append(menu_id)
 	menu_unlocked.emit(menu_id)
 	save_game()
-	print("[GameManager] ⭐ Đã mở khóa món: ", MENU_ITEMS[menu_id].name)
+	print("[GameManager] ⭐ Đã mở khóa món: %s (Rep -%d, Tiền -%dđ)" % [
+		item.name, item.rep_cost, item.money_cost
+	])
 	return true
