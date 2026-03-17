@@ -16,6 +16,9 @@ signal cart_level_changed(new_level: int)    # Xe Bánh Mì lên đời
 signal reputation_changed(new_amount: int)   # Danh tiếng thay đổi
 signal menu_unlocked(menu_id: String)        # Mở khóa món mới
 signal event_started(event_type: String)     # Sự kiện (Mưa/Rush Hour)
+signal tetris_buff_activated()              # Buff tốc độ phục vụ
+signal candy_buff_activated()               # Buff tiền tip
+signal xiangqi_buff_activated()             # Buff khách VIP
 
 # ─── CURRENCY ──────────────────────────────────────────────
 var money: int = 0:
@@ -249,8 +252,11 @@ func get_upgrade_effect_sum(effect_key: String) -> float:
 
 func get_service_time() -> float:
 	var actual_time := base_service_time + get_upgrade_effect_sum("service_time")
-	# Bonus từ đồ uống đã mở khóa (prep_time âm = giảm thời gian)
-	actual_time += get_prep_time_bonus()
+	
+	# Tetris Buff: Tốc độ phục vụ +20% -> giảm 20% thời gian chờ
+	if is_tetris_buff_active():
+		actual_time *= 0.8
+		
 	actual_time = maxf(actual_time, 0.5)  # Cap min
 	if is_fever_mode:
 		return actual_time / 3.0
@@ -311,6 +317,40 @@ func _ready() -> void:
 	_check_streak()
 	_check_offline_earnings()
 	_generate_daily_missions()
+
+# ─── MINIGAME BOOST BUFFS ───────────────────────────────────
+var tetris_buff_timer: float = 0.0
+var candy_buff_timer: float = 0.0
+var xiangqi_buff_timer: float = 0.0
+
+func activate_tetris_buff() -> void:
+	tetris_buff_timer = 120.0 # 2 minutes
+	tetris_buff_activated.emit()
+	print("[Buff] Tetris Buff Activated: Service Speed +20%")
+
+func activate_candy_buff() -> void:
+	candy_buff_timer = 120.0 # 2 minutes
+	candy_buff_activated.emit()
+	print("[Buff] Candy Buff Activated: Tips +50%")
+
+func activate_xiangqi_buff() -> void:
+	xiangqi_buff_timer = 180.0 # 3 minutes
+	xiangqi_buff_activated.emit()
+	print("[Buff] Xiangqi Buff Activated: More VIPs (40% chance)")
+
+func is_tetris_buff_active() -> bool: return tetris_buff_timer > 0
+func is_candy_buff_active() -> bool: return candy_buff_timer > 0
+func is_xiangqi_buff_active() -> bool: return xiangqi_buff_timer > 0
+
+func get_vip_chance() -> float:
+	if is_xiangqi_buff_active():
+		return 0.40
+	return 0.15
+
+func get_tip_multiplier() -> float:
+	if is_candy_buff_active():
+		return 1.5
+	return 1.0
 
 # ─── SAVE / LOAD ───────────────────────────────────────────
 const SAVE_PATH = "user://savegame.cfg"
@@ -457,6 +497,11 @@ func check_no_loss_mission() -> void:
 
 
 func _process(delta: float) -> void:
+	# Cập nhật Buff Timers
+	if tetris_buff_timer > 0: tetris_buff_timer -= delta
+	if candy_buff_timer > 0: candy_buff_timer -= delta
+	if xiangqi_buff_timer > 0: xiangqi_buff_timer -= delta
+
 	# Fever timer
 	if is_fever_mode:
 		fever_timer -= delta

@@ -83,6 +83,7 @@ func _on_game_won(_level_index: int, _reward: int, stars: int, level_id: int) ->
 		GameManager.xiangqi_progress[level_id] = stars
 	
 	GameManager.add_money(_reward)
+	GameManager.activate_xiangqi_buff()
 	_on_game_closed()
 
 func _on_game_closed() -> void:

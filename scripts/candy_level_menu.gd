@@ -56,6 +56,7 @@ func _on_game_won(_level_id: int, _reward: int) -> void:
 	if not "candy_progress" in GameManager:
 		GameManager.set("candy_progress", {})
 	# Stars saved by the C# code already; we just refresh
+	GameManager.activate_candy_buff()
 	_on_game_closed()
 
 func _on_game_closed() -> void:
