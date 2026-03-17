@@ -12,7 +12,13 @@ func _ready() -> void:
 	GameManager.streak_bonus_ready.connect(_on_streak_bonus)
 	GameManager.mission_completed.connect(_on_mission_completed)
 	GameManager.missions_updated.connect(_refresh_missions)
-	layer = 10  # Hiển thị trên tất cả UI khác
+	
+	# Connect Buff Signals
+	GameManager.tetris_buff_activated.connect(_on_tetris_buff)
+	GameManager.candy_buff_activated.connect(_on_candy_buff)
+	GameManager.xiangqi_buff_activated.connect(_on_xiangqi_buff)
+	
+	layer = 100  # Đặt layer cực cao để luôn nằm trên cùng
 
 # ─── POPUP OFFLINE EARNINGS ──────────────────────────────
 func _on_offline_earnings(amount: int) -> void:
@@ -32,66 +38,64 @@ func _on_mission_completed(mission_id: String) -> void:
 			_show_popup("✅ Nhiệm vụ hoàn thành!", "%s\n+%dđ" % [m.desc, m.reward], Color(0.2, 0.8, 0.3))
 			return
 
+# ─── POPUP BUFFS ─────────────────────────────────────────
+func _on_tetris_buff() -> void:
+	_show_popup("🧱 Buff Tetris!", "Tốc độ phục vụ +20% trong 2 phút!", Color(0.4, 0.9, 1.0))
+
+func _on_candy_buff() -> void:
+	_show_popup("🍬 Buff Candy!", "Tiền Tip khách cho +50% trong 2 phút!", Color(1.0, 0.4, 0.8))
+
+func _on_xiangqi_buff() -> void:
+	_show_popup("♟️ Buff Cờ Tướng!", "Khách VIP sẽ xuất hiện nhiều hơn trong 3 phút!", Color(1.0, 0.8, 0.2))
+
 # ─── GENERIC POPUP ───────────────────────────────────────
 func _show_popup(title: String, body: String, accent: Color) -> void:
 	var panel := _build_popup(title, body, accent)
 	add_child(panel)
-	# Auto dismiss sau 3s
+	# Auto dismiss sau 5s (thay vì 3s như trước)
 	var tween := create_tween()
-	tween.tween_interval(2.5)
-	tween.tween_property(panel, "modulate:a", 0.0, 0.5)
+	tween.tween_interval(5.0)
+	tween.tween_property(panel, "modulate:a", 0.0, 0.8)
 	tween.tween_callback(panel.queue_free)
 
 func _build_popup(title: String, body: String, accent: Color) -> Control:
-	# Container căn giữa trên màn hình
 	var container := PanelContainer.new()
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.08, 0.1, 0.95)
+	style.bg_color = Color(0.05, 0.05, 0.05, 0.9)
 	style.border_color = accent
-	style.border_width_left = 3
-	style.border_width_right = 3
-	style.border_width_top = 3
-	style.border_width_bottom = 3
-	style.corner_radius_top_left = 12
-	style.corner_radius_top_right = 12
-	style.corner_radius_bottom_left = 12
-	style.corner_radius_bottom_right = 12
+	style.border_width_left = 4
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_right = 8
 	container.add_theme_stylebox_override("panel", style)
 	
-	# Vị trí căn giữa trên
-	container.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	container.offset_top = 80
-	container.offset_left = 60
-	container.offset_right = -60
-	container.offset_bottom = 200
+	# Thu nhỏ kích thước và đặt ở góc trên
+	container.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	container.offset_top = 20
+	container.offset_left = 20
+	container.custom_minimum_size = Vector2(250, 0)
 	
 	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 6)
+	vbox.add_theme_constant_override("separation", 2)
 	
 	var title_lbl := Label.new()
 	title_lbl.text = title
-	title_lbl.add_theme_font_size_override("font_size", 18)
+	title_lbl.add_theme_font_size_override("font_size", 14)
 	title_lbl.add_theme_color_override("font_color", accent)
-	title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	
 	var body_lbl := Label.new()
 	body_lbl.text = body
-	body_lbl.add_theme_font_size_override("font_size", 15)
+	body_lbl.add_theme_font_size_override("font_size", 12)
 	body_lbl.add_theme_color_override("font_color", Color.WHITE)
-	body_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	body_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
 	
 	vbox.add_child(title_lbl)
 	vbox.add_child(body_lbl)
 	container.add_child(vbox)
 	
-	# Slide in từ trên xuống
+	# Hiệu ứng mờ dần đơn giản
 	container.modulate.a = 0.0
-	container.position.y -= 20
 	var tween := create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(container, "modulate:a", 1.0, 0.3)
-	tween.tween_property(container, "position:y", container.position.y + 20, 0.3).set_trans(Tween.TRANS_BACK)
+	tween.tween_property(container, "modulate:a", 1.0, 0.2)
 	
 	return container
 

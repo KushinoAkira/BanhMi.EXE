@@ -37,10 +37,90 @@ var tutorial_tween: Tween
 @onready var background_music: AudioStreamPlayer = $"../BackgroundMusic"
 
 # ─── READY ─────────────────────────────────────────────────
+# ─── BUFF STATUS UI ───────────────────────────────────────
+var buff_container: HBoxContainer
+
+func _setup_buff_ui() -> void:
+	buff_container = HBoxContainer.new()
+	buff_container.add_theme_constant_override("separation", 10)
+	# Đặt ở phía dưới Money Label một chút
+	buff_container.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	buff_container.offset_left = -400
+	buff_container.offset_top = 50
+	buff_container.offset_right = -10
+	buff_container.offset_bottom = 90
+	buff_container.alignment = BoxContainer.ALIGNMENT_END
+	add_child(buff_container)
+
+func _process_buff_ui() -> void:
+	if not buff_container: return
+	
+	for child in buff_container.get_children():
+		child.queue_free()
+	
+	if GameManager.tetris_buff_timer > 0:
+		_add_buff_tag("🧱", "Tốc độ phục vụ", GameManager.tetris_buff_timer, 120.0, Color(0.4, 0.9, 1.0))
+		
+	if GameManager.candy_buff_timer > 0:
+		_add_buff_tag("🍬", "Tăng tiền Tip", GameManager.candy_buff_timer, 120.0, Color(1.0, 0.4, 0.8))
+		
+	if GameManager.xiangqi_buff_timer > 0:
+		_add_buff_tag("♟️", "May mắn VIP", GameManager.xiangqi_buff_timer, 180.0, Color(1.0, 0.8, 0.2))
+
+func _add_buff_tag(icon: String, buff_name: String, time_left: float, max_time: float, color: Color) -> void:
+	var panel := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.1, 0.1, 0.1, 0.8)
+	style.corner_radius_top_left = 4
+	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_left = 4
+	style.corner_radius_bottom_right = 4
+	style.border_width_left = 3
+	style.border_color = color
+	panel.add_theme_stylebox_override("panel", style)
+	panel.custom_minimum_size.x = 180 # Làm dài ra
+	
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 2)
+	
+	# Hàng trên: Icon + Tên
+	var hbox_top := HBoxContainer.new()
+	var lbl_name := Label.new()
+	lbl_name.text = icon + " " + buff_name
+	lbl_name.add_theme_font_size_override("font_size", 13)
+	lbl_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	
+	# Hàng trên: Đồng hồ + Thời gian
+	var lbl_time := Label.new()
+	lbl_time.text = "🕒 %ds" % int(time_left)
+	lbl_time.add_theme_font_size_override("font_size", 12)
+	lbl_time.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
+	
+	hbox_top.add_child(lbl_name)
+	hbox_top.add_child(lbl_time)
+	
+	# Hàng dưới: Thanh thời gian đơn giản
+	var progress := ProgressBar.new()
+	progress.show_percentage = false
+	progress.custom_minimum_size.y = 3
+	progress.max_value = max_time
+	progress.value = time_left
+	
+	var pg_bg = StyleBoxFlat.new(); pg_bg.bg_color = Color(0.2, 0.2, 0.2, 0.5)
+	var pg_fg = StyleBoxFlat.new(); pg_fg.bg_color = color
+	progress.add_theme_stylebox_override("background", pg_bg)
+	progress.add_theme_stylebox_override("fill", pg_fg)
+	
+	vbox.add_child(hbox_top)
+	vbox.add_child(progress)
+	panel.add_child(vbox)
+	buff_container.add_child(panel)
+
 func _ready() -> void:
 	_setup_money_label()
 	_setup_time_label()
 	_setup_bottom_bar()
+	_setup_buff_ui() # Thêm dòng này
 	_populate_upgrade_cards()
 
 	GameManager.money_changed.connect(_on_money_changed)
@@ -341,6 +421,7 @@ func _create_fever_bar() -> void:
 	_update_toggle_position()
 
 func _process(delta: float) -> void:
+	_process_buff_ui()
 	if fever_bar:
 		var target := GameManager.boost_energy
 		if GameManager.is_fever_mode: 
@@ -593,6 +674,13 @@ func _close_minigame() -> void:
 
 func _win_minigame() -> void:
 	GameManager.add_money(500)
+	
+	# Random kích hoạt 1 trong 3 buff để bạn dễ thấy thông báo khi test
+	var r = randi() % 3
+	if r == 0: GameManager.activate_tetris_buff()
+	elif r == 1: GameManager.activate_candy_buff()
+	else: GameManager.activate_xiangqi_buff()
+	
 	_close_minigame()
 
 func _launch_scene_minigame(scene_resource: PackedScene) -> void:
