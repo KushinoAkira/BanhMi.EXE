@@ -327,14 +327,12 @@ func _on_service_timer_timeout() -> void:
 		var c_patience = served_customer.get("patience")
 		var c_max_patience = served_customer.get("max_patience")
 		
-<<<<<<< Updated upstream
 		# Nếu phục vụ nhanh (kiên nhẫn còn > 70%)
 		if c_patience != null and c_max_patience != null and c_patience / c_max_patience > 0.7:
 			# Khách VIP luôn cho tip nếu phục vụ nhanh, khách thường thì ngẫu nhiên
 			if is_vip or randf() < c_tip_chance:
 				var tip_multiplier = GameManager.get_tip_multiplier()
 				var tip_amount = int(base_price * randf_range(0.15, 0.20) * tip_multiplier)
-=======
 		# Thợ văn phòng vội vàng (OFFICE_WORKER = 1), tip rất cao nếu phục vụ cực nhanh (kiên nhẫn > 80%)
 		var fast_threshold = 0.7
 		if c_type == 1: fast_threshold = 0.8
@@ -349,7 +347,6 @@ func _on_service_timer_timeout() -> void:
 				elif c_type == 3: tip_multiplier = randf_range(0.5, 1.0)
 				
 				var tip_amount = int(base_price * tip_multiplier)
->>>>>>> Stashed changes
 				final_money += tip_amount
 				if tip_multiplier > 1.0:
 					print("[BanhMiCart] Phục vụ nhanh! Nhận Tip (x%.1f Buff): +%dđ" % [tip_multiplier, tip_amount])
