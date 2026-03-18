@@ -428,7 +428,7 @@ func _create_fever_bar() -> void:
 func _process(delta: float) -> void:
 	_process_buff_ui()
 	if fever_bar:
-		var target := GameManager.boost_energy
+		var target: float = GameManager.boost_energy
 		if GameManager.is_fever_mode: 
 			target = (GameManager.fever_timer / GameManager.MAX_FEVER_TIME) * 100.0
 		
