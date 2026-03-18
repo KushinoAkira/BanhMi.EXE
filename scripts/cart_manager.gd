@@ -191,31 +191,33 @@ func _get_tier_index(cart_id: String) -> int:
 # ─── SAVE / LOAD ─────────────────────────────────────────
 ## Lưu vào cùng savegame.cfg, section "Carts"
 func _save_carts() -> void:
-	var cfg = ConfigFile.new()
-	# Load file hiện có trước để không ghi đè data khác
-	cfg.load(GameManager.SAVE_PATH)
-	
-	# Lưu danh sách xe đã mua
-	var cart_ids: Array[String] = []
-	for cart_id in owned_carts:
-		cart_ids.append(cart_id)
-		cfg.set_value("Carts", cart_id + "_active", owned_carts[cart_id].get("active", false))
-		cfg.set_value("Carts", cart_id + "_pending", owned_carts[cart_id].get("pending_revenue", 0.0))
-	cfg.set_value("Carts", "owned_ids", cart_ids)
-	
-	cfg.save(GameManager.SAVE_PATH)
+	pass # Disabled to not save progress
+	# var cfg = ConfigFile.new()
+	# # Load file hiện có trước để không ghi đè data khác
+	# cfg.load(GameManager.SAVE_PATH)
+	# 
+	# # Lưu danh sách xe đã mua
+	# var cart_ids: Array[String] = []
+	# for cart_id in owned_carts:
+	# 	cart_ids.append(cart_id)
+	# 	cfg.set_value("Carts", cart_id + "_active", owned_carts[cart_id].get("active", false))
+	# 	cfg.set_value("Carts", cart_id + "_pending", owned_carts[cart_id].get("pending_revenue", 0.0))
+	# cfg.set_value("Carts", "owned_ids", cart_ids)
+	# 
+	# cfg.save(GameManager.SAVE_PATH)
 
 func _load_carts() -> void:
-	var cfg = ConfigFile.new()
-	if cfg.load(GameManager.SAVE_PATH) != OK:
-		return
-	
-	var cart_ids = cfg.get_value("Carts", "owned_ids", [])
-	for cart_id in cart_ids:
-		owned_carts[str(cart_id)] = {
-			"active": cfg.get_value("Carts", str(cart_id) + "_active", true),
-			"pending_revenue": cfg.get_value("Carts", str(cart_id) + "_pending", 0.0),
-		}
-	
-	if not owned_carts.is_empty():
-		print("[CartManager] Load xong: %d xe đang hoạt động" % owned_carts.size())
+	pass # Disabled to not load progress
+	# var cfg = ConfigFile.new()
+	# if cfg.load(GameManager.SAVE_PATH) != OK:
+	# 	return
+	# 
+	# var cart_ids = cfg.get_value("Carts", "owned_ids", [])
+	# for cart_id in cart_ids:
+	# 	owned_carts[str(cart_id)] = {
+	# 		"active": cfg.get_value("Carts", str(cart_id) + "_active", true),
+	# 		"pending_revenue": cfg.get_value("Carts", str(cart_id) + "_pending", 0.0),
+	# 	}
+	# 
+	# if not owned_carts.is_empty():
+	# 	print("[CartManager] Load xong: %d xe đang hoạt động" % owned_carts.size())

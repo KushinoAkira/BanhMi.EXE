@@ -393,64 +393,66 @@ func get_tip_multiplier() -> float:
 const SAVE_PATH = "user://savegame.cfg"
 
 func save_game() -> void:
-	var cfg = ConfigFile.new()
-	# Currency & Items
-	cfg.set_value("Game", "money", money)
-	cfg.set_value("Game", "ingredients", ingredients)
-	cfg.set_value("Game", "current_day", current_day)
-	cfg.set_value("Game", "has_played_intro", has_played_intro)
-	cfg.set_value("Game", "has_played_tutorial", has_played_tutorial)
-	cfg.set_value("Game", "reputation", reputation)
-	cfg.set_value("Game", "unlocked_menu_items", unlocked_menu_items)
-	# Upgrades
-	for uid in upgrade_levels:
-		cfg.set_value("Upgrades", uid, upgrade_levels[uid])
-	# Minigame progress
-	cfg.set_value("Progress", "tetris", tetris_progress)
-	cfg.set_value("Progress", "candy", candy_progress)
-	cfg.set_value("Progress", "xiangqi", xiangqi_progress)
-	# Streak
-	cfg.set_value("Streak", "login_streak", login_streak)
-	cfg.set_value("Streak", "last_login_date", last_login_date)
-	# Timestamp để tính offline earnings
-	cfg.set_value("Meta", "save_timestamp", Time.get_unix_time_from_system())
-	cfg.save(SAVE_PATH)
+	pass # Disabled as per request to not save progress
+	# var cfg = ConfigFile.new()
+	# # Currency & Items
+	# cfg.set_value("Game", "money", money)
+	# cfg.set_value("Game", "ingredients", ingredients)
+	# cfg.set_value("Game", "current_day", current_day)
+	# cfg.set_value("Game", "has_played_intro", has_played_intro)
+	# cfg.set_value("Game", "has_played_tutorial", has_played_tutorial)
+	# cfg.set_value("Game", "reputation", reputation)
+	# cfg.set_value("Game", "unlocked_menu_items", unlocked_menu_items)
+	# # Upgrades
+	# for uid in upgrade_levels:
+	# 	cfg.set_value("Upgrades", uid, upgrade_levels[uid])
+	# # Minigame progress
+	# cfg.set_value("Progress", "tetris", tetris_progress)
+	# cfg.set_value("Progress", "candy", candy_progress)
+	# cfg.set_value("Progress", "xiangqi", xiangqi_progress)
+	# # Streak
+	# cfg.set_value("Streak", "login_streak", login_streak)
+	# cfg.set_value("Streak", "last_login_date", last_login_date)
+	# # Timestamp để tính offline earnings
+	# cfg.set_value("Meta", "save_timestamp", Time.get_unix_time_from_system())
+	# cfg.save(SAVE_PATH)
 
 func load_game() -> void:
-	var cfg = ConfigFile.new()
-	if cfg.load(SAVE_PATH) != OK:
-		print("[GameManager] Save mới — không tìm thấy save file")
-		return
-	# Currency & Items
-	money = cfg.get_value("Game", "money", 0)
-	ingredients = cfg.get_value("Game", "ingredients", 50)
-	current_day = cfg.get_value("Game", "current_day", 1)
-	has_played_intro = cfg.get_value("Game", "has_played_intro", false)
-	has_played_tutorial = cfg.get_value("Game", "has_played_tutorial", false)
-	reputation = cfg.get_value("Game", "reputation", 0)
-	var _loaded_menu_items = cfg.get_value("Game", "unlocked_menu_items", null)
-	if _loaded_menu_items != null:
-		# Ép kiểu an toàn từ Array[Variant] sang Array[String]
-		unlocked_menu_items.clear()
-		for item in _loaded_menu_items:
-			unlocked_menu_items.append(str(item))
-	
-	# Upgrades
-	for upg in UPGRADES:
-		upgrade_levels[upg.id] = cfg.get_value("Upgrades", upg.id, 0)
-	# Minigame progress
-	tetris_progress = cfg.get_value("Progress", "tetris", {})
-	candy_progress = cfg.get_value("Progress", "candy", {})
-	xiangqi_progress = cfg.get_value("Progress", "xiangqi", {})
-	# Streak
-	login_streak = cfg.get_value("Streak", "login_streak", 0)
-	last_login_date = cfg.get_value("Streak", "last_login_date", "")
-	# Timestamp
-	_save_timestamp = cfg.get_value("Meta", "save_timestamp", 0)
-	print("[GameManager] Load thành công. Tiền: %d, Ngày: %d" % [money, current_day])
-	
-	# Tính lại tổng cấp độ xe bánh mì sau khi load xong!
-	check_cart_level()
+	pass # Disabled as per request to not save/load progress
+	# var cfg = ConfigFile.new()
+	# if cfg.load(SAVE_PATH) != OK:
+	# 	print("[GameManager] Save mới — không tìm thấy save file")
+	# 	return
+	# # Currency & Items
+	# money = cfg.get_value("Game", "money", 0)
+	# ingredients = cfg.get_value("Game", "ingredients", 50)
+	# current_day = cfg.get_value("Game", "current_day", 1)
+	# has_played_intro = cfg.get_value("Game", "has_played_intro", false)
+	# has_played_tutorial = cfg.get_value("Game", "has_played_tutorial", false)
+	# reputation = cfg.get_value("Game", "reputation", 0)
+	# var _loaded_menu_items = cfg.get_value("Game", "unlocked_menu_items", null)
+	# if _loaded_menu_items != null:
+	# 	# Ép kiểu an toàn từ Array[Variant] sang Array[String]
+	# 	unlocked_menu_items.clear()
+	# 	for item in _loaded_menu_items:
+	# 		unlocked_menu_items.append(str(item))
+	# 
+	# # Upgrades
+	# for upg in UPGRADES:
+	# 	upgrade_levels[upg.id] = cfg.get_value("Upgrades", upg.id, 0)
+	# # Minigame progress
+	# tetris_progress = cfg.get_value("Progress", "tetris", {})
+	# candy_progress = cfg.get_value("Progress", "candy", {})
+	# xiangqi_progress = cfg.get_value("Progress", "xiangqi", {})
+	# # Streak
+	# login_streak = cfg.get_value("Streak", "login_streak", 0)
+	# last_login_date = cfg.get_value("Streak", "last_login_date", "")
+	# # Timestamp
+	# _save_timestamp = cfg.get_value("Meta", "save_timestamp", 0)
+	# print("[GameManager] Load thành công. Tiền: %d, Ngày: %d" % [money, current_day])
+	# 
+	# # Tính lại tổng cấp độ xe bánh mì sau khi load xong!
+	# check_cart_level()
 
 # ─── OFFLINE EARNINGS ──────────────────────────────────────
 const MAX_OFFLINE_SECONDS := 28800  # 8 giờ tối đa

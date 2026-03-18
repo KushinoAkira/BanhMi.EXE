@@ -87,6 +87,7 @@ func _ready() -> void:
 
 	# Connect navigation_finished signal for reliable detection
 	nav_agent.navigation_finished.connect(_on_navigation_finished)
+	nav_agent.velocity_computed.connect(_on_velocity_computed)
 
 	prepare_for_reuse()
 
@@ -224,12 +225,20 @@ func _randomize_appearance() -> void:
 		
 	anim_sprite.play("idle")
 
-# ─── NAVIGATION FINISHED SIGNAL ──────────────────────────
+# ─── NAVIGATION SIGNALS ──────────────────────────
+func _on_velocity_computed(safe_velocity: Vector2) -> void:
+	velocity = safe_velocity
+	move_and_slide()
+
 ## Called by NavigationAgent2D when it reaches the target
 func _on_navigation_finished() -> void:
 	if not _has_nav_target:
 		return
 	_has_nav_target = false
+	
+	# Stop pushing avoidance if finished
+	if nav_agent.avoidance_enabled:
+		nav_agent.velocity = Vector2.ZERO
 
 	match current_state:
 		State.WANDERING:
@@ -371,13 +380,15 @@ func _pick_leave_target() -> void:
 # ─── MOVEMENT ─────────────────────────────────────────────
 func _move_along_path() -> void:
 	if nav_agent.is_navigation_finished():
+		if nav_agent.avoidance_enabled:
+			nav_agent.velocity = Vector2.ZERO
 		velocity = Vector2.ZERO
 		_play_animation("idle")
 		return
 
 	var next_pos: Vector2 = nav_agent.get_next_path_position()
 	var direction: Vector2 = (next_pos - global_position).normalized()
-	velocity = direction * speed
+	var intended_velocity: Vector2 = direction * nav_agent.max_speed
 
 	if direction.x < -0.1:
 		anim_sprite.flip_h = true
@@ -385,7 +396,12 @@ func _move_along_path() -> void:
 		anim_sprite.flip_h = false
 
 	_play_animation("walk")
-	move_and_slide()
+
+	if nav_agent.avoidance_enabled:
+		nav_agent.set_velocity(intended_velocity)
+	else:
+		velocity = intended_velocity
+		move_and_slide()
 
 # ─── ANIMATION HELPER ─────────────────────────────────────
 func _play_animation(anim_name: String) -> void:
