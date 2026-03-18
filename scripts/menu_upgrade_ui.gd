@@ -1,3 +1,5 @@
+## menu_upgrade_ui.gd — UI Mở khóa Thực đơn
+## Hiển thị danh sách món ăn + đồ uống, nhóm theo category
 extends Control
 
 @onready var label_rep: Label = $Panel/VBoxContainer/LabelRep
@@ -8,82 +10,131 @@ func _ready() -> void:
 	btn_close.pressed.connect(hide)
 	
 	GameManager.reputation_changed.connect(_on_rep_changed)
+	GameManager.money_changed.connect(_on_money_changed)
 	GameManager.menu_unlocked.connect(_on_menu_unlocked)
 	
 	_populate_list()
-	_update_rep_label()
+	_update_header()
 
 func _on_rep_changed(_new_rep: int) -> void:
-	_update_rep_label()
+	_update_header()
+
+func _on_money_changed(_new_money: int) -> void:
+	_update_header()
 
 func _on_menu_unlocked(_menu_id: String) -> void:
-	_update_rep_label()
-	# Refresh UI rows
+	_update_header()
 	_populate_list()
 
-func _update_rep_label() -> void:
-	label_rep.text = "⭐ Danh tiếng: %d" % GameManager.reputation
+func _update_header() -> void:
+	label_rep.text = "⭐ Danh tiếng: %d  |  💰 %dđ" % [GameManager.reputation, GameManager.money]
 
+# ─── POPULATE LIST ─────────────────────────────────────────
 func _populate_list() -> void:
 	for child in item_container.get_children():
 		child.queue_free()
 	
-	# Sắp xếp theo thứ tự giá reputation tăng dần (hoặc thứ tự trong Dict)
+	# Sắp xếp theo unlock_level tăng dần
 	var keys = GameManager.MENU_ITEMS.keys()
-	keys.sort_custom(func(a, b): return GameManager.MENU_ITEMS[a].rep_cost < GameManager.MENU_ITEMS[b].rep_cost)
+	keys.sort_custom(func(a, b):
+		return GameManager.MENU_ITEMS[a].unlock_level < GameManager.MENU_ITEMS[b].unlock_level
+	)
 	
-	var is_even := false
+	# Nhóm theo category
+	var food_items: Array = []
+	var drink_items: Array = []
 	for m_id in keys:
 		var item_data = GameManager.MENU_ITEMS[m_id]
-		var is_unlocked = GameManager.unlocked_menu_items.has(m_id)
-		
-		# Tạo hàng hiển thị
-		# Gọi hàm setup raw node
-		var row: Control = _create_fallback_row()
-		
-		item_container.add_child(row)
-		
-		# Gọi hàm setup trên row
-		if row.has_method("setup"):
-			row.setup(m_id, item_data.name, item_data.price, item_data.rep_cost, is_unlocked, GameManager.reputation, is_even)
-			
+		if item_data.category == "drink":
+			drink_items.append(m_id)
+		else:
+			food_items.append(m_id)
+	
+	# Thêm header "BÁNH MÌ"
+	_add_category_header("🥖 BÁNH MÌ")
+	var is_even := false
+	for m_id in food_items:
+		_add_item_row(m_id, is_even)
+		is_even = !is_even
+	
+	# Thêm header "ĐỒ UỐNG"
+	_add_category_header("🧃 ĐỒ UỐNG")
+	is_even = false
+	for m_id in drink_items:
+		_add_item_row(m_id, is_even)
 		is_even = !is_even
 
-# -- Fallback code trường hợp chưa tạo Menu Item Row --
-func _create_fallback_row() -> HBoxContainer:
+func _add_category_header(title_text: String) -> void:
+	var header = Label.new()
+	header.text = title_text
+	header.add_theme_font_size_override("font_size", 22)
+	header.add_theme_color_override("font_color", Color(1.0, 0.84, 0.0))
+	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	header.custom_minimum_size = Vector2(0, 40)
+	header.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	item_container.add_child(header)
+
+func _add_item_row(m_id: String, is_even: bool) -> void:
+	var item_data = GameManager.MENU_ITEMS[m_id]
+	var is_unlocked = GameManager.unlocked_menu_items.has(m_id)
+	
+	var row: Control = _create_item_row()
+	item_container.add_child(row)
+	
+	if row.has_method("setup"):
+		row.setup(m_id, item_data, is_unlocked, GameManager.reputation, GameManager.money, is_even)
+
+# ─── ITEM ROW (Script động) ────────────────────────────────
+func _create_item_row() -> HBoxContainer:
 	var row = HBoxContainer.new()
-	row.custom_minimum_size = Vector2(0, 50)
+	row.custom_minimum_size = Vector2(0, 60)
+	
+	# Cột thông tin (tên + chi tiết)
+	var info_vbox = VBoxContainer.new()
+	info_vbox.name = "Info"
+	info_vbox.size_flags_horizontal = SIZE_EXPAND_FILL
+	row.add_child(info_vbox)
 	
 	var name_lbl = Label.new()
 	name_lbl.name = "Name"
-	name_lbl.size_flags_horizontal = SIZE_EXPAND_FILL
-	name_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	row.add_child(name_lbl)
+	name_lbl.add_theme_font_size_override("font_size", 16)
+	info_vbox.add_child(name_lbl)
 	
-	var price_lbl = Label.new()
-	price_lbl.name = "Price"
-	price_lbl.custom_minimum_size = Vector2(80, 0)
-	price_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	row.add_child(price_lbl)
+	var detail_lbl = Label.new()
+	detail_lbl.name = "Detail"
+	detail_lbl.add_theme_font_size_override("font_size", 12)
+	detail_lbl.add_theme_color_override("font_color", Color(0.7, 0.7, 0.8))
+	info_vbox.add_child(detail_lbl)
 	
+	# Nút mua
 	var buy_btn = Button.new()
 	buy_btn.name = "BuyBtn"
-	buy_btn.custom_minimum_size = Vector2(100, 40)
+	buy_btn.custom_minimum_size = Vector2(110, 45)
 	row.add_child(buy_btn)
 	
-	# Gắn kịch bản inline
+	# Gắn kịch bản inline cho row
 	var script = GDScript.new()
 	script.source_code = """
 extends HBoxContainer
 var _id = ""
-func setup(m_id: String, m_name: String, price: int, rep_cost: int, is_unlocked: bool, current_rep: int, is_even: bool) -> void:
+func setup(m_id: String, data: Dictionary, is_unlocked: bool, current_rep: int, current_money: int, is_even: bool) -> void:
 	_id = m_id
-	$Name.text = "  %s" % m_name
-	$Price.text = "Giá: %dđ" % price
 	
+	# Tên món
+	var emoji = "🍞" if data.category == "food" else "🥤"
+	$Info/Name.text = "  %s %s" % [emoji, data.name]
+	
+	# Chi tiết: Giá bán + Thời gian chế biến
+	if data.category == "food":
+		$Info/Detail.text = "    Giá: %dđ  |  ⏱ %.1fs  |  Lv.%d" % [data.price, data.prep_time, data.unlock_level]
+	else:
+		# Đồ uống hiển thị bonus giảm thời gian
+		$Info/Detail.text = "    Giá: %dđ  |  ⏱ %.1fs bonus  |  Lv.%d" % [data.price, data.prep_time, data.unlock_level]
+	
+	# Nền xen kẽ
 	if is_even:
 		var bg = ColorRect.new()
-		bg.color = Color(1,1,1, 0.05)
+		bg.color = Color(1, 1, 1, 0.05)
 		bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(bg)
@@ -91,11 +142,20 @@ func setup(m_id: String, m_name: String, price: int, rep_cost: int, is_unlocked:
 	
 	var btn = $BuyBtn
 	if is_unlocked:
-		btn.text = "Đã Mở"
+		btn.text = "✅ Đã Mở"
 		btn.disabled = true
 	else:
-		btn.text = "⭐ %d" % rep_cost
-		if current_rep >= rep_cost:
+		# Hiển thị chi phí mở khóa
+		var cost_text = ""
+		if data.rep_cost > 0:
+			cost_text += "⭐%d" % data.rep_cost
+		if data.money_cost > 0:
+			if cost_text != "":
+				cost_text += " "
+			cost_text += "💰%d" % data.money_cost
+		btn.text = cost_text
+		
+		if current_rep >= data.rep_cost and current_money >= data.money_cost:
 			btn.disabled = false
 			btn.pressed.connect(func(): GameManager.unlock_menu_item(_id))
 		else:

@@ -8,6 +8,8 @@ const UpgradeCardScript = preload("res://scripts/upgrade_card.gd")
 # ─── ONREADY NODES ────────────────────────────────────────
 @onready var money_label: Label = $MoneyLabel
 @onready var time_label: Label = $TimeLabel
+var ingredients_label: Label
+var btn_restock: Button
 @onready var bottom_bar: MarginContainer = $BottomBar
 @onready var panel_bg: Panel = $BottomBar/PanelBG
 @onready var scroll_container: ScrollContainer = $BottomBar/ScrollContainer
@@ -119,6 +121,7 @@ func _add_buff_tag(icon: String, buff_name: String, time_left: float, max_time: 
 func _ready() -> void:
 	_setup_money_label()
 	_setup_time_label()
+	_setup_ingredients_ui()
 	_setup_bottom_bar()
 	_setup_buff_ui() # Thêm dòng này
 	_populate_upgrade_cards()
@@ -127,6 +130,8 @@ func _ready() -> void:
 	_update_money_display(GameManager.money)
 	GameManager.time_changed.connect(_on_time_changed)
 	_update_time_display(GameManager.current_hour, GameManager.current_minute)
+	
+	GameManager.ingredients_changed.connect(_on_ingredients_changed)
 	
 	GameManager.daily_report_ready.connect(_on_daily_report_ready)
 	GameManager.shop_status_changed.connect(_on_shop_status_changed)
@@ -717,6 +722,70 @@ func _setup_money_label() -> void:
 	money_label.offset_right = -10
 	money_label.offset_bottom = 40
 	money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+
+func _setup_ingredients_ui() -> void:
+	ingredients_label = Label.new()
+	ingredients_label.add_theme_font_size_override("font_size", 20)
+	ingredients_label.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0))
+	ingredients_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
+	ingredients_label.add_theme_constant_override("shadow_offset_x", 2)
+	ingredients_label.add_theme_constant_override("shadow_offset_y", 2)
+	
+	ingredients_label.anchors_preset = Control.PRESET_TOP_RIGHT
+	ingredients_label.offset_left = -200
+	ingredients_label.offset_top = 45
+	ingredients_label.offset_right = -10
+	ingredients_label.offset_bottom = 75
+	ingredients_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	ingredients_label.text = "🥖 %d" % GameManager.ingredients
+	add_child(ingredients_label)
+	
+	btn_restock = Button.new()
+	btn_restock.text = "Nhập kho: 50đ"
+	btn_restock.add_theme_font_size_override("font_size", 16)
+	btn_restock.anchors_preset = Control.PRESET_TOP_RIGHT
+	btn_restock.offset_left = -150
+	btn_restock.offset_top = 75
+	btn_restock.offset_right = -10
+	btn_restock.offset_bottom = 105
+	
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.2, 0.6, 0.2, 0.9)
+	style.set_corner_radius_all(6)
+	btn_restock.add_theme_stylebox_override("normal", style)
+	btn_restock.pressed.connect(_on_btn_restock_pressed)
+	add_child(btn_restock)
+
+func _on_ingredients_changed(new_amount: int) -> void:
+	if ingredients_label:
+		ingredients_label.text = "🥖 %d" % new_amount
+		var tween := create_tween()
+		tween.tween_property(ingredients_label, "scale", Vector2(1.2, 1.2), 0.1)
+		tween.tween_property(ingredients_label, "scale", Vector2(1.0, 1.0), 0.15)
+
+func _on_btn_restock_pressed() -> void:
+	if not GameManager.restock_ingredients():
+		_spawn_money_popup_custom("Thiếu tiền!", Color.RED)
+
+func _spawn_money_popup_custom(msg: String, col: Color) -> void:
+	var popup := Label.new()
+	popup.text = msg
+	popup.add_theme_font_size_override("font_size", 18)
+	popup.add_theme_color_override("font_color", col)
+	popup.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
+	popup.add_theme_constant_override("shadow_offset_x", 1)
+	popup.add_theme_constant_override("shadow_offset_y", 1)
+	popup.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+
+	popup.position = Vector2(money_label.position.x + 50, money_label.position.y + 50)
+	add_child(popup)
+
+	var tween := create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(popup, "position:y", popup.position.y - 40, 0.8).set_ease(Tween.EASE_OUT)
+	tween.tween_property(popup, "modulate:a", 0.0, 0.8).set_delay(0.3)
+	tween.set_parallel(false)
+	tween.tween_callback(popup.queue_free)
 
 func _setup_time_label() -> void:
 	if not time_label: return

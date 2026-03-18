@@ -115,6 +115,12 @@ func _ready() -> void:
 	_setup_event_system()
 	GameManager.event_started.connect(_on_event_started)
 	
+	var story_mgr = CanvasLayer.new()
+	var StoryManagerClass = preload("res://scripts/story_manager.gd")
+	if StoryManagerClass:
+		story_mgr.set_script(StoryManagerClass)
+		add_child(story_mgr)
+	
 	print("[Main] ✅ City ready! %d wander, %d spawn" % [wps.size(), sps.size()])
 
 # ─── EVENT SYSTEM ──────────────────────────────────────────

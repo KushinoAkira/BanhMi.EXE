@@ -18,7 +18,7 @@ func _ready() -> void:
 	
 	# Custom actions
 	_bind_button(btn_hard, "ui_select") # Spacebar (Hard Drop)
-	_bind_button(btn_hold, "ui_accept") # Enter (Hold)
+	_bind_button(btn_hold, "ui_left")  # Shift (Hold)
 
 func _bind_button(btn: Button, action_name: String) -> void:
 	if not btn: return

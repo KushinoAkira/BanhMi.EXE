@@ -12,6 +12,13 @@ enum State {
 	LEAVING,
 }
 
+enum CustomerType {
+	STUDENT,
+	OFFICE_WORKER,
+	REGULAR,
+	TOURIST
+}
+
 # ─── NPC TYPES — chỉ dùng ảnh walk frames (8 hình mỗi loại) ──
 const NPC_WALK_FOLDERS: Array[Dictionary] = [
 	{
@@ -48,6 +55,7 @@ const NPC_TINTS: Array[Color] = [
 const ARRIVE_DISTANCE := 20.0
 
 var current_state: State = State.IDLE
+var customer_type: CustomerType = CustomerType.REGULAR
 var wander_points_visited: int = 0
 var queue_index: int = -1
 var target_position: Vector2 = Vector2.ZERO
@@ -152,18 +160,29 @@ func _randomize_appearance() -> void:
 			max_patience = randf_range(15.0, 22.0)
 			tip_chance = 0.05
 			speed = 95.0
+			customer_type = CustomerType.STUDENT
 		"npc_office_worker_walk":
-			max_patience = randf_range(25.0, 35.0)
-			tip_chance = 0.20
-			speed = 80.0
+			max_patience = randf_range(20.0, 30.0)
+			tip_chance = 0.25
+			speed = 85.0
+			customer_type = CustomerType.OFFICE_WORKER
 		"npc_elderly_man_walk":
 			max_patience = randf_range(50.0, 75.0)
 			tip_chance = 0.10
 			speed = 55.0
+			customer_type = CustomerType.REGULAR
 		"npc_young_woman_walk":
 			max_patience = randf_range(30.0, 45.0)
 			tip_chance = 0.15
 			speed = 75.0
+			customer_type = CustomerType.REGULAR
+			
+	if randf() < 0.05:
+		# 5% chance to be a Tourist
+		customer_type = CustomerType.TOURIST
+		max_patience = randf_range(40.0, 60.0)
+		tip_chance = 0.80
+		speed = 60.0
 	
 	patience = max_patience
 
@@ -197,7 +216,10 @@ func _randomize_appearance() -> void:
 		speed *= 1.4
 		tip_chance += 0.25
 	else:
-		anim_sprite.modulate = NPC_TINTS.pick_random()
+		if customer_type == CustomerType.TOURIST:
+			anim_sprite.modulate = Color(1.0, 0.6, 0.6) # Highlight tourists
+		else:
+			anim_sprite.modulate = NPC_TINTS.pick_random()
 		speed = speed * randf_range(0.9, 1.1)
 		
 	anim_sprite.play("idle")
@@ -329,6 +351,10 @@ func finish_buying() -> void:
 		else:
 			_show_reaction("😐")  # Phục vụ chậm hơn một chút
 	GameManager.record_customer_served(is_vip)
+	_change_state(State.LEAVING)
+
+func fail_buying() -> void:
+	_show_reaction("😡")
 	_change_state(State.LEAVING)
 
 # ─── LEAVING STATE ─────────────────────────────────────────

@@ -89,11 +89,12 @@ Kiếm vốn bằng cách cày cuốc các minigame tại góc phố, sau đó t
 
 **Các bước cài đặt:**
 
-1. **Tải tệp APK** từ trang [Releases](../../releases/latest).
+1. **Tải tệp APK** từ trang [Releases](https://www.google.com/search?q=../../releases/latest).
 2. **Mở tệp APK** trên thiết bị Android của bạn.
 3. Nếu hệ thống hỏi về "Cài đặt từ nguồn không xác định":
 * Đi tới **Cài đặt** → **Bảo mật**
 * Bật **Nguồn không xác định**, hoặc cho phép trình duyệt/trình quản lý tệp cài đặt ứng dụng.
+
 
 4. Nhấn **Cài đặt** và chờ quá trình hoàn tất.
 5. Mở game và chọn **Compile & Run!** 🚀

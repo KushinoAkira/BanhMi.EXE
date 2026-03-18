@@ -13,6 +13,11 @@ signal queue_updated()
 var queue: Array = []  # Array of CharacterBody2D (customers)
 var is_serving: bool = false
 
+var umbrella_sprite: Label
+var speaker_sprite: Label
+var led_bg: ColorRect
+var led_text: Label
+
 # ─── ONREADY NODES ────────────────────────────────────────
 @onready var service_timer: Timer = $ServiceTimer
 @onready var queue_positions_node: Node2D = $QueuePositions
@@ -40,8 +45,74 @@ func _ready() -> void:
 
 	# Lắng nghe sự kiện Level Up xe từ GameManager
 	GameManager.cart_level_changed.connect(_on_cart_level_changed)
+	GameManager.upgrade_purchased.connect(func(_id): _check_decorations())
+
+	_setup_decorations()
+	_check_decorations()
 
 	print("[BanhMiCart] Đã khởi tạo với %d vị trí xếp hàng" % queue_positions.size())
+
+func _setup_decorations() -> void:
+	umbrella_sprite = Label.new()
+	umbrella_sprite.text = "⛱️"
+	umbrella_sprite.add_theme_font_size_override("font_size", 120)
+	umbrella_sprite.position = Vector2(-20, -220)
+	umbrella_sprite.hide()
+	umbrella_sprite.z_index = 5
+	add_child(umbrella_sprite)
+
+	speaker_sprite = Label.new()
+	speaker_sprite.text = "📢"
+	speaker_sprite.add_theme_font_size_override("font_size", 50)
+	speaker_sprite.position = Vector2(-60, -90)
+	speaker_sprite.hide()
+	add_child(speaker_sprite)
+
+	led_bg = ColorRect.new()
+	led_bg.color = Color(0.05, 0.05, 0.05, 0.9)
+	led_bg.size = Vector2(240, 40)
+	led_bg.position = Vector2(-120, -180)
+	led_bg.hide()
+	
+	led_text = Label.new()
+	led_text.text = "✨ BÁNH MÌ HAYZ ✨"
+	led_text.add_theme_font_size_override("font_size", 22)
+	led_text.add_theme_color_override("font_color", Color(1, 0.2, 0.2))
+	led_text.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	led_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	led_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	led_bg.add_child(led_text)
+	add_child(led_bg)
+	
+	var speaker_timer = Timer.new()
+	speaker_timer.wait_time = 15.0
+	speaker_timer.autostart = true
+	speaker_timer.timeout.connect(_on_speaker_timer)
+	add_child(speaker_timer)
+
+func _on_speaker_timer() -> void:
+	if GameManager.get_upgrade_level("decor_speaker") > 0:
+		var speaker_bubble = Label.new()
+		speaker_bubble.text = "🔊 Bánh mì Sài Gòn,\nđặc ruột thơm bơ 15 ngàn!"
+		speaker_bubble.add_theme_font_size_override("font_size", 18)
+		speaker_bubble.add_theme_color_override("font_color", Color(1, 1, 0))
+		speaker_bubble.add_theme_color_override("font_outline_color", Color.BLACK)
+		speaker_bubble.add_theme_constant_override("outline_size", 4)
+		speaker_bubble.position = Vector2(-180, -150)
+		add_child(speaker_bubble)
+		
+		var tw = create_tween()
+		tw.tween_property(speaker_bubble, "position:y", -200.0, 3.0).set_ease(Tween.EASE_OUT)
+		tw.parallel().tween_property(speaker_bubble, "modulate:a", 0.0, 3.0)
+		tw.tween_callback(speaker_bubble.queue_free)
+
+func _check_decorations() -> void:
+	if GameManager.get_upgrade_level("decor_umbrella") > 0:
+		umbrella_sprite.show()
+	if GameManager.get_upgrade_level("decor_speaker") > 0:
+		speaker_sprite.show()
+	if GameManager.get_upgrade_level("decor_led") > 0:
+		led_bg.show()
 
 # ─── VISUAL PROGRESSION ───────────────────────────────────
 func _on_cart_level_changed(new_level: int) -> void:
@@ -132,6 +203,12 @@ func notify_customer_arrived() -> void:
 	
 	_start_serving()
 
+var special_order_timer: float = 10.0
+
+func _process(delta: float) -> void:
+	if special_order_timer > 0.0:
+		special_order_timer -= delta
+
 func _start_serving() -> void:
 	if queue.is_empty():
 		is_serving = false
@@ -146,11 +223,61 @@ func _start_serving() -> void:
 	is_serving = true
 	front_customer.start_buying()
 
+	# Cứ mỗi 10 giây thì sẽ có một đơn hàng đặc biệt
+	if special_order_timer <= 0 and not GameManager.is_fever_mode:
+		print("[BanhMiCart] Khách hàng yêu cầu Đơn Hàng Đặc Biệt!")
+		special_order_timer = 10.0 # Reset timer
+		_trigger_cooking_minigame()
+		return
+
 	var serve_time: float = GameManager.get_service_time()
 	service_timer.wait_time = serve_time
 	service_timer.start()
 
 	print("[BanhMiCart] Bắt đầu phục vụ (%.1fs)..." % serve_time)
+
+func _trigger_cooking_minigame() -> void:
+	var mg = CanvasLayer.new()
+	var CookingScript = preload("res://scripts/cooking_minigame.gd")
+	mg.set_script(CookingScript)
+	
+	# Kết nối signal
+	mg.minigame_completed.connect(_on_cooking_minigame_completed)
+	get_tree().root.add_child(mg)
+
+func _on_cooking_minigame_completed(won: bool) -> void:
+	if queue.is_empty():
+		is_serving = false
+		return
+	
+	var served_customer = queue.pop_front()
+	if won:
+		print("[BanhMiCart] Hoàn thành Đơn Đặc Biệt! Thưởng cực lớn!")
+		var base_price = GameManager.get_sell_price()
+		var final_money = base_price * 5 # x5 tiền
+		
+		# Tính thêm nếu là VIP để tránh mất quyền lợi
+		if is_instance_valid(served_customer) and served_customer.get("is_vip") == true:
+			final_money *= 3
+			
+		GameManager.add_money(final_money) 
+		GameManager.add_boost_energy(50.0)    # Tăng thanh Fever
+		GameManager.record_customer_served(true)
+		if is_instance_valid(served_customer):
+			served_customer.finish_buying()
+		customer_served.emit(final_money)
+	else:
+		print("[BanhMiCart] Làm hỏng Đơn Đặc Biệt! Khách bỏ đi.")
+		GameManager.record_customer_lost()
+		if is_instance_valid(served_customer):
+			if served_customer.has_method("fail_buying"):
+				served_customer.fail_buying()
+			
+	_advance_queue()
+	if not queue.is_empty():
+		_start_serving()
+	else:
+		is_serving = false
 
 func _on_service_timer_timeout() -> void:
 	if queue.is_empty():
@@ -158,12 +285,37 @@ func _on_service_timer_timeout() -> void:
 		return
 
 	var served_customer = queue.pop_front()
+	
+	# Consume ingredient first
+	if not GameManager.consume_ingredient():
+		print("[BanhMiCart] Hết nguyên liệu! Khách tức giận bỏ đi.")
+		GameManager.record_customer_lost()
+		if is_instance_valid(served_customer):
+			if served_customer.has_method("fail_buying"):
+				served_customer.fail_buying()
+		
+		_advance_queue()
+		if not queue.is_empty():
+			_start_serving()
+		else:
+			is_serving = false
+		return
+		
 	var base_price: int = GameManager.get_sell_price()
 	var final_money: int = base_price
 	
 	if served_customer != null and is_instance_valid(served_customer):
-		# 1. Kiểm tra VIP
+		# 1. Kiểm tra VIP & Customer Type
 		var is_vip = served_customer.get("is_vip") == true
+		var c_type = served_customer.get("customer_type")
+		
+		if c_type != null:
+			if c_type == 0: # STUDENT
+				final_money = GameManager.base_sell_price
+			elif c_type == 3: # TOURIST
+				final_money *= 2
+				print("[BanhMiCart] Khách du lịch! Giá bán nhân đôi.")
+				
 		if is_vip:
 			final_money *= 3
 			print("[BanhMiCart] Phục vụ KHÁCH VIP! Nhân 3 tiền.")
@@ -175,12 +327,29 @@ func _on_service_timer_timeout() -> void:
 		var c_patience = served_customer.get("patience")
 		var c_max_patience = served_customer.get("max_patience")
 		
+<<<<<<< Updated upstream
 		# Nếu phục vụ nhanh (kiên nhẫn còn > 70%)
 		if c_patience != null and c_max_patience != null and c_patience / c_max_patience > 0.7:
 			# Khách VIP luôn cho tip nếu phục vụ nhanh, khách thường thì ngẫu nhiên
 			if is_vip or randf() < c_tip_chance:
 				var tip_multiplier = GameManager.get_tip_multiplier()
 				var tip_amount = int(base_price * randf_range(0.15, 0.20) * tip_multiplier)
+=======
+		# Thợ văn phòng vội vàng (OFFICE_WORKER = 1), tip rất cao nếu phục vụ cực nhanh (kiên nhẫn > 80%)
+		var fast_threshold = 0.7
+		if c_type == 1: fast_threshold = 0.8
+		
+		# Nếu phục vụ nhanh
+		if c_patience != null and c_max_patience != null and c_patience / c_max_patience > fast_threshold:
+			# Khách VIP và Du lịch luôn cho tip nếu phục vụ nhanh, khách thường thì ngẫu nhiên
+			if is_vip or c_type == 3 or randf() < c_tip_chance:
+				# Tỉ lệ tip riêng, thợ văn phòng tip siêu cao nếu chờ ít
+				var tip_multiplier = randf_range(0.3, 0.6)
+				if c_type == 1: tip_multiplier = randf_range(0.8, 1.5)
+				elif c_type == 3: tip_multiplier = randf_range(0.5, 1.0)
+				
+				var tip_amount = int(base_price * tip_multiplier)
+>>>>>>> Stashed changes
 				final_money += tip_amount
 				if tip_multiplier > 1.0:
 					print("[BanhMiCart] Phục vụ nhanh! Nhận Tip (x%.1f Buff): +%dđ" % [tip_multiplier, tip_amount])
