@@ -33,6 +33,7 @@ func setup(data: Dictionary) -> void:
 func _build_ui() -> void:
 	# ── Style cho PanelContainer ──
 	custom_minimum_size = Vector2(200, 145)
+	mouse_filter = Control.MOUSE_FILTER_PASS
 
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.12, 0.14, 0.18, 0.95)

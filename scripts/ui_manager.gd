@@ -820,8 +820,8 @@ func _setup_bottom_bar() -> void:
 		style.corner_radius_top_right = 12
 		panel_bg.add_theme_stylebox_override("panel", style)
 
-	# ScrollContainer chỉ cuộn ngang
-	scroll_container.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	# ScrollContainer chỉ cuộn ngang, ẩn thanh cuộn cho mobile
+	scroll_container.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_HIDDEN
 	scroll_container.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 
 	# Khoảng cách giữa các card

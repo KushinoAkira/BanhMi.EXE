@@ -16,7 +16,7 @@ signal cart_level_changed(new_level: int)    # Xe Bánh Mì lên đời
 signal reputation_changed(new_amount: int)   # Danh tiếng thay đổi
 signal menu_unlocked(menu_id: String)        # Mở khóa món mới
 signal event_started(event_type: String)     # Sự kiện (Mưa/Rush Hour)
-	signal tetris_buff_activated()              # Buff tốc độ phục vụ
+signal tetris_buff_activated()              # Buff tốc độ phục vụ
 signal candy_buff_activated()               # Buff tiền tip
 signal xiangqi_buff_activated()             # Buff khách VIP
 signal ingredients_changed(new_amount: int)  # Nguyên liệu thay đổi
