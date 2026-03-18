@@ -361,6 +361,7 @@ func _ready() -> void:
 var tetris_buff_timer: float = 0.0
 var candy_buff_timer: float = 0.0
 var xiangqi_buff_timer: float = 0.0
+var auto_save_timer: float = 60.0 # Auto-save mỗi 60s
 
 func activate_tetris_buff() -> void:
 	tetris_buff_timer = 120.0 # 2 minutes
@@ -542,7 +543,14 @@ func _process(delta: float) -> void:
 	if tetris_buff_timer > 0: tetris_buff_timer -= delta
 	if candy_buff_timer > 0: candy_buff_timer -= delta
 	if xiangqi_buff_timer > 0: xiangqi_buff_timer -= delta
-
+	
+	# Logic Auto-save
+	auto_save_timer -= delta
+	if auto_save_timer <= 0:
+		save_game()
+		auto_save_timer = 60.0
+		print("[GameManager] 💾 Auto-save hoàn tất.")
+	
 	# Fever timer
 	if is_fever_mode:
 		fever_timer -= delta
