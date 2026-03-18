@@ -16,15 +16,24 @@ signal cart_level_changed(new_level: int)    # Xe Bánh Mì lên đời
 signal reputation_changed(new_amount: int)   # Danh tiếng thay đổi
 signal menu_unlocked(menu_id: String)        # Mở khóa món mới
 signal event_started(event_type: String)     # Sự kiện (Mưa/Rush Hour)
+<<<<<<< Updated upstream
 signal tetris_buff_activated()              # Buff tốc độ phục vụ
 signal candy_buff_activated()               # Buff tiền tip
 signal xiangqi_buff_activated()             # Buff khách VIP
+=======
+signal ingredients_changed(new_amount: int)  # Nguyên liệu thay đổi
+>>>>>>> Stashed changes
 
-# ─── CURRENCY ──────────────────────────────────────────────
+# ─── CURRENCY & INGREDIENTS ────────────────────────────────
 var money: int = 0:
 	set(value):
 		money = value
 		money_changed.emit(money)
+
+var ingredients: int = 50:
+	set(value):
+		ingredients = value
+		ingredients_changed.emit(ingredients)
 
 # ─── DAILY TRACKING ────────────────────────────────────────
 var daily_money: int = 0
@@ -201,6 +210,26 @@ const UPGRADES: Array[Dictionary] = [
 		"effect_key": "service_time",
 		"effect_value": -0.4,
 	},
+	{
+		"id": "decor_speaker",
+		"name": "Loa Phóng Thanh",
+		"icon": "📢",
+		"description": "Tốc độ khách nhanh hơn 15%",
+		"base_cost": 250,
+		"cost_multiplier": 1.40,
+		"effect_key": "spawn_rate",
+		"effect_value": 0.85,
+	},
+	{
+		"id": "decor_umbrella",
+		"name": "Ô Che Nắng Đỏ",
+		"icon": "⛱️",
+		"description": "Sang trọng, giá bán thêm 20đ",
+		"base_cost": 400,
+		"cost_multiplier": 1.5,
+		"effect_key": "sell_price",
+		"effect_value": 20,
+	},
 	# ─── TIER 3: Late Game (mạnh, đắt, tăng giá nhanh) ─────
 	{
 		"id": "seo_web",
@@ -231,6 +260,16 @@ const UPGRADES: Array[Dictionary] = [
 		"cost_multiplier": 2.0,
 		"effect_key": "service_time",
 		"effect_value": -1.0,
+	},
+	{
+		"id": "decor_led",
+		"name": "Bảng Hiệu LED Điển Não",
+		"icon": "💡",
+		"description": "Tăng giá bán mạnh mẽ (+30đ)",
+		"base_cost": 1500,
+		"cost_multiplier": 2.2,
+		"effect_key": "sell_price",
+		"effect_value": 30,
 	},
 ]
 
@@ -357,8 +396,9 @@ const SAVE_PATH = "user://savegame.cfg"
 
 func save_game() -> void:
 	var cfg = ConfigFile.new()
-	# Currency
+	# Currency & Items
 	cfg.set_value("Game", "money", money)
+	cfg.set_value("Game", "ingredients", ingredients)
 	cfg.set_value("Game", "current_day", current_day)
 	cfg.set_value("Game", "has_played_intro", has_played_intro)
 	cfg.set_value("Game", "has_played_tutorial", has_played_tutorial)
@@ -383,8 +423,9 @@ func load_game() -> void:
 	if cfg.load(SAVE_PATH) != OK:
 		print("[GameManager] Save mới — không tìm thấy save file")
 		return
-	# Currency
+	# Currency & Items
 	money = cfg.get_value("Game", "money", 0)
+	ingredients = cfg.get_value("Game", "ingredients", 50)
 	current_day = cfg.get_value("Game", "current_day", 1)
 	has_played_intro = cfg.get_value("Game", "has_played_intro", false)
 	has_played_tutorial = cfg.get_value("Game", "has_played_tutorial", false)
@@ -577,6 +618,20 @@ func _check_events(hour: int, minute: int) -> void:
 		current_event_type = "none"
 		event_started.emit("none")
 		print("[GameManager] 🚶 Hết giờ cao điểm.")
+
+func consume_ingredient() -> bool:
+	if ingredients > 0:
+		ingredients -= 1
+		return true
+	return false
+
+func restock_ingredients() -> bool:
+	# Mua 20 nguyên liệu với giá 50đ
+	if money >= 50:
+		money -= 50
+		ingredients += 20
+		return true
+	return false
 
 func add_money(amount: int) -> void:
 	money += amount
