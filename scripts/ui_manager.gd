@@ -807,6 +807,10 @@ func _on_time_changed(hour: int, minute: int) -> void:
 	_update_time_display(hour, minute)
 
 func _setup_bottom_bar() -> void:
+    # Ngăn mọi thao tác vuốt vô tình ở phần Menu rơi xuống Camera Map
+	if bottom_bar: bottom_bar.mouse_filter = Control.MOUSE_FILTER_STOP
+	if panel_bg: panel_bg.mouse_filter = Control.MOUSE_FILTER_STOP
+	
 	# Áp dụng style cho PanelBG (fallback nếu texture không load)
 	if panel_bg and not panel_bg.has_theme_stylebox_override("panel"):
 		var style := StyleBoxFlat.new()
