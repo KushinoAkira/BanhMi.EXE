@@ -149,12 +149,15 @@ func _ready() -> void:
 	
 	if not GameManager.has_played_intro:
 		SettingsUI.btn_gear.hide()
+		SettingsUI.btn_missions.hide()
 		call_deferred("_play_intro_video")
 	elif not GameManager.has_played_tutorial:
 		SettingsUI.btn_gear.show()
+		SettingsUI.btn_missions.show()
 		call_deferred("_start_tutorial")
 	else:
 		SettingsUI.btn_gear.show()
+		SettingsUI.btn_missions.show()
 		if background_music:
 			background_music.play()
 
@@ -220,6 +223,7 @@ func _process(_delta: float) -> void:
 		story_node.story_finished.connect(func(): 
 			video_layer.queue_free()
 			SettingsUI.btn_gear.show()
+			SettingsUI.btn_missions.show()
 			call_deferred("_start_tutorial")
 		)
 		
