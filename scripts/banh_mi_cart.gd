@@ -224,7 +224,7 @@ func _start_serving() -> void:
 	front_customer.start_buying()
 
 	# Cứ mỗi 10 giây thì sẽ có một đơn hàng đặc biệt
-	if special_order_timer <= 0 and not GameManager.is_fever_mode:
+	if special_order_timer <= 0 and not GameManager.is_fever_mode and not GameManager.is_player_busy():
 		print("[BanhMiCart] Khách hàng yêu cầu Đơn Hàng Đặc Biệt!")
 		special_order_timer = 10.0 # Reset timer
 		_trigger_cooking_minigame()

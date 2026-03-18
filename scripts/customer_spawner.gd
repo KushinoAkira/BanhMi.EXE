@@ -27,12 +27,13 @@ func _ready() -> void:
 	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
 	GameManager.upgrade_purchased.connect(_on_upgrade_purchased)
 
-	# Khởi tạo Object Pool
-	_initialize_pool()
-
 	# Đợi 1 frame để main.gd truyền references xong mới bắt đầu spawn
 	await get_tree().process_frame
 	await get_tree().process_frame
+	
+	# Khởi tạo Object Pool
+	_initialize_pool()
+	
 	spawn_timer.start()
 	print("[Spawner] ✅ Pool initialized (%d) & Spawning started" % pool_size)
 
@@ -50,7 +51,10 @@ func _initialize_pool() -> void:
 		npc.returned_to_pool.connect(_on_npc_returned_to_pool)
 		
 		# Add to game world (or self) to keep in tree
-		add_child(npc)
+		if game_world:
+			game_world.add_child(npc)
+		else:
+			add_child(npc)
 		npc_pool.append(npc)
 
 func _process(_delta: float) -> void:
@@ -98,7 +102,10 @@ func _add_new_to_pool() -> void:
 	npc.hide()
 	npc.process_mode = Node.PROCESS_MODE_DISABLED
 	npc.returned_to_pool.connect(_on_npc_returned_to_pool)
-	add_child(npc)
+	if game_world:
+		game_world.add_child(npc)
+	else:
+		add_child(npc)
 	npc_pool.append(npc)
 
 func _on_npc_returned_to_pool(npc: CharacterBody2D) -> void:

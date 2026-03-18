@@ -16,7 +16,7 @@ signal cart_level_changed(new_level: int)    # Xe Bánh Mì lên đời
 signal reputation_changed(new_amount: int)   # Danh tiếng thay đổi
 signal menu_unlocked(menu_id: String)        # Mở khóa món mới
 signal event_started(event_type: String)     # Sự kiện (Mưa/Rush Hour)
-signal tetris_buff_activated()              # Buff tốc độ phục vụ
+	signal tetris_buff_activated()              # Buff tốc độ phục vụ
 signal candy_buff_activated()               # Buff tiền tip
 signal xiangqi_buff_activated()             # Buff khách VIP
 signal ingredients_changed(new_amount: int)  # Nguyên liệu thay đổi
@@ -737,3 +737,23 @@ func unlock_menu_item(menu_id: String) -> bool:
 		item.name, item.rep_cost, item.money_cost
 	])
 	return true
+
+func is_player_busy() -> bool:
+	if not has_played_intro or not has_played_tutorial:
+		return true
+
+	var settings = get_node_or_null("/root/SettingsUI/SettingsPanel")
+	if settings and settings.visible:
+		return true
+
+	var main = get_node_or_null("/root/Main")
+	if main and main.has_node("UILayer"):
+		var ui = main.get_node("UILayer")
+		if ui.get("menu_ui_instance") != null and ui.menu_ui_instance.visible:
+			return true
+		for child in ui.get_children():
+			var c = str(child.name).to_lower()
+			if ("minigame" in c or "level" in c or "xiangqi" in c or "candy" in c or "tetris" in c) and c != "minigamesbox" and c != "minigamepopup":
+				return true
+
+	return false

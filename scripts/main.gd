@@ -560,9 +560,7 @@ func _setup_navigation() -> void:
 			# CW order: Top → Right → Bottom → Left
 			nav_poly.add_outline(PackedVector2Array([hole_top, hole_right, hole_bottom, hole_left]))
 
-	var source_geom_data = NavigationMeshSourceGeometryData2D.new()
-	NavigationServer2D.parse_source_geometry_data(nav_poly, source_geom_data, self)
-	NavigationServer2D.bake_from_source_geometry_data(nav_poly, source_geom_data)
+	nav_poly.make_polygons_from_outlines()
 	nav_region.navigation_polygon = nav_poly
 	print("[Main] ✅ Navigation ready — road-only with %d block holes" % (
 		nav_poly.get_outline_count() - 1
