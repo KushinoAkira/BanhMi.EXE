@@ -67,6 +67,8 @@ var wander_points: Array[Marker2D] = []
 @onready var nav_agent: NavigationAgent2D = $NavigationAgent2D
 @onready var anim_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
+signal returned_to_pool(npc: CharacterBody2D)
+
 # ─── READY ─────────────────────────────────────────────────
 func _ready() -> void:
 	nav_agent.path_desired_distance = 4.0
@@ -78,13 +80,33 @@ func _ready() -> void:
 	# Connect navigation_finished signal for reliable detection
 	nav_agent.navigation_finished.connect(_on_navigation_finished)
 
+	prepare_for_reuse()
+
+## Chuẩn bị NPC để tái sử dụng (Object Pooling)
+func prepare_for_reuse() -> void:
 	_randomize_appearance()
-	_create_shadow()
-	_create_patience_bar()
+	_create_shadow_if_missing()
+	_create_patience_bar_if_missing()
 
 	wander_count_before_shop = randi_range(2, 4)
-	current_state = State.IDLE
+	wander_points_visited = 0
+	queue_index = -1
 	_ready_frames = 0
+	_has_nav_target = false
+	current_state = State.IDLE
+	
+	process_mode = PROCESS_MODE_INHERIT
+	show()
+
+func _create_shadow_if_missing() -> void:
+	if has_node("Shadow"): return
+	_create_shadow()
+
+func _create_patience_bar_if_missing() -> void:
+	if patience_bar: 
+		patience_bar.visible = false
+		return
+	_create_patience_bar()
 
 ## Tạo shadow đơn giản dưới chân NPC
 func _create_shadow() -> void:
@@ -202,7 +224,13 @@ func _on_navigation_finished() -> void:
 			# Arrived at new queue position after advancing
 			_play_animation("idle")
 		State.LEAVING:
-			queue_free()
+			_hide_and_return_to_pool()
+
+func _hide_and_return_to_pool() -> void:
+	# Ngừng xử lý và ẩn NPC thay vì xóa
+	process_mode = PROCESS_MODE_DISABLED
+	hide()
+	returned_to_pool.emit(self)
 
 # ─── PHYSICS PROCESS ──────────────────────────────────────
 func _physics_process(delta: float) -> void:

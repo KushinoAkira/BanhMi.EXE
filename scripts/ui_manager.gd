@@ -640,14 +640,18 @@ func _on_tutorial_input(event: InputEvent) -> void:
 @onready var btn_win: Button = $MinigamePopup/Window/VBox/HBox/BtnWin
 @onready var btn_close: Button = $MinigamePopup/Window/VBox/HBox/BtnClose
 
-@onready var btn_chess: TextureButton = $MinigamesBox/BtnChess
-@onready var btn_candy: TextureButton = $MinigamesBox/BtnCandy
-@onready var btn_tetris: TextureButton = $MinigamesBox/BtnTetris
-
 func _setup_minigames() -> void:
 	if not popup_node: return
 	
+	var minigames_box = get_node_or_null("MinigamesBox")
+	if not minigames_box: return
+	
 	popup_node.visible = false
+	
+	# Tìm các nút hiện có
+	var btn_chess  = minigames_box.get_node_or_null("BtnChess")
+	var btn_candy  = minigames_box.get_node_or_null("BtnCandy")
+	var btn_tetris = minigames_box.get_node_or_null("BtnTetris")
 	
 	# Preload minigame scenes
 	var tetris_menu  = preload("res://scenes/minigames/tetris_level_menu.tscn")
@@ -659,7 +663,7 @@ func _setup_minigames() -> void:
 	if btn_candy:  btn_candy.pressed.connect(func(): _launch_scene_minigame(candy_menu))
 	if btn_tetris: btn_tetris.pressed.connect(func(): _launch_scene_minigame(tetris_menu))
 	
-	# Connect Popup Actions (used by chess placeholder only)
+	# Connect Popup Actions
 	if btn_close: btn_close.pressed.connect(_close_minigame)
 	if btn_win: btn_win.pressed.connect(_win_minigame)
 

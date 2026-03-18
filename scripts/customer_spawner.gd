@@ -14,8 +14,10 @@ var game_world: Node2D = null
 # ─── ONREADY ──────────────────────────────────────────────
 @onready var spawn_timer: Timer = $SpawnTimer
 
-# ─── TRACKING ─────────────────────────────────────────────
+# ─── TRACKING & POOLING ─────────────────────────────────────
 var active_customers: int = 0
+var npc_pool: Array[CharacterBody2D] = []
+@export var pool_size: int = 15
 
 # ─── READY ─────────────────────────────────────────────────
 func _ready() -> void:
@@ -25,16 +27,31 @@ func _ready() -> void:
 	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
 	GameManager.upgrade_purchased.connect(_on_upgrade_purchased)
 
+	# Khởi tạo Object Pool
+	_initialize_pool()
+
 	# Đợi 1 frame để main.gd truyền references xong mới bắt đầu spawn
 	await get_tree().process_frame
 	await get_tree().process_frame
 	spawn_timer.start()
-	print("[Spawner] ✅ Bắt đầu spawn — interval: %.1fs" % spawn_timer.wait_time)
+	print("[Spawner] ✅ Pool initialized (%d) & Spawning started" % pool_size)
 
-	# Spawn ngay 2-3 NPC ban đầu
+	# Spawn ngay 2-3 NPC ban đầu từ pool
 	for i in range(randi_range(2, 3)):
 		_spawn_customer()
 		await get_tree().create_timer(0.2).timeout
+
+func _initialize_pool() -> void:
+	if not customer_scene: return
+	for i in range(pool_size):
+		var npc = customer_scene.instantiate()
+		npc.hide()
+		npc.process_mode = Node.PROCESS_MODE_DISABLED
+		npc.returned_to_pool.connect(_on_npc_returned_to_pool)
+		
+		# Add to game world (or self) to keep in tree
+		add_child(npc)
+		npc_pool.append(npc)
 
 func _process(_delta: float) -> void:
 	# Cập nhật liên tục tốc độ spawn theo Fever Mode
@@ -48,41 +65,50 @@ func _on_spawn_timer_timeout() -> void:
 		return
 	if active_customers >= max_customers:
 		return
-	if spawn_points.is_empty() or customer_scene == null:
-		return
 	_spawn_customer()
 
 func _spawn_customer() -> void:
-	if spawn_points.is_empty() or customer_scene == null:
-		push_warning("[Spawner] Thiếu spawn_points hoặc customer_scene!")
+	if npc_pool.is_empty():
+		# Nếu pool hết (hiếm khi xảy ra với 12 max), tạo thêm 1 cái
+		_add_new_to_pool()
+	
+	var customer = npc_pool.pop_back()
+	if not customer: return
+
+	if spawn_points.is_empty():
+		push_warning("[Spawner] Thiếu spawn_points!")
+		npc_pool.append(customer)
 		return
 
 	var sp: Marker2D = spawn_points.pick_random()
-	var customer: CharacterBody2D = customer_scene.instantiate()
-
-	# Set position TRƯỚC khi add_child
+	
+	# Reset NPC state
 	customer.position = sp.global_position
-
-	# Truyền references TRƯỚC khi add_child (vì _ready chạy khi add_child)
 	customer.banh_mi_cart = banh_mi_cart
 	customer.wander_points = wander_points
-
-	# Lắng nghe khi NPC bị xóa
-	customer.tree_exiting.connect(_on_customer_removed)
-
-	# Thêm vào scene tree → _ready() của customer chạy ở đây
-	if game_world != null:
-		game_world.add_child(customer)
-	else:
-		get_tree().current_scene.add_child(customer)
+	customer.prepare_for_reuse() # Reset AI & Graphics
 
 	active_customers += 1
-	print("[Spawner] 👤 Spawn khách #%d tại (%.0f, %.0f)" % [
-		active_customers, sp.global_position.x, sp.global_position.y
+	print("[Spawner] 👤 NPC lấy từ Pool #%d. Active: %d" % [
+		npc_pool.size(), active_customers
 	])
 
-func _on_customer_removed() -> void:
+func _add_new_to_pool() -> void:
+	var npc = customer_scene.instantiate()
+	npc.hide()
+	npc.process_mode = Node.PROCESS_MODE_DISABLED
+	npc.returned_to_pool.connect(_on_npc_returned_to_pool)
+	add_child(npc)
+	npc_pool.append(npc)
+
+func _on_npc_returned_to_pool(npc: CharacterBody2D) -> void:
 	active_customers = maxi(active_customers - 1, 0)
+	npc_pool.append(npc)
+	print("[Spawner] 🔄 NPC trả về Pool. Active: %d" % active_customers)
+
+# Xóa các hàm cũ không còn dùng
+func _on_customer_removed() -> void:
+	pass
 
 # ─── UPGRADE RESPONSE ─────────────────────────────────────
 func _on_upgrade_purchased(_upgrade_id: String) -> void:
