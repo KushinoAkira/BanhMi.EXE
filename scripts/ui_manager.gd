@@ -821,7 +821,7 @@ func _setup_bottom_bar() -> void:
 		panel_bg.add_theme_stylebox_override("panel", style)
 
 	# ScrollContainer chỉ cuộn ngang, ẩn thanh cuộn cho mobile
-	scroll_container.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_HIDDEN
+	scroll_container.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 	scroll_container.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 
 	# Khoảng cách giữa các card
