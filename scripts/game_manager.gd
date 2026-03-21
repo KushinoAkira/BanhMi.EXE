@@ -104,6 +104,7 @@ var current_day: int = 1
 var time_of_day: float = 5.5  # 5.5 = 05:30
 var time_scale: float = 24.0 / 900.0   # 15 phút đời thực = 1 ngày game
 var is_shop_open: bool = true
+var is_time_paused: bool = false
 var current_hour: int = 5
 var current_minute: int = 30
 
@@ -347,6 +348,7 @@ func get_sell_price() -> int:
 
 # ─── FUNCTIONS ─────────────────────────────────────────────
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	for upg in UPGRADES:
 		upgrade_levels[upg.id] = 0
 	load_game()
@@ -559,10 +561,11 @@ func _process(delta: float) -> void:
 			print("[GameManager] 📉 Fever Mode kết thúc.")
 			
 	# Cập nhật thời gian
-	time_of_day += delta * time_scale
-	if time_of_day >= 24.0:
-		time_of_day -= 24.0
-		current_day += 1
+	if not is_time_paused:
+		time_of_day += delta * time_scale
+		if time_of_day >= 24.0:
+			time_of_day -= 24.0
+			current_day += 1
 		
 	var new_hour: int = int(time_of_day)
 	var new_minute: int = int((time_of_day - new_hour) * 60)
@@ -579,6 +582,8 @@ func _check_shop_schedule(hour: int, minute: int) -> void:
 	# ĐÓNG CỬA & TỔNG KẾT: 01:00 Sáng
 	if hour == 1 and minute == 0 and is_shop_open:
 		is_shop_open = false
+		is_time_paused = true
+		get_tree().paused = true
 		shop_status_changed.emit(false)
 		
 		var report = {
@@ -603,6 +608,16 @@ func _check_shop_schedule(hour: int, minute: int) -> void:
 		shop_status_changed.emit(true)
 		_generate_daily_missions()  # Tạo mission mới cho ngày mới
 		print("[GameManager] ☀️ Đến 05:30 - Bắt đầu Ngày mới!")
+
+func start_new_day() -> void:
+	if not is_shop_open:
+		time_of_day = 5.5  # Tua nhanh đến 05:30
+		current_hour = 5
+		current_minute = 30
+		is_time_paused = false
+		get_tree().set_deferred("paused", false)
+		time_changed.emit(current_hour, current_minute)
+		_check_shop_schedule(current_hour, current_minute)  # Gọi kiểm tra để MỞ CỬA ngay lập tức
 
 func _check_events(hour: int, minute: int) -> void:
 	if not is_shop_open: return
@@ -692,10 +707,19 @@ func get_total_upgrade_level() -> int:
 func check_cart_level() -> void:
 	var total := get_total_upgrade_level()
 	var new_cart_lvl := 1
-	if total >= 12: new_cart_lvl = 3
-	elif total >= 5: new_cart_lvl = 2
-	
-	# Gọi tính năng này mỗi khi Upgrade được mua, hoặc game được Load
+	# 12 cấp độ xe — khoảng cách tăng dần để cảm giác progression rõ ràng
+	if   total >= 35: new_cart_lvl = 12
+	elif total >= 30: new_cart_lvl = 11
+	elif total >= 26: new_cart_lvl = 10
+	elif total >= 22: new_cart_lvl = 9
+	elif total >= 18: new_cart_lvl = 8
+	elif total >= 15: new_cart_lvl = 7
+	elif total >= 12: new_cart_lvl = 6
+	elif total >= 10: new_cart_lvl = 5
+	elif total >= 8:  new_cart_lvl = 4
+	elif total >= 6:  new_cart_lvl = 3
+	elif total >= 4:  new_cart_lvl = 2
+
 	cart_level_changed.emit(new_cart_lvl)
 
 # ─── FEVER MODE ────────────────────────────────────────────

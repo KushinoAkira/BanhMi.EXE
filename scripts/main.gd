@@ -90,6 +90,7 @@ func _ready() -> void:
 	_create_spawn_points()
 	_setup_navigation()
 	_setup_camera_limits()
+	_focus_camera_on_cart()
 
 	# Collect points
 	var wps: Array[Marker2D] = []
@@ -566,7 +567,16 @@ func _setup_navigation() -> void:
 		nav_poly.get_outline_count() - 1
 	))
 
-# ─── CAMERA LIMITS ─────────────────────────────────────────
+# ─── CAMERA FOCUS ON CART ───────────────────────────────────────
+## Zoom vào và tập trung camera vào xe bánh mì khi bắt đầu game
+func _focus_camera_on_cart() -> void:
+	if not camera: return
+	var cart_world_pos: Vector2 = banh_mi_cart.global_position
+	# Zoom 2x và di chuyển tới xe bánh mì — giống trong ảnh
+	camera.focus_on(cart_world_pos, 2.0)
+	print("[Main] 📷 Camera focus xe bánh mì tại %s (zoom=2.0)" % str(cart_world_pos))
+
+# ─── CAMERA LIMITS ─────────────────────────────────────────────
 func _setup_camera_limits() -> void:
 	if not camera: return
 	# Bounding box of the grid with a tighter margin to not show too much empty space

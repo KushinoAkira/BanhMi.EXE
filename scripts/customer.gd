@@ -249,11 +249,17 @@ func _on_navigation_finished() -> void:
 				# Pick next wander target after a short pause
 				_pick_random_wander_target()
 		State.GOING_TO_SHOP:
-			# Arrived at queue position → start waiting
+			# Đến vị trí hàng → bắt đầu chờ
 			_change_state(State.WAITING_IN_LINE)
+			# Nếu đứng ở đầu hàng, thông báo xe sẵn sàng phục vụ
+			if queue_index == 0 and banh_mi_cart != null:
+				banh_mi_cart.notify_customer_arrived()
 		State.WAITING_IN_LINE:
-			# Arrived at new queue position after advancing
+			# Đến vị trí mới sau khi hàng dịch lên
 			_play_animation("idle")
+			# Nếu tiến lên đầu hàng, thông báo xe phục vụ
+			if queue_index == 0 and banh_mi_cart != null:
+				banh_mi_cart.notify_customer_arrived()
 		State.LEAVING:
 			_hide_and_return_to_pool()
 

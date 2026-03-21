@@ -30,14 +30,15 @@ var tex_lvl2 = preload("res://assets/sprites/banh_mi_cart.png") # TODO: Cần ng
 var tex_lvl3 = preload("res://assets/sprites/banh_mi_cart.png") # TODO: Cần người thiết kế cung cấp lvl3
 
 # Mảng vị trí Vector2 lấy từ các Marker2D con
-var queue_positions: Array[Vector2] = []
+# Dùng Marker2D refs thay vì Vector2 tĩnh — đọc global_position động sau khi xe được dời
+var queue_markers: Array[Marker2D] = []
 
 # ─── READY ─────────────────────────────────────────────────
 func _ready() -> void:
-	# Thu thập tất cả Marker2D con trong QueuePositions
+	# Thu thập Marker2D refs — không lưu global_position tĩnh vì xe chưa được đặt vào đúng chỗ
 	for child in queue_positions_node.get_children():
 		if child is Marker2D:
-			queue_positions.append(child.global_position)
+			queue_markers.append(child as Marker2D)
 
 	# Cấu hình Timer
 	service_timer.one_shot = true
@@ -50,45 +51,86 @@ func _ready() -> void:
 	_setup_decorations()
 	_check_decorations()
 
-	print("[BanhMiCart] Đã khởi tạo với %d vị trí xếp hàng" % queue_positions.size())
+	print("[BanhMiCart] Đã khởi tạo với %d vị trí xếp hàng" % queue_markers.size())
+
+var _decor_nodes: Array[Node] = []  # Tất cả decor node, quản lý show/hide theo level
+
+# ─── ASSET PATHS ─────────────────────────────────────────────
+const DECOR_ASSETS = {
+	"bonsai":       "res://assets/sprites/props/decor_bonsai.png",
+	"chalkboard":   "res://assets/sprites/props/decor_chalkboard.png",
+	"speaker":      "res://assets/sprites/props/decor_bonsai.png",    # fallback dùng cây
+	"umbrella":     "res://assets/sprites/props/decor_striped_awning.png",
+	"flag_banner":  "res://assets/sprites/props/decor_flag_banner.png",
+	"lanterns":     "res://assets/sprites/props/decor_lanterns.png",
+	"led_sign":     "res://assets/sprites/props/decor_neon_sign.png",
+	"awning":       "res://assets/sprites/props/decor_striped_awning.png",
+	"fairy_lights": "res://assets/sprites/props/decor_fairy_lights.png",
+	"neon_sign":    "res://assets/sprites/props/decor_neon_sign.png",
+	"golden_sign":  "res://assets/sprites/props/decor_golden_sign.png",
+}
+
+# Danh sách trang trí theo cấp độ (index 0 = cấp 2, index 10 = cấp 12)
+# Mỗi entry: [asset_key, position, scale, z_index]
+const LEVEL_DECORATIONS: Array[Dictionary] = [
+	# Cấp 2 — Cây cảnh bonsai bên trái xe
+	{"key": "bonsai",      "pos": Vector2(-55, 15),   "scale": Vector2(0.08, 0.08), "z": 3},
+	# Cấp 3 — Bảng hiệu "ĐẶC BIỆT" nhỏ bên phải
+	{"key": "chalkboard",  "pos": Vector2(60, 10),    "scale": Vector2(0.06, 0.06), "z": 3},
+	# Cấp 4 — Cây bonsai thứ 2 (biểu trưng thêm xanh mát)
+	{"key": "bonsai",      "pos": Vector2(-75, 5),    "scale": Vector2(0.06, 0.06), "z": 3},
+	# Cấp 5 — Mái che mưa nắng kẻ sọc đỏ trắng (Đứng phía sau xe và nhân vật)
+	{"key": "umbrella",    "pos": Vector2(-20, -50),  "scale": Vector2(0.12, 0.12), "z": -1},
+	# Cấp 6 — Dây cờ tam giác nhiều màu
+	{"key": "flag_banner", "pos": Vector2(-50, -60),  "scale": Vector2(0.12, 0.12), "z": 4},
+	# Cấp 7 — Đèn lồng đỏ vàng treo phía trên
+	{"key": "lanterns",    "pos": Vector2(-30, -85),  "scale": Vector2(0.10, 0.10), "z": 4},
+	# Cấp 8 — Bảng LED neon "BÁNH MÌ"
+	{"key": "led_sign",    "pos": Vector2(10, -95),   "scale": Vector2(0.09, 0.09), "z": 5},
+	# Cấp 9 — Thêm một cây bonsai lớn hơn bên phải
+	{"key": "bonsai",      "pos": Vector2(75, 5),     "scale": Vector2(0.10, 0.10), "z": 3},
+	# Cấp 10 — Dây đèn fairy lights lấp lánh
+	{"key": "fairy_lights","pos": Vector2(-50, -75),  "scale": Vector2(0.13, 0.13), "z": 4},
+	# Cấp 11 — Biển neon sáng đỏ cam "BÁNH MÌ" nổi bật
+	{"key": "neon_sign",   "pos": Vector2(-20, -120), "scale": Vector2(0.11, 0.11), "z": 6},
+	# Cấp 12 — Biển vàng rồng cao cấp — đỉnh cao thịnh vượng
+	{"key": "golden_sign", "pos": Vector2(-15, -145), "scale": Vector2(0.12, 0.12), "z": 7},
+]
 
 func _setup_decorations() -> void:
-	umbrella_sprite = Label.new()
-	umbrella_sprite.text = "⛱️"
-	umbrella_sprite.add_theme_font_size_override("font_size", 120)
-	umbrella_sprite.position = Vector2(-20, -220)
-	umbrella_sprite.hide()
-	umbrella_sprite.z_index = 5
-	add_child(umbrella_sprite)
+	# Tạo sẵn tất cả decor node, ẩn hết
+	for entry in LEVEL_DECORATIONS:
+		var spr := Sprite2D.new()
+		var tex_path: String = DECOR_ASSETS.get(entry.key, "")
+		if tex_path != "" and ResourceLoader.exists(tex_path):
+			spr.texture = load(tex_path)
+		else:
+			# Fallback: Label emoji nếu thiếu asset
+			var lbl := Label.new()
+			lbl.text = "🎪"
+			lbl.add_theme_font_size_override("font_size", 40)
+			lbl.position = entry.pos
+			lbl.z_index = entry.z
+			lbl.hide()
+			add_child(lbl)
+			_decor_nodes.append(lbl)
+			continue
+		spr.position = entry.pos
+		spr.scale = entry.scale
+		spr.z_index = entry.z
+		spr.hide()
+		add_child(spr)
+		_decor_nodes.append(spr)
 
-	speaker_sprite = Label.new()
-	speaker_sprite.text = "📢"
-	speaker_sprite.add_theme_font_size_override("font_size", 50)
-	speaker_sprite.position = Vector2(-60, -90)
-	speaker_sprite.hide()
-	add_child(speaker_sprite)
-
-	led_bg = ColorRect.new()
-	led_bg.color = Color(0.05, 0.05, 0.05, 0.9)
-	led_bg.size = Vector2(240, 40)
-	led_bg.position = Vector2(-120, -180)
-	led_bg.hide()
-	
-	led_text = Label.new()
-	led_text.text = "✨ BÁNH MÌ HAYZ ✨"
-	led_text.add_theme_font_size_override("font_size", 22)
-	led_text.add_theme_color_override("font_color", Color(1, 0.2, 0.2))
-	led_text.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	led_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	led_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	led_bg.add_child(led_text)
-	add_child(led_bg)
-	
 	var speaker_timer = Timer.new()
 	speaker_timer.wait_time = 15.0
 	speaker_timer.autostart = true
 	speaker_timer.timeout.connect(_on_speaker_timer)
 	add_child(speaker_timer)
+
+func _check_decorations() -> void:
+	# Không cần kiểm tra từng cái, _on_cart_level_changed quản lý việc show/hide
+	pass
 
 func _on_speaker_timer() -> void:
 	if GameManager.get_upgrade_level("decor_speaker") > 0:
@@ -106,39 +148,35 @@ func _on_speaker_timer() -> void:
 		tw.parallel().tween_property(speaker_bubble, "modulate:a", 0.0, 3.0)
 		tw.tween_callback(speaker_bubble.queue_free)
 
-func _check_decorations() -> void:
-	if GameManager.get_upgrade_level("decor_umbrella") > 0:
-		umbrella_sprite.show()
-	if GameManager.get_upgrade_level("decor_speaker") > 0:
-		speaker_sprite.show()
-	if GameManager.get_upgrade_level("decor_led") > 0:
-		led_bg.show()
-
-# ─── VISUAL PROGRESSION ───────────────────────────────────
+# ─── VISUAL PROGRESSION ───────────────────────────────────────
 func _on_cart_level_changed(new_level: int) -> void:
+	# Hiện tất cả decor đến level hiện tại (cumulative)
+	# Index 0 = level 2, index 10 = level 12
+	for i in range(_decor_nodes.size()):
+		var node = _decor_nodes[i]
+		if is_instance_valid(node):
+			node.visible = (new_level >= i + 2)
+
+	# Ẩn đồ nội thất cấp thấp của version cũ (nếu có trong scene)
 	var decor_lvl2 = get_node_or_null("DecorationsLevel2")
 	var decor_lvl3 = get_node_or_null("DecorationsLevel3")
-	
-	match new_level:
-		1:
-			cart_sprite.texture = tex_lvl1
-			cart_light.energy = 0.0
-			if decor_lvl2: decor_lvl2.hide()
-			if decor_lvl3: decor_lvl3.hide()
-		2:
-			cart_sprite.texture = tex_lvl2 # Tạm dùng lvl1
-			cart_sprite.modulate = Color(1.1, 1.1, 1.2) # Làm sáng lên xíu
-			cart_light.energy = 0.5
-			if decor_lvl2: decor_lvl2.show()
-			if decor_lvl3: decor_lvl3.hide()
-		3:
-			cart_sprite.texture = tex_lvl3 # Tạm dùng lvl1
-			cart_sprite.modulate = Color(1.2, 1.1, 1.0) # Vàng ấm
-			cart_light.energy = 1.0
-			cart_light.color = Color(1.0, 0.8, 0.2)
-			if decor_lvl2: decor_lvl2.show()
-			if decor_lvl3: decor_lvl3.show()
-			
+	if decor_lvl2: decor_lvl2.hide()
+	if decor_lvl3: decor_lvl3.hide()
+
+	# Điều chỉnh ánh sáng xe theo cấp
+	var light_energy := clampf((new_level - 1) * 0.1, 0.0, 1.2)
+	cart_light.energy = light_energy
+
+	if new_level >= 8:
+		cart_light.color = Color(1.0, 0.7, 0.3)   # Cam ấm — mid-high
+	if new_level >= 11:
+		cart_light.color = Color(1.0, 0.5, 0.1)   # Cam neon — đỉnh
+	if new_level >= 12:
+		cart_light.color = Color(1.0, 0.85, 0.2)  # Vàng hoàng kim
+		cart_sprite.modulate = Color(1.2, 1.1, 1.0)
+	else:
+		cart_sprite.modulate = Color(1.0, 1.0, 1.0) # Normal
+
 	print("[BanhMiCart] Xe Bánh Mì đã được nâng cấp chói lọi lên Cấp %d!" % new_level)
 	
 	# Hiệu ứng Particle khi nâng cấp
@@ -167,7 +205,7 @@ func _spawn_upgrade_particles() -> void:
 
 ## Thêm khách vào hàng đợi. Trả về index, hoặc -1 nếu hàng đầy.
 func join_queue(customer: CharacterBody2D) -> int:
-	if queue.size() >= max_queue_size or queue.size() >= queue_positions.size():
+	if queue.size() >= max_queue_size or queue.size() >= queue_markers.size():
 		print("[BanhMiCart] Hàng đầy! Từ chối khách.")
 		return -1
 
@@ -177,21 +215,18 @@ func join_queue(customer: CharacterBody2D) -> int:
 
 	print("[BanhMiCart] Khách xếp hàng tại vị trí %d (Tổng: %d)" % [index, queue.size()])
 
-	# Nếu chỉ có 1 người và chưa phục vụ → bắt đầu phục vụ
-	if queue.size() == 1 and not is_serving:
-		_start_serving()
-
+	# Không phục vụ ngay — chờ NPC đi tới vị trí rồi gọi notify_customer_arrived()
 	return index
 
-## Lấy vị trí Vector2 toàn cục của slot trong hàng
+## Lấy vị trí Vector2 toàn cục của slot trong hàng (đọc động từ Marker2D)
 func get_queue_position(index: int) -> Vector2:
-	if index >= 0 and index < queue_positions.size():
-		return queue_positions[index]
-	# Fallback: đứng phía sau vị trí cuối cùng
-	if queue_positions.size() > 0:
-		var last_pos: Vector2 = queue_positions[queue_positions.size() - 1]
+	if index >= 0 and index < queue_markers.size():
+		return queue_markers[index].global_position
+	# Fallback: đứng phía sau marker cuối cùng
+	if queue_markers.size() > 0:
+		var last_pos: Vector2 = queue_markers[queue_markers.size() - 1].global_position
 		# Offset thêm về phía dưới-phải (Isometric)
-		return last_pos + Vector2(16, 8) * (index - queue_positions.size() + 1)
+		return last_pos + Vector2(16, 8) * (index - queue_markers.size() + 1)
 	return global_position + Vector2(0, 50)
 
 # ─── SERVING LOGIC ────────────────────────────────────────
@@ -390,4 +425,4 @@ func get_queue_size() -> int:
 	return queue.size()
 
 func is_queue_full() -> bool:
-	return queue.size() >= max_queue_size or queue.size() >= queue_positions.size()
+	return queue.size() >= max_queue_size or queue.size() >= queue_markers.size()

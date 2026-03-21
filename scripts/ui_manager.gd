@@ -241,6 +241,7 @@ func _process(_delta: float) -> void:
 
 func _create_report_ui() -> void:
 	report_panel = PanelContainer.new()
+	report_panel.process_mode = Node.PROCESS_MODE_ALWAYS
 	report_panel.custom_minimum_size = Vector2(400, 250)
 	add_child(report_panel)
 	
@@ -275,11 +276,36 @@ func _create_report_ui() -> void:
 	vbox.add_child(details)
 	
 	var footer = Label.new()
-	footer.text = "\n🌙 Xe đang nghỉ ngơi...\nSẽ mở cửa lại lúc 05:30 sáng"
+	footer.text = "\n🌙 Xe đang nghỉ ngơi..."
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	footer.add_theme_font_size_override("font_size", 14)
 	footer.modulate = Color(0.6, 0.8, 1.0, 0.8)
 	vbox.add_child(footer)
+	
+	var btn_new_day = Button.new()
+	btn_new_day.text = " Bắt đầu Ngày mới "
+	btn_new_day.custom_minimum_size = Vector2(0, 45)
+	btn_new_day.add_theme_font_size_override("font_size", 18)
+	
+	var btn_style = StyleBoxFlat.new()
+	btn_style.bg_color = Color(0.2, 0.6, 0.2, 0.9)
+	btn_style.set_corner_radius_all(8)
+	btn_new_day.add_theme_stylebox_override("normal", btn_style)
+	
+	var hover = btn_style.duplicate()
+	hover.bg_color = Color(0.3, 0.7, 0.3, 1.0)
+	btn_new_day.add_theme_stylebox_override("hover", hover)
+	
+	var pressed = btn_style.duplicate()
+	pressed.bg_color = Color(0.1, 0.4, 0.1, 1.0)
+	btn_new_day.add_theme_stylebox_override("pressed", pressed)
+	
+	btn_new_day.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	btn_new_day.pressed.connect(func():
+		GameManager.start_new_day()
+		report_panel.visible = false
+	)
+	vbox.add_child(btn_new_day)
 	
 	report_panel.visible = false
 	_update_report_position()
@@ -807,7 +833,7 @@ func _on_time_changed(hour: int, minute: int) -> void:
 	_update_time_display(hour, minute)
 
 func _setup_bottom_bar() -> void:
-    # Ngăn mọi thao tác vuốt vô tình ở phần Menu rơi xuống Camera Map
+	# Ngăn mọi thao tác vuốt vô tình ở phần Menu rơi xuống Camera Map
 	if bottom_bar: bottom_bar.mouse_filter = Control.MOUSE_FILTER_STOP
 	if panel_bg: panel_bg.mouse_filter = Control.MOUSE_FILTER_STOP
 	
