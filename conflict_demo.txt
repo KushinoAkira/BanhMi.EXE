@@ -1,1 +1,0 @@
-﻿Resolved: Combined Local and Remote updates during conflict 2
