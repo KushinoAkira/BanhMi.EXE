@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://cieg6vroipuy8"]
+
+[ext_resource type="PackedScene" uid="uid://c8cuc3krm6ser" path="res://assets/vietnams_old_town/scene.gltf" id="1_po4na"]
+[ext_resource type="PackedScene" uid="uid://kh5ijqbbd2l0" path="res://assets/low_poly_banh_mi_cart/scene.gltf" id="2_tnamw"]
+[ext_resource type="PackedScene" uid="uid://8vpjcwvfty0x" path="res://assets/vietnamese_bamboo_furniture/scene.gltf" id="3_560hc"]
+[ext_resource type="PackedScene" uid="uid://jd1xwwyvacg6" path="res://assets/customer1/customer.fbx" id="4_u78ad"]
+[ext_resource type="PackedScene" uid="uid://bgva831jkus4k" path="res://assets/cusomter2/customer 2.fbx" id="5_j14fg"]
+[ext_resource type="PackedScene" uid="uid://df3xkddnjjsqh" path="res://assets/customer3/customer 3.fbx" id="6_cqi1n"]
+[ext_resource type="PackedScene" uid="uid://b10qcdxwnvacd" path="res://assets/dog/scene.gltf" id="7_sel54"]
+
+[node name="Node3D" type="Node3D" unique_id=1406828320]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.194192, 0, 0)
+
+[node name="Sketchfab_Scene" parent="." unique_id=223439954 instance=ExtResource("1_po4na")]
+transform = Transform3D(0.99993515, 0, -0.011396734, 0, 1, 0, 0.011396734, 0, 0.99993515, 32.07727, 0.28795528, -10.72776)
+
+[node name="cart" parent="." unique_id=2024371427 instance=ExtResource("2_tnamw")]
+transform = Transform3D(-4.4999094, 0, -0.028510224, 0, 4.5, 0, 0.028510224, 0, -4.4999094, 25.338078, 4.4675565, 9.1106)
+
+[node name="furniture1" parent="." unique_id=1899982594 instance=ExtResource("3_560hc")]
+transform = Transform3D(0.13849634, 0, -0.02046371, 0, 0.14, 0, 0.02046371, 0, 0.13849634, 29.412743, 0.75973225, 4.9310064)
+
+[node name="furniture2" parent="." unique_id=1871263586 instance=ExtResource("3_560hc")]
+transform = Transform3D(0.13895765, 0, 0.017052008, 0, 0.14, 0, -0.017052008, 0, 0.13895765, 22.084679, 0.7856991, 4.901662)
+
+[node name="customer" parent="." unique_id=970688488 instance=ExtResource("4_u78ad")]
+transform = Transform3D(0.551127, 0, -4.8689075, 0, 4.9, 0, 4.8689075, 0, 0.551127, 30.666512, 0.31222248, 9.165287)
+
+[node name="customer 2" parent="." unique_id=1881720351 instance=ExtResource("5_j14fg")]
+transform = Transform3D(2.4352884, 0, -4.0198717, 0, 4.7, 0, 4.0198717, 0, 2.4352884, 32.814922, 0.31184125, 7.560415)
+
+[node name="customer 3" parent="." unique_id=1632431975 instance=ExtResource("6_cqi1n")]
+transform = Transform3D(3.5600793, 0, 3.2196014, 0, 4.7999997, 0, -3.2196014, 0, 3.5600793, 20.030403, 0.24272776, 8.027645)
+
+[node name="dog" parent="." unique_id=1351095735 instance=ExtResource("7_sel54")]
+transform = Transform3D(-2.9422636, 0, -0.5857331, 0, 3, 0, 0.5857331, 0, -2.9422636, 18.110172, 1.4714084, 5.43234)
