@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="banhmiexe"
+run/main_scene="uid://cxeio3bleoobv"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
