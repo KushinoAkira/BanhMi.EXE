@@ -1,81 +1,14 @@
-[gd_scene format=3 uid="uid://cxeio3bleoobv"]
+[gd_scene load_steps=4 format=3 uid="uid://cxeio3bleoobv"]
 
-[ext_resource type="PackedScene" uid="uid://c8cuc3krm6ser" path="res://assets/vietnams_old_town/scene.gltf" id="1_itxqv"]
-[ext_resource type="Script" path="res://scene/main.gd" id="1_mainscript"]
-[ext_resource type="PackedScene" uid="uid://kh5ijqbbd2l0" path="res://assets/low_poly_banh_mi_cart/scene.gltf" id="2_p1hux"]
-[ext_resource type="PackedScene" uid="uid://8vpjcwvfty0x" path="res://assets/vietnamese_bamboo_furniture/scene.gltf" id="3_of57s"]
-[ext_resource type="PackedScene" uid="uid://jd1xwwyvacg6" path="res://assets/customer1/customer.fbx" id="4_b5f6u"]
-[ext_resource type="PackedScene" uid="uid://bgva831jkus4k" path="res://assets/cusomter2/customer 2.fbx" id="5_tqoya"]
-[ext_resource type="PackedScene" uid="uid://df3xkddnjjsqh" path="res://assets/customer3/customer 3.fbx" id="6_k65ib"]
-[ext_resource type="PackedScene" uid="uid://b10qcdxwnvacd" path="res://assets/dog/scene.gltf" id="7_wscrc"]
-[ext_resource type="PackedScene" path="res://scene/player.tscn" id="8_player"]
+[ext_resource type="PackedScene" path="res://scene/environment.tscn" id="1_env"]
+[ext_resource type="PackedScene" path="res://scene/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scene/hud.tscn" id="3_hud"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
-size = Vector3(200, 1, 200)
+[node name="Main" type="Node3D"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
-sky_top_color = Color(0.385, 0.639, 0.9, 1)
-sky_horizon_color = Color(0.839, 0.925, 0.98, 1)
-ground_horizon_color = Color(0.839, 0.925, 0.98, 1)
-ground_bottom_color = Color(0.4, 0.4, 0.4, 1)
-sun_angle_max = 30.0
+[node name="Environment" parent="." instance=ExtResource("1_env")]
 
-[sub_resource type="Sky" id="Sky_main"]
-sky_material = SubResource("ProceduralSkyMaterial_sky")
+[node name="Player" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3381, 2.0, 11.5)
 
-[sub_resource type="Environment" id="Environment_main"]
-background_mode = 2
-sky = SubResource("Sky_main")
-ambient_light_source = 3
-ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_sky_contribution = 0.5
-ambient_light_energy = 1.0
-tonemap_mode = 2
-glow_enabled = true
-
-[node name="Node3D" type="Node3D" unique_id=1406828320]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.194192, 0, 0)
-script = ExtResource("1_mainscript")
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_main")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 10, 0)
-light_energy = 1.5
-light_color = Color(1, 0.976, 0.918, 1)
-shadow_enabled = true
-
-[node name="Sketchfab_Scene" parent="." unique_id=223439954 instance=ExtResource("1_itxqv")]
-transform = Transform3D(0.99993515, 0, -0.011396734, 0, 1, 0, 0.011396734, 0, 0.99993515, 32.07727, 0.28795528, -10.72776)
-
-[node name="cart" parent="." unique_id=2024371427 instance=ExtResource("2_p1hux")]
-transform = Transform3D(-4.4999094, 0, -0.028510224, 0, 4.5, 0, 0.028510224, 0, -4.4999094, 25.338078, 4.4675565, 9.1106)
-
-[node name="furniture1" parent="." unique_id=1899982594 instance=ExtResource("3_of57s")]
-transform = Transform3D(0.13849634, 0, -0.02046371, 0, 0.14, 0, 0.02046371, 0, 0.13849634, 29.412743, 0.75973225, 4.9310064)
-
-[node name="furniture2" parent="." unique_id=1871263586 instance=ExtResource("3_of57s")]
-transform = Transform3D(0.13895765, 0, 0.017052008, 0, 0.14, 0, -0.017052008, 0, 0.13895765, 22.084679, 0.7856991, 4.901662)
-
-[node name="customer" parent="." unique_id=970688488 instance=ExtResource("4_b5f6u")]
-transform = Transform3D(0.551127, 0, -4.8689075, 0, 4.9, 0, 4.8689075, 0, 0.551127, 30.666512, 0.31222248, 9.165287)
-
-[node name="customer 2" parent="." unique_id=1881720351 instance=ExtResource("5_tqoya")]
-transform = Transform3D(2.4352884, 0, -4.0198717, 0, 4.7, 0, 4.0198717, 0, 2.4352884, 32.814922, 0.31184125, 7.560415)
-
-[node name="customer 3" parent="." unique_id=1632431975 instance=ExtResource("6_k65ib")]
-transform = Transform3D(3.5600793, 0, 3.2196014, 0, 4.7999997, 0, -3.2196014, 0, 3.5600793, 20.030403, 0.24272776, 8.027645)
-
-[node name="dog" parent="." unique_id=1351095735 instance=ExtResource("7_wscrc")]
-transform = Transform3D(-2.9422636, 0, -0.5857331, 0, 3, 0, 0.5857331, 0, -2.9422636, 18.110172, 1.4714084, 5.43234)
-
-[node name="Player" parent="." unique_id=1278757095 instance=ExtResource("8_player")]
-transform = Transform3D(4.5, 0, 0, 0, 4.5, 0, 0, 0, 4.5, 7.911456, 4.739482, 1.4895334)
-
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-shape = SubResource("BoxShape3D_floor")
-
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
