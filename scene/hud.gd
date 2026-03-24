@@ -1,6 +1,10 @@
 extends CanvasLayer
 
+@onready var item_label = $ItemLabel
+
 func _ready():
-	# Giao diện HUD hiện tại không có các nút điều khiển, 
-	# tôi đã xóa code tìm nút để tránh lỗi.
-	pass
+	# Ban đầu nhãn trống
+	item_label.text = ""
+
+func set_item_name(new_name: String):
+	item_label.text = new_name

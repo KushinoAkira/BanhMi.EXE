@@ -1,14 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://cxeio3bleoobv"]
+[gd_scene format=3 uid="uid://cxeio3bleoobv"]
 
-[ext_resource type="PackedScene" path="res://scene/environment.tscn" id="1_env"]
+[ext_resource type="PackedScene" uid="uid://cieg6vroipuy8" path="res://scene/environment.tscn" id="1_env"]
 [ext_resource type="PackedScene" path="res://scene/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scene/hud.tscn" id="3_hud"]
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=269333631]
 
-[node name="Environment" parent="." instance=ExtResource("1_env")]
+[node name="Environment" parent="." unique_id=1861050769 instance=ExtResource("1_env")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.025587559, 5.0980086, -0.008270025)
 
-[node name="Player" parent="." instance=ExtResource("2_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3381, 2.0, 11.5)
+[node name="Player" parent="." unique_id=615081474 instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3381, 2, 11.5)
 
-[node name="HUD" parent="." instance=ExtResource("3_hud")]
+[node name="HUD" parent="." unique_id=1650798524 instance=ExtResource("3_hud")]
