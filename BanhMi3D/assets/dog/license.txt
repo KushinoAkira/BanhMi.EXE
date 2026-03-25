@@ -1,0 +1,11 @@
+Model Information:
+* title:	Dog
+* source:	https://sketchfab.com/3d-models/dog-6c6116e2d5da4a9baaf33848c7b0d08b
+* author:	huynhthaitoan2226 (https://sketchfab.com/huynhthaitoan2226)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Dog" (https://sketchfab.com/3d-models/dog-6c6116e2d5da4a9baaf33848c7b0d08b) by huynhthaitoan2226 (https://sketchfab.com/huynhthaitoan2226) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

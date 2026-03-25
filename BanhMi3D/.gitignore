@@ -1,0 +1,14 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Unity generated folders (not needed in Godot project)
+/Library/
+/Logs/
+/Packages/
+/UserSettings/
+/Temp/
+/obj/
+/Build/
+/Builds/
+*.apk
