@@ -1,5 +1,7 @@
 extends StaticBody3D
 
+signal interacted(item_name: String, sender: Node)
+
 @export var item_name: String = "Item"
 var mesh_node: MeshInstance3D
 var highlight_material: StandardMaterial3D
@@ -27,4 +29,5 @@ func set_highlight(active: bool):
 			mesh_node.material_overlay = null
 
 func interact():
-	print(">>> [HÀNH ĐỘNG] Bạn đã lấy: ", item_name)
+	print(">>> [HÀNH ĐỘNG] Bạn đã tương tác với: ", item_name)
+	interacted.emit(item_name, self)
