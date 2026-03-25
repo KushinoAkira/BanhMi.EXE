@@ -74,11 +74,15 @@ func process_interaction():
 	if current_target != last_highlighted_target:
 		if last_highlighted_target:
 			last_highlighted_target.set_highlight(false)
-			if hud: hud.set_item_name("")
+			if hud:
+				hud.set_item_name("")
+				hud.set_crosshair_highlight(false)
 		
 		if current_target:
 			current_target.set_highlight(true)
-			if hud: hud.set_item_name(current_target.item_name)
+			if hud:
+				hud.set_item_name(current_target.item_name)
+				hud.set_crosshair_highlight(true)
 		
 		last_highlighted_target = current_target
 

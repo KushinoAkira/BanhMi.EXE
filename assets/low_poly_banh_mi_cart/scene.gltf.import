@@ -158,6 +158,21 @@ _subresources={
 },
 "PATH:Sketchfab_model/Collada visual scene group/g59/defaultMaterial59": {
 "import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g67/defaultMaterial67": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g68/defaultMaterial68": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g72/defaultMaterial72": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g73/defaultMaterial73": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g74/defaultMaterial74": {
+"import/skip_import": true
 }
 }
 }

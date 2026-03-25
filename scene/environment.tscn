@@ -11,6 +11,15 @@
 [ext_resource type="PackedScene" uid="uid://csvravulv6rvt" path="res://assets/banh_mi_items/banh_mi.glb" id="9_560hc"]
 [ext_resource type="PackedScene" uid="uid://mc87je70aneq" path="res://assets/banh_mi_items/to_nuoc_thit/to_nuoc_thit.glb" id="10_u78ad"]
 [ext_resource type="PackedScene" uid="uid://dmrideyorrlmc" path="res://assets/banh_mi_items/to_xi_dau/to_xi_dau.glb" id="11_j14fg"]
+[ext_resource type="PackedScene" uid="uid://bfwvs1eevg0go" path="res://assets/banh_mi_items/do_chua/do_chua.glb" id="12_f2dwq"]
+[ext_resource type="PackedScene" uid="uid://docurhlal8cxp" path="res://assets/banh_mi_items/rau_thom/rau_thom.glb" id="13_7clsy"]
+[ext_resource type="PackedScene" uid="uid://3uhj5vl2a44x" path="res://assets/banh_mi_items/trung_op_la/trung_op_la.glb" id="14_futd0"]
+[ext_resource type="PackedScene" uid="uid://bh07uiibbqo0w" path="res://assets/banh_mi_items/pate/pate.glb" id="15_ktafm"]
+[ext_resource type="PackedScene" uid="uid://b4adinayakxfy" path="res://assets/banh_mi_items/hop_pate/hop_pate.glb" id="16_pv5um"]
+[ext_resource type="PackedScene" uid="uid://drjrlju8d44e2" path="res://assets/banh_mi_items/to_sua/to_sua.glb" id="17_u0pxc"]
+[ext_resource type="PackedScene" uid="uid://b7rubaincak4v" path="res://assets/banh_mi_items/thit_nguoi/thit_nguoi.glb" id="18_hgmdq"]
+[ext_resource type="PackedScene" uid="uid://b1rf7trqt23oy" path="res://assets/banh_mi_items/thit_nuong/thit_nuong.glb" id="19_71yyv"]
+[ext_resource type="PackedScene" uid="uid://bie6v8l6cfqqv" path="res://assets/banh_mi_items/cha_lua/cha_lua.glb" id="20_cjf2n"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -120,7 +129,7 @@ shape = SubResource("BoxShape3D_side_wall")
 [node name="OldTown" parent="." unique_id=1145031289 instance=ExtResource("1_po4na")]
 transform = Transform3D(0.99993515, 0, -0.011396734, 0, 1, 0, 0.011396734, 0, 0.99993515, 32.07727, 0.28795528, -10.72776)
 
-[node name="cart" parent="." unique_id=708871137 instance=ExtResource("2_tnamw")]
+[node name="cart" parent="." unique_id=1330667263 instance=ExtResource("2_tnamw")]
 transform = Transform3D(-4.4999094, 0, -0.028510224, 0, 4.5, 0, 0.028510224, 0, -4.4999094, 25.34301, 4.4701514, 9.110272)
 script = ExtResource("8_cart_script")
 
@@ -189,3 +198,57 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.709513, 3.7843604, 8.27676
 
 [node name="to_xi_dau" parent="." unique_id=1861142308 instance=ExtResource("11_j14fg")]
 transform = Transform3D(0.7747096, 0, 0, 0, 0.67479646, 0, 0, 0, 0.8157661, 27.787178, 3.808847, 8.258282)
+
+[node name="do_chua" parent="." unique_id=112096050 instance=ExtResource("12_f2dwq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.54343, 5.52846, 8.64147)
+
+[node name="rau_thom" parent="." unique_id=2074534927 instance=ExtResource("13_7clsy")]
+transform = Transform3D(1, 0, 0, 0, 1.8163521, 0, 0, 0, 1, 26.298271, 5.486674, 8.498485)
+
+[node name="trung_op_la" parent="." unique_id=1816669348 instance=ExtResource("14_futd0")]
+transform = Transform3D(-1.0983629, 0, -0.9777879, 0, 1.9871472, 0, 1.0532923, 0, -1.0196276, 23.317587, 3.8500497, 9.8624)
+
+[node name="pate" parent="." unique_id=134619788 instance=ExtResource("15_ktafm")]
+transform = Transform3D(1, 0, 0, 0, 1.4584645, 0, 0, 0, 1, 24.744694, 3.8626432, 8.7235365)
+
+[node name="hop_pate" parent="." unique_id=1076072420 instance=ExtResource("16_pv5um")]
+transform = Transform3D(0.47076544, 0, 0, 0, 0.52921206, 0, 0, 0, 0.45227274, 22.684336, 3.7995477, 8.509873)
+
+[node name="hop_pate2" parent="." unique_id=1883572473 instance=ExtResource("16_pv5um")]
+transform = Transform3D(0.47076544, 0, 0, 0, 0.52921206, 0, 0, 0, 0.45227274, 23.157711, 3.7995477, 8.509873)
+
+[node name="hop_pate3" parent="." unique_id=959972476 instance=ExtResource("16_pv5um")]
+transform = Transform3D(0.47076544, 0, 0, 0, 0.52921206, 0, 0, 0, 0.45227274, 23.630497, 3.7995477, 8.509873)
+
+[node name="hop_pate4" parent="." unique_id=1927015567 instance=ExtResource("16_pv5um")]
+transform = Transform3D(0.47076544, 0, 0, 0, 0.52921206, 0, 0, 0, 0.45227274, 23.630497, 3.7995477, 7.9631767)
+
+[node name="hop_pate5" parent="." unique_id=1126137056 instance=ExtResource("16_pv5um")]
+transform = Transform3D(0.47076544, 0, 0, 0, 0.52921206, 0, 0, 0, 0.45227274, 23.14892, 3.7995477, 7.9970207)
+
+[node name="hop_pate6" parent="." unique_id=375708421 instance=ExtResource("16_pv5um")]
+transform = Transform3D(0.47076544, 0, 0, 0, 0.52921206, 0, 0, 0, 0.45227274, 22.654146, 3.7995477, 7.9970207)
+
+[node name="hop_pate7" parent="." unique_id=1033349695 instance=ExtResource("16_pv5um")]
+transform = Transform3D(0.47076544, 0, 0, 0, 0.52921206, 0, 0, 0, 0.45227274, 22.881956, 4.0685916, 7.9970207)
+
+[node name="hop_pate8" parent="." unique_id=1711182718 instance=ExtResource("16_pv5um")]
+transform = Transform3D(0.47076544, 0, 0, 0, 0.52921206, 0, 0, 0, 0.45227274, 22.891216, 4.0685916, 8.523201)
+
+[node name="hop_pate9" parent="." unique_id=1277832515 instance=ExtResource("16_pv5um")]
+transform = Transform3D(0.47076544, 0, 0, 0, 0.52921206, 0, 0, 0, 0.45227274, 23.453146, 4.0685916, 8.523201)
+
+[node name="hop_pate10" parent="." unique_id=2005817740 instance=ExtResource("16_pv5um")]
+transform = Transform3D(0.47076544, 0, 0, 0, 0.52921206, 0, 0, 0, 0.45227274, 23.453146, 4.0685916, 8.006887)
+
+[node name="to_sua" parent="." unique_id=1155781879 instance=ExtResource("17_u0pxc")]
+transform = Transform3D(0.775918, 0, 0, 0, 0.95171994, 0, 0, 0, 0.80577964, 25.716455, 3.8206592, 8.6249275)
+
+[node name="thit_nguoi" parent="." unique_id=713887842 instance=ExtResource("18_hgmdq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.937557, 5.437155, 8.861408)
+
+[node name="thit_nuong" parent="." unique_id=794392920 instance=ExtResource("19_71yyv")]
+transform = Transform3D(1.1866436, 0, 0, 0, 1.0441734, 0, 0, 0, 1, 22.984463, 5.472889, 8.81425)
+
+[node name="cha_lua" parent="." unique_id=1611717729 instance=ExtResource("20_cjf2n")]
+transform = Transform3D(1.2729228, 0, 0, 0, 0.8212328, 0, 0, 0, 1, 23.891853, 5.42339, 8.751352)

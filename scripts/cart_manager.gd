@@ -21,7 +21,16 @@ var item_map = {
 var manual_items_map = {
 	"banh_mi": "Bánh mì",
 	"to_nuoc_thit": "Tô nước thịt",
-	"to_xi_dau": "Tô xì dầu"
+	"to_xi_dau": "Tô xì dầu",
+	"to_sua": "Tô sữa",
+	"trung_op_la": "Dĩa trứng ốp la",
+	"hop_pate": "Hộp pate",
+	"pate": "Tô pate",
+	"rau_thom": "Tô rau thơm",
+	"do_chua": "Tô đồ chua",
+	"thit_nguoi": "Dĩa thịt nguội",
+	"thit_nuong": "Dĩa thịt nướng",
+	"cha_lua": "Dĩa chả lụa"
 }
 
 func _ready():
