@@ -1,0 +1,165 @@
+[remap]
+
+importer="scene"
+importer_version=1
+type="PackedScene"
+uid="uid://kh5ijqbbd2l0"
+path="res://.godot/imported/scene.gltf-4e66ddc0c60f0ded537cf0ef6ffb40bb.scn"
+
+[deps]
+
+source_file="res://assets/low_poly_banh_mi_cart/scene.gltf"
+dest_files=["res://.godot/imported/scene.gltf-4e66ddc0c60f0ded537cf0ef6ffb40bb.scn"]
+
+[params]
+
+nodes/root_type=""
+nodes/root_name=""
+nodes/root_script=null
+nodes/apply_root_scale=true
+nodes/root_scale=1.0
+nodes/import_as_skeleton_bones=false
+nodes/use_name_suffixes=true
+nodes/use_node_type_suffixes=true
+meshes/ensure_tangents=true
+meshes/generate_lods=true
+meshes/create_shadow_meshes=true
+meshes/light_baking=1
+meshes/lightmap_texel_size=0.2
+meshes/force_disable_compression=false
+skins/use_named_skins=true
+animation/import=true
+animation/fps=30
+animation/trimming=false
+animation/remove_immutable_tracks=true
+animation/import_rest_as_RESET=false
+import_script/path=""
+materials/extract=0
+materials/extract_format=0
+materials/extract_path=""
+_subresources={
+"nodes": {
+"PATH:Sketchfab_model/Collada visual scene group/g12/defaultMaterial12": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g13/defaultMaterial13": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g14/defaultMaterial14": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g15/defaultMaterial15": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g16/defaultMaterial16": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g17/defaultMaterial17": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g18/defaultMaterial18": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g19/defaultMaterial19": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g20/defaultMaterial20": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g21/defaultMaterial21": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g22/defaultMaterial22": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g23/defaultMaterial23": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g24/defaultMaterial24": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g25/defaultMaterial25": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g26/defaultMaterial26": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g27/defaultMaterial27": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g28/defaultMaterial28": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g29/defaultMaterial29": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g30/defaultMaterial30": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g31/defaultMaterial31": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g32/defaultMaterial32": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g33/defaultMaterial33": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g34/defaultMaterial34": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g35/defaultMaterial35": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g36/defaultMaterial36": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g37/defaultMaterial37": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g38/defaultMaterial38": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g39/defaultMaterial39": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g40/defaultMaterial40": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g41/defaultMaterial41": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g42/defaultMaterial42": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g50/defaultMaterial50": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g51/defaultMaterial51": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g53/defaultMaterial53": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g54/defaultMaterial54": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g55/defaultMaterial55": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g56/defaultMaterial56": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g57/defaultMaterial57": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g58/defaultMaterial58": {
+"import/skip_import": true
+},
+"PATH:Sketchfab_model/Collada visual scene group/g59/defaultMaterial59": {
+"import/skip_import": true
+}
+}
+}
+gltf/naming_version=2
+gltf/embedded_image_handling=1

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://6tc2k24gy1jj"
+path="res://.godot/imported/Aerial City, Chika - Main Menu Music, Extended.mp3-843fd52fca0b062158fc713733d308e1.mp3str"
+
+[deps]
+
+source_file="res://assets/Music/Aerial City, Chika - Main Menu Music, Extended.mp3"
+dest_files=["res://.godot/imported/Aerial City, Chika - Main Menu Music, Extended.mp3-843fd52fca0b062158fc713733d308e1.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
