@@ -1,10 +1,9 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://scene/hud.gd" id="1_hudscript"]
+[ext_resource type="Script" path="res://scene/hud.gd" id="1_script"]
 
 [node name="HUD" type="CanvasLayer"]
-layer = 10
-script = ExtResource("1_hudscript")
+script = ExtResource("1_script")
 
 [node name="Crosshair" type="ColorRect" parent="."]
 anchors_preset = 8
@@ -18,23 +17,57 @@ offset_right = 2.0
 offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-color = Color(1, 1, 1, 0.8)
+color = Color(1, 1, 1, 0.784314)
 
 [node name="ItemLabel" type="Label" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = -74.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 24
+text = "Tên vật phẩm"
+horizontal_alignment = 1
+
+[node name="RecipeLabel" type="Label" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -250.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 200.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 18
+text = "Đơn hàng: Bánh mì Pate
+[ ] Pate
+[ ] Rau thơm
+[ ] Đồ chua"
+autowrap_mode = 3
+
+[node name="NotificationLabel" type="Label" parent="."]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = 10.0
-offset_right = 100.0
-offset_bottom = 36.0
+offset_left = -300.0
+offset_top = -50.0
+offset_right = 300.0
+offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-text = ""
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 32
+text = "Ơ kìa, đây không phải bánh mì của tôi!"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
