@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://ivdev2xkhgnr"]
+
+[ext_resource type="PackedScene" uid="uid://cieg6vroipuy8" path="res://scene/environment.tscn" id="1_x5hgm"]
+[ext_resource type="PackedScene" path="res://scene/player.tscn" id="2_ydjyx"]
+[ext_resource type="PackedScene" path="res://scene/hud.tscn" id="3_lve4d"]
+[ext_resource type="Script" uid="uid://rs0cjo80wuu8" path="res://scene/menu.gd" id="4_ydjyx"]
+
+[node name="Menu" type="Node3D" unique_id=269333631]
+transform = Transform3D(0.9974682, 0.07111445, 0, -0.07111445, 0.9974682, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Environment" parent="." unique_id=1861050769 instance=ExtResource("1_x5hgm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.025587559, 5.0980086, -0.008270025)
+
+[node name="Player" parent="." unique_id=615081474 instance=ExtResource("2_ydjyx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3381, 2, 11.5)
+
+[node name="HUD" parent="." unique_id=1650798524 instance=ExtResource("3_lve4d")]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1213642879]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -78.75
+offset_top = -48.150635
+offset_right = 72.0
+offset_bottom = 24.239807
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1, 1.0105015)
+script = ExtResource("4_ydjyx")
+
+[node name="Play" type="Button" parent="VBoxContainer" unique_id=1416720066]
+layout_mode = 2
+text = "Play
+"
+
+[node name="Quit" type="Button" parent="VBoxContainer" unique_id=591535870]
+layout_mode = 2
+text = "Quit"
+
+[connection signal="pressed" from="VBoxContainer/Play" to="VBoxContainer" method="_on_play_pressed"]
+[connection signal="pressed" from="VBoxContainer/Quit" to="VBoxContainer" method="_on_quit_pressed"]

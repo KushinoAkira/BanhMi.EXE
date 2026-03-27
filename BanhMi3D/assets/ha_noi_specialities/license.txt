@@ -1,0 +1,11 @@
+Model Information:
+* title:	Ha Noi specialities
+* source:	https://sketchfab.com/3d-models/ha-noi-specialities-80552b6988f949ddbb36e46b145f70d0
+* author:	Anhbodoi36 (https://sketchfab.com/Anhbodoi36)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Ha Noi specialities" (https://sketchfab.com/3d-models/ha-noi-specialities-80552b6988f949ddbb36e46b145f70d0) by Anhbodoi36 (https://sketchfab.com/Anhbodoi36) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

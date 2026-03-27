@@ -1,0 +1,11 @@
+Model Information:
+* title:	Lemon Tree
+* source:	https://sketchfab.com/3d-models/lemon-tree-a4206b70d13e44b88222e522e8f1d1e7
+* author:	ieie (https://sketchfab.com/ieie)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Lemon Tree" (https://sketchfab.com/3d-models/lemon-tree-a4206b70d13e44b88222e522e8f1d1e7) by ieie (https://sketchfab.com/ieie) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

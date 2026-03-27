@@ -1,0 +1,9 @@
+AnimationPlayer
+ColorRect
+Sprite2D
+CollisionShape3D
+StaticBody3D
+Node3D
+DirectionalLight3D
+WorldEnvironment
+Camera3D
