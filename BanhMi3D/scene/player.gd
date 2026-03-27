@@ -28,12 +28,28 @@ func _ready():
 	if hud and manager:
 		hud.set_recipe_text(manager.get_recipe_info())
 
+func _input(event):
+	# 1. Bắt chuột khi nhấn vào màn hình
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			if Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
+				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+				get_viewport().set_input_as_handled()
+
+	# 2. Xử lý xoay chuột
+	if event is InputEventMouseMotion:
+		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+			# Xoay toàn bộ thân người chơi theo trục Y (sang trái/phải)
+			rotate_y(-event.relative.x * MOUSE_SENSITIVITY)
+			
+			# Chỉ xoay Head/Camera theo trục X (lên/xuống)
+			camera.rotate_x(-event.relative.y * MOUSE_SENSITIVITY)
+			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+			
+			# Đánh dấu đã xử lý để không truyền xuống các node dưới
+			get_viewport().set_input_as_handled()
+
 func _unhandled_input(event):
-	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		head.rotate_y(-event.relative.x * MOUSE_SENSITIVITY)
-		camera.rotate_x(-event.relative.y * MOUSE_SENSITIVITY)
-		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
-	
 	if event.is_action_pressed("ui_cancel"):
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -47,6 +63,7 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 
+	# Di chuyển dựa trên hướng của thân người (transform.basis)
 	var input_dir := Vector2(
 		float(Input.is_key_pressed(KEY_D) or Input.is_action_pressed("ui_right")) -
 		float(Input.is_key_pressed(KEY_A) or Input.is_action_pressed("ui_left")),
@@ -54,7 +71,7 @@ func _physics_process(delta):
 		float(Input.is_key_pressed(KEY_W) or Input.is_action_pressed("ui_up"))
 	).limit_length(1.0)
 	
-	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	if direction:
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
