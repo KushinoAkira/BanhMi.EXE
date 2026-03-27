@@ -20,8 +20,15 @@
 [ext_resource type="PackedScene" uid="uid://b7rubaincak4v" path="res://assets/banh_mi_items/thit_nguoi/thit_nguoi.glb" id="18_hgmdq"]
 [ext_resource type="PackedScene" uid="uid://b1rf7trqt23oy" path="res://assets/banh_mi_items/thit_nuong/thit_nuong.glb" id="19_71yyv"]
 [ext_resource type="PackedScene" uid="uid://bie6v8l6cfqqv" path="res://assets/banh_mi_items/cha_lua/cha_lua.glb" id="20_cjf2n"]
-[ext_resource type="PackedScene" uid="uid://btkplxdke7su0" path="res://assets/bicycle/Bicycle.fbx" id="21_cjf2n"]
-[ext_resource type="PackedScene" uid="uid://dbdgye8v0pvyn" path="res://assets/bicycle/Bicycle 2.fbx" id="22_vgaxo"]
+[ext_resource type="PackedScene" uid="uid://dphvedaqrncp7" path="res://assets/ha_noi_specialities/scene.gltf" id="21_71yyv"]
+[ext_resource type="PackedScene" uid="uid://cdhhxp6tu4cot" path="res://assets/vietnamese_meat_market_stall/scene.gltf" id="22_i1jpj"]
+[ext_resource type="PackedScene" uid="uid://ivp1bsuyiw65" path="res://assets/honda_super_cub/scene.gltf" id="23_giber"]
+[ext_resource type="PackedScene" uid="uid://cdvrtwud12chm" path="res://assets/honda_cb_750_f_super_sport_1970/scene.gltf" id="24_okolh"]
+[ext_resource type="PackedScene" uid="uid://xp06cr1d4rbj" path="res://assets/lemon_tree/scene.gltf" id="25_x2qnl"]
+[ext_resource type="PackedScene" uid="uid://bjwpb7gxl0pu7" path="res://assets/old_bicycle/scene.gltf" id="26_b1ytd"]
+[ext_resource type="PackedScene" uid="uid://c3d1jg7jxrvfq" path="res://assets/wardrobe_rack/scene.gltf" id="27_okolh"]
+[ext_resource type="PackedScene" uid="uid://cwur4xgigv847" path="res://assets/trash_bins/scene.gltf" id="28_b1ytd"]
+[ext_resource type="PackedScene" uid="uid://4rva574agy2b" path="res://assets/tree_s2/scene.gltf" id="28_x2qnl"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -130,7 +137,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 10, 10)
 shape = SubResource("BoxShape3D_side_wall")
 
 [node name="OldTown" parent="." unique_id=1145031289 instance=ExtResource("1_po4na")]
-transform = Transform3D(0.99993515, 0, -0.011396734, 0, 1, 0, 0.011396734, 0, 0.99993515, 32.123257, 0.28795552, -10.752882)
+transform = Transform3D(0.99993515, 0, -0.011396734, 0, 1, 0, 0.011396734, 0, 0.99993515, 32.07727, 0.28795528, -10.72776)
 
 [node name="cart" parent="." unique_id=1330667263 instance=ExtResource("2_tnamw")]
 transform = Transform3D(-4.4999094, 0, -0.028510224, 0, 4.5, 0, 0.028510224, 0, -4.4999094, 25.34301, 4.4701514, 9.110272)
@@ -256,8 +263,38 @@ transform = Transform3D(1.1866436, 0, 0, 0, 1.0441734, 0, 0, 0, 1, 22.984463, 5.
 [node name="cha_lua" parent="." unique_id=1611717729 instance=ExtResource("20_cjf2n")]
 transform = Transform3D(1.2729228, 0, 0, 0, 0.8212328, 0, 0, 0, 1, 23.891853, 5.42339, 8.751352)
 
-[node name="Bicycle" parent="." unique_id=881989833 instance=ExtResource("21_cjf2n")]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, -11.240877, 0.8, 12.386293)
+[node name="cay1" parent="." unique_id=1521350649 instance=ExtResource("28_x2qnl")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 32.627163, 1.3217597, -6.0154557)
 
-[node name="Bicycle 2" parent="." unique_id=760828938 instance=ExtResource("22_vgaxo")]
-transform = Transform3D(-5, 0, -4.371139e-07, 0, 5, 0, 4.371139e-07, 0, -5, 31.26622, 0.8, -7.565856)
+[node name="lemontree1" parent="." unique_id=1790704165 instance=ExtResource("25_x2qnl")]
+transform = Transform3D(9, 0, 0, 0, 9, 0, 0, 0, 9, 13.136999, 0.85779095, -7.427985)
+
+[node name="lemontree2" parent="." unique_id=449147613 instance=ExtResource("25_x2qnl")]
+transform = Transform3D(-2.4455345, 0, 8.661371, 0, 9, 0, -8.661371, 0, -2.4455345, 27.656082, 0.8738527, -7.427985)
+
+[node name="honda1" parent="." unique_id=2053888966 instance=ExtResource("23_giber")]
+transform = Transform3D(29.568184, 0, 5.0717115, 0, 29.999998, 0, -5.0717115, 0, 29.568184, -6.1729097, 0.53067076, -3.1102214)
+
+[node name="honda2" parent="." unique_id=1290049220 instance=ExtResource("24_okolh")]
+transform = Transform3D(0.5371208, 0, -3.963774, 0, 4, 0, 3.963774, 0, 0.5371208, 2.134262, 0.2710544, -4.2607384)
+
+[node name="hang_thit" parent="." unique_id=529015457 instance=ExtResource("22_i1jpj")]
+transform = Transform3D(-1.0992342, 0, 0.041037116, 0, 1.1, 0, -0.041037116, 0, -1.0992342, -17.58136, 2.3841858e-07, 8.256724)
+
+[node name="bike" parent="." unique_id=1235398795 instance=ExtResource("26_b1ytd")]
+transform = Transform3D(0.3898967, 0, -0.089334056, 0, 0.39999995, 0, 0.089334056, 0, 0.3898967, -29.207308, 1.7088323, 9.102118)
+
+[node name="thuoc_lao" parent="." unique_id=1140827014 instance=ExtResource("21_71yyv")]
+transform = Transform3D(-0.29997623, 0, 0.0037750378, 0, 0.29999998, 0, -0.0037750378, 0, -0.29997623, 5.671856, 0.90245485, 12.667055)
+
+[node name="trash" parent="." unique_id=1494839365 instance=ExtResource("28_b1ytd")]
+transform = Transform3D(-0.03522347, 0, -1.0994359, 0, 1.1, 0, 1.0994359, 0, -0.03522347, -30.541643, 0.9087645, -7.9940906)
+
+[node name="do_phoi" parent="." unique_id=1818237307 instance=ExtResource("27_okolh")]
+transform = Transform3D(0.013329742, 0, 0.5998519, 0, 0.59999996, 0, -0.5998519, 0, 0.013329742, -37.82232, 1.0891199, 13.6340685)
+
+[node name="lemontree3" parent="." unique_id=884973407 instance=ExtResource("25_x2qnl")]
+transform = Transform3D(5.805397, 0, -5.504304, 0, 8, 0, 5.504304, 0, 5.805397, -56.03414, 0.8168044, 11.971565)
+
+[node name="lemontree4" parent="." unique_id=12372055 instance=ExtResource("25_x2qnl")]
+transform = Transform3D(1.6489499, 0, -7.8282156, 0, 8, 0, 7.8282156, 0, 1.6489499, -70.96682, 0.8168044, 11.971565)

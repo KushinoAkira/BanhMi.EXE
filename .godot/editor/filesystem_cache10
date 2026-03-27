@@ -1,0 +1,67 @@
+63f7b34db8d8cdea90c76aacccf841ec
+::res://::1774427431
+icon.svg::CompressedTexture2D::5366936950377850117::1774250117::1774250123::1::::<><><>0<>0<>6201dee00ac56b5b802af9cbb636e660<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
+::res://assets/::1774427094
+::res://assets/cusomter2/::1774256535
+customer 2.fbx::PackedScene::2850966120797221132::1774257038::1774254204::1::::<><><>0<>0<>322a09c508ab8855247e2a74f5c6ceaf<>res://.godot/imported/customer 2.fbx-88dfec8beae3bbb4719f8035f3778902.scn::uid://dt5mir44vmjgk::::res://assets/cusomter2/customer 2_0.png<>uid://bdqxbcyephgny::::res://assets/cusomter2/customer 2_1.png
+customer 2_0.png::CompressedTexture2D::8555525242130601610::1774254177::1774254205::1::::<><><>0<>0<>855bbb9d859a289ac53b8094c89790ae<>res://.godot/imported/customer 2_0.png-4d7cb9384817e69a72b506617518c50a.s3tc.ctex::
+customer 2_1.png::CompressedTexture2D::2631415677623763730::1774254183::1774254205::1::::<><><>0<>0<>5d574a3e45a365e7526ee70fe330beeb<>res://.godot/imported/customer 2_1.png-e45e4b9b12179c924fe5da2f856ba0a9.s3tc.ctex::
+customer 2_2.png::CompressedTexture2D::8723144496620603208::1774254189::1774254192::1::::<><><>0<>0<>cf21dcc0c4edf438aba335d6fc35336f<>res://.godot/imported/customer 2_2.png-7b74bb95ce494d9b61c7807d8b0675c2.ctex::
+customer 2_3.png::CompressedTexture2D::554674854788778271::1774254194::1774254197::1::::<><><>0<>0<>6227b78fc15935a4551547c11ade8061<>res://.godot/imported/customer 2_3.png-d185baf4912950599879afddcccd9af1.ctex::
+::res://assets/customer1/::1774256535
+customer.fbx::PackedScene::639513631694127555::1774257038::1774253708::1::::<><><>0<>0<>09d7933e1c37c9c11b2a6c2f563d4f79<>res://.godot/imported/customer.fbx-7d2a49fc5175ac3a276c579a82d63705.scn::uid://t26j6dm6yuve::::res://assets/customer1/customer_0.png<>uid://cbbh51m53q33i::::res://assets/customer1/customer_1.png
+customer_0.png::CompressedTexture2D::1391226160849020046::1774253680::1774253708::1::::<><><>0<>0<>00eff363892c79eb74fc57ba74030072<>res://.godot/imported/customer_0.png-0bd640c2987fc4d40f6e159ff271d3ae.s3tc.ctex::
+customer_1.png::CompressedTexture2D::4845574567090705456::1774253688::1774253709::1::::<><><>0<>0<>8c4344f0d08dcf6ba0f51272646a25df<>res://.godot/imported/customer_1.png-2fd7c8758fc37e75eeb891da38b694d9.s3tc.ctex::
+customer_2.png::CompressedTexture2D::2724079048204613943::1774253694::1774253697::1::::<><><>0<>0<>0e85c5c6975ea2ac5bedf6c96593bd19<>res://.godot/imported/customer_2.png-56e4f7fea7d7a61e1d1fbbaf95f55904.ctex::
+customer_3.png::CompressedTexture2D::1481251829296633081::1774253698::1774253701::1::::<><><>0<>0<>a5eebed95664cfcd5d9e4ab77e8ec63a<>res://.godot/imported/customer_3.png-28d719d02afc8ac2207006ae01eaf53d.ctex::
+::res://assets/customer3/::1774256536
+customer 3.fbx::PackedScene::7569423357963342759::1774257038::1774254305::1::::<><><>0<>0<>0992cbbf387df05158f05872b56e3c2a<>res://.godot/imported/customer 3.fbx-b18690a4a470de49d01ee842807b8785.scn::uid://cppchntpvuie8::::res://assets/customer3/customer 3_0.png<>uid://dcsclbgjy73tp::::res://assets/customer3/customer 3_1.png
+customer 3_0.png::CompressedTexture2D::5856774335675677401::1774254279::1774254306::1::::<><><>0<>0<>e8994002d9a63e25abd8c2b6dcbcdd55<>res://.godot/imported/customer 3_0.png-034f9eee6b3a13540c18acc16215b5af.s3tc.ctex::
+customer 3_1.png::CompressedTexture2D::7336939677881388965::1774254285::1774254306::1::::<><><>0<>0<>4317d041959708d2581faf1f3e43c64d<>res://.godot/imported/customer 3_1.png-00d10a8a1fcead20182a08ac20614be6.s3tc.ctex::
+customer 3_2.png::CompressedTexture2D::3641101071054082328::1774254291::1774254294::1::::<><><>0<>0<>41ceba4d04fd1b5303d7044be1014728<>res://.godot/imported/customer 3_2.png-8d0d95d9d06066ec04153c57b04d9beb.ctex::
+customer 3_3.png::CompressedTexture2D::4905314123497657813::1774254296::1774254298::1::::<><><>0<>0<>7bc3cdb00380936f5f389f7b71d6937b<>res://.godot/imported/customer 3_3.png-e71ff9ffe02051f84e0d07a9d6fb1eb4.ctex::
+::res://assets/dog/::1774256536
+license.txt::TextFile::-1::1774252536::0::1::::<><><>0<>0<><>::
+scene.gltf::PackedScene::4263915299723839807::1774252536::1774252539::1::::<><><>0<>0<>96c5c8ae178348d401f606bf6070766f<>res://.godot/imported/scene.gltf-56813cd4ad50c7bfff0921a6a88337cf.scn::uid://2hrj0cg8b5jb::::res://assets/dog/textures/Material.002_baseColor.png<>uid://o1nd28gxt8rk::::res://assets/dog/textures/Material.002_metallicRoughness.png<>uid://co8ox0gwiiwi::::res://assets/dog/textures/Material.002_normal.png
+::res://assets/dog/textures/::1774256536
+Material.002_baseColor.png::CompressedTexture2D::1910599000017615107::1774252536::1774252540::1::::<><><>0<>0<>0159e92e827ee554c0cad3c45d28f2f6<>res://.godot/imported/Material.002_baseColor.png-d59a2efd94ba548be080ed882c110212.s3tc.ctex::
+Material.002_metallicRoughness.png::CompressedTexture2D::1037113780238819672::1774252536::1774252540::1::::<><><>0<>0<>d9e2cf352b9828cd201292b55b751954<>res://.godot/imported/Material.002_metallicRoughness.png-c12fff6b6556fb04dfb96277be5ff11f.s3tc.ctex::
+Material.002_normal.png::CompressedTexture2D::171308884668363572::1774252536::1774252540::1::::<><><>0<>0<>45725cc6a0fc5a2a1969dc35636b03fb<>res://.godot/imported/Material.002_normal.png-7d182e1c4d2a3eaae12bc3587bfd5559.s3tc.ctex::
+::res://assets/ha_noi_specialities/::1774281783
+license.txt::TextFile::-1::1774281754::0::1::::<><><>0<>0<><>::
+scene.gltf::PackedScene::8227827708272171422::1774281754::1774281783::1::::<><><>0<>0<>0d37afa16df3b8cae9493ffecd99070c<>res://.godot/imported/scene.gltf-0bd53740819dc36a06a1f3084de913a6.scn::
+::res://assets/low_poly_banh_mi_cart/::1774256536
+license.txt::TextFile::-1::1774251063::0::1::::<><><>0<>0<><>::
+scene.gltf::PackedScene::718175374266918595::1774251063::1774251076::1::::<><><>0<>0<>c5e26dc97dc6fbe6cb1d44c4a474f1dc<>res://.godot/imported/scene.gltf-4e66ddc0c60f0ded537cf0ef6ffb40bb.scn::uid://ckqp2s6ln1u5u::::res://assets/low_poly_banh_mi_cart/textures/lambert17SG_baseColor.png<>uid://byyjjkruo366y::::res://assets/low_poly_banh_mi_cart/textures/lambert17SG_metallicRoughness.png<>uid://dxi8gs6w82fif::::res://assets/low_poly_banh_mi_cart/textures/lambert17SG_normal.jpeg
+::res://assets/low_poly_banh_mi_cart/textures/::1774256536
+lambert17SG_baseColor.png::CompressedTexture2D::5508719812985859104::1774251063::1774251076::1::::<><><>0<>0<>3880ee4263e3d108042a5a6d700360b9<>res://.godot/imported/lambert17SG_baseColor.png-5569c4c6a0e858319a211eb21b2f2fb7.s3tc.ctex::
+lambert17SG_metallicRoughness.png::CompressedTexture2D::4121061074607086258::1774251063::1774251075::1::::<><><>0<>0<>0d7346f318f4eb78b080eb8ef8df69fe<>res://.godot/imported/lambert17SG_metallicRoughness.png-be78794962bcdced3a653b218d2478a7.s3tc.ctex::
+lambert17SG_normal.jpeg::CompressedTexture2D::8792135846665234065::1774251063::1774251075::1::::<><><>0<>0<>b87fb34ee8549acd4c7aee310c4832b2<>res://.godot/imported/lambert17SG_normal.jpeg-1d0435e3eec7e664170a468047380316.s3tc.ctex::
+::res://assets/vietnamese_bamboo_furniture/::1774256536
+license.txt::TextFile::-1::1774252122::0::1::::<><><>0<>0<><>::
+scene.gltf::PackedScene::2360510739920963409::1774252122::1774252129::1::::<><><>0<>0<>ca7ea2a6c1c2e3462b464ad8ab27d21b<>res://.godot/imported/scene.gltf-98f070de04e0476b4b645d64b3a23f3e.scn::
+::res://assets/vietnams_old_town/::1774427348
+A_GAME_BY_GROUP_3.png::CompressedTexture2D::4662965871735905964::1774427348::1774427118::1::::<><><>0<>0<>e830020fd7297d117a97c4d3a83ce4d8<>res://.godot/imported/A_GAME_BY_GROUP_3.png-4e48b029a4283bc748771063c8e78403.ctex::
+license.txt::TextFile::-1::1774250155::0::1::::<><><>0<>0<><>::
+scene.gltf::PackedScene::7094421361284055225::1774250155::1774250905::1::::<><><>0<>0<>ad3faa8ff7f42ac6a61353106fe0fee0<>res://.godot/imported/scene.gltf-a15af33b726dee9a7d15d6301cc0e197.scn::uid://mkly44d3hg6x::::res://assets/vietnams_old_town/textures/Material.011_baseColor.png<>uid://dfhxfysrqlbtw::::res://assets/vietnams_old_town/textures/Material.011_metallicRoughness.png<>uid://dvukoo2p4px36::::res://assets/vietnams_old_town/textures/Material.011_normal.png<>uid://dl7o4yuh3036g::::res://assets/vietnams_old_town/textures/Material.012_baseColor.jpeg<>uid://dd5kr1y7gv581::::res://assets/vietnams_old_town/textures/Material.012_metallicRoughness.png<>uid://0q0a2q4n8uvd::::res://assets/vietnams_old_town/textures/Material.012_normal.jpeg<>uid://c0qmy1jpvl7e5::::res://assets/vietnams_old_town/textures/poster_baseColor.png<>uid://baq021drg48dg::::res://assets/vietnams_old_town/textures/BANGQUANCAO_baseColor.png<>uid://bmoi0pvj1ea13::::res://assets/vietnams_old_town/textures/Material.001_baseColor.png<>uid://c2fhw8y04qalq::::res://assets/vietnams_old_town/textures/Material.002_baseColor.png<>uid://30a0rw0xmrge::::res://assets/vietnams_old_town/textures/Material.006_baseColor.jpeg<>uid://dldr0enqw2de5::::res://assets/vietnams_old_town/textures/Material.007_baseColor.png
+::res://assets/vietnams_old_town/textures/::1774256536
+BANGQUANCAO_baseColor.png::CompressedTexture2D::2421018240035766552::1774250155::1774250882::1::::<><><>0<>0<>469182b7cfdf381d1ee8937d57c7bc62<>res://.godot/imported/BANGQUANCAO_baseColor.png-cf53e3a20f43eb186a560361a0bef145.s3tc.ctex::
+Material.001_baseColor.png::CompressedTexture2D::3258119297431047216::1774250155::1774250882::1::::<><><>0<>0<>535210bc5d013c2debaee5e31ec5249c<>res://.godot/imported/Material.001_baseColor.png-ba631de361663de3bbbd19b9b6ce0773.s3tc.ctex::
+Material.002_baseColor.png::CompressedTexture2D::6678728112319777654::1774250155::1774250882::1::::<><><>0<>0<>f0e45604dfb4c453cf900df95145bc65<>res://.godot/imported/Material.002_baseColor.png-20e867c008b542a00030e7db1fc10311.s3tc.ctex::
+Material.006_baseColor.jpeg::CompressedTexture2D::2016942638613785988::1774250155::1774250882::1::::<><><>0<>0<>f0bed6743026d777663cc9ccdcf875fc<>res://.godot/imported/Material.006_baseColor.jpeg-0144d0ea379834e094437be127f27deb.s3tc.ctex::
+Material.007_baseColor.png::CompressedTexture2D::7938609529017780010::1774250155::1774250882::1::::<><><>0<>0<>28392b8a92d7c93f805f4c7931f6660e<>res://.godot/imported/Material.007_baseColor.png-d991599fa595c5fb406957baab7314c4.s3tc.ctex::
+Material.011_baseColor.png::CompressedTexture2D::863622215321624037::1774250155::1774250882::1::::<><><>0<>0<>9517a465d4a6939299db4fc3b0f8bdbc<>res://.godot/imported/Material.011_baseColor.png-63132226ca00772e3326b616f3c6f979.s3tc.ctex::
+Material.011_metallicRoughness.png::CompressedTexture2D::7526063622512137368::1774250155::1774250882::1::::<><><>0<>0<>83bb9fc7b49b9476e5be5c5e84fd4215<>res://.godot/imported/Material.011_metallicRoughness.png-b918fff48e24dc3c5120977e495f5fd7.s3tc.ctex::
+Material.011_normal.png::CompressedTexture2D::8675148271359035419::1774250155::1774250882::1::::<><><>0<>0<>80c993e1466118e9e9b3618fcb1f42df<>res://.godot/imported/Material.011_normal.png-63e7edbf9238c87d23bb04ec36cd1c88.s3tc.ctex::
+Material.012_baseColor.jpeg::CompressedTexture2D::7998302536962517884::1774250155::1774250882::1::::<><><>0<>0<>423de3faead1eed60ec2cd159a20e1d0<>res://.godot/imported/Material.012_baseColor.jpeg-21eb68f71dbe6d5820ca990ad8ec9701.s3tc.ctex::
+Material.012_metallicRoughness.png::CompressedTexture2D::7432398847184463996::1774250155::1774250882::1::::<><><>0<>0<>a4a7ec5c4cc5c9bb1f3e772ac5b4a5ea<>res://.godot/imported/Material.012_metallicRoughness.png-38bfa1dbfc718c909e83cd74f9c32d4f.s3tc.ctex::
+Material.012_normal.jpeg::CompressedTexture2D::1789270504018572693::1774250155::1774250882::1::::<><><>0<>0<>ca764fd354d35a54cee5a2e65f0eb451<>res://.godot/imported/Material.012_normal.jpeg-1ec2b8de193c086b56237dacabb13892.s3tc.ctex::
+poster_baseColor.png::CompressedTexture2D::6561365345589290606::1774250155::1774250881::1::::<><><>0<>0<>d72e83eeca28cb01817ab0979f69faca<>res://.godot/imported/poster_baseColor.png-c77986087694c41316a6c8e9a307e662.s3tc.ctex::
+::res://Intro/::1774427431
+intro.png::CompressedTexture2D::3253022119422571167::1774427058::1774427431::1::::<><><>0<>0<>8d4075462c9afc03345112958d31a0bc<>res://.godot/imported/intro.png-04c380a657fb1b9a1f81b1d73f4d3e40.ctex::
+::res://scene/::1774426377
+environment.tscn::PackedScene::5343030418973779097::1774282877::0::1::::<><><>0<>0<><>::uid://c8cuc3krm6ser::::res://assets/vietnams_old_town/scene.gltf<>uid://kh5ijqbbd2l0::::res://assets/low_poly_banh_mi_cart/scene.gltf<>uid://8vpjcwvfty0x::::res://assets/vietnamese_bamboo_furniture/scene.gltf<>uid://jd1xwwyvacg6::::res://assets/customer1/customer.fbx<>uid://bgva831jkus4k::::res://assets/cusomter2/customer 2.fbx<>uid://df3xkddnjjsqh::::res://assets/customer3/customer 3.fbx<>uid://b10qcdxwnvacd::::res://assets/dog/scene.gltf
+main.tscn::PackedScene::6395954491838296255::1774286932::0::1::::<><><>0<>0<><>::uid://c8cuc3krm6ser::::res://assets/vietnams_old_town/scene.gltf<>uid://kh5ijqbbd2l0::::res://assets/low_poly_banh_mi_cart/scene.gltf<>uid://8vpjcwvfty0x::::res://assets/vietnamese_bamboo_furniture/scene.gltf<>uid://jd1xwwyvacg6::::res://assets/customer1/customer.fbx<>uid://bgva831jkus4k::::res://assets/cusomter2/customer 2.fbx<>uid://df3xkddnjjsqh::::res://assets/customer3/customer 3.fbx<>uid://b10qcdxwnvacd::::res://assets/dog/scene.gltf<>uid://dphvedaqrncp7::::res://assets/ha_noi_specialities/scene.gltf<>uid://c5bwy4jeknjgy::::res://scene/player.tscn
+player.tscn::PackedScene::6881951224451833680::1774286015::0::1::::<><><>0<>0<><>::uid://c5umfxxxrkqru::::res://scripts/player.gd
+::res://scripts/::1774286447
+player.gd::GDScript::6920533009126790678::1774286447::0::1::::<>CharacterBody3D<><>0<>0<><>::

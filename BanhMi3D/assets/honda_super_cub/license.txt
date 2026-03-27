@@ -1,0 +1,11 @@
+Model Information:
+* title:	Honda Super CUB
+* source:	https://sketchfab.com/3d-models/honda-super-cub-dfac2b92b05746709674bea223ee596d
+* author:	Azimut Cheng (https://sketchfab.com/AzimutCheng)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Honda Super CUB" (https://sketchfab.com/3d-models/honda-super-cub-dfac2b92b05746709674bea223ee596d) by Azimut Cheng (https://sketchfab.com/AzimutCheng) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
