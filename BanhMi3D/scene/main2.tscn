@@ -4,6 +4,8 @@
 [ext_resource type="PackedScene" path="res://scene/player.tscn" id="2_ydjyx"]
 [ext_resource type="PackedScene" path="res://scene/hud.tscn" id="3_lve4d"]
 [ext_resource type="Script" uid="uid://rs0cjo80wuu8" path="res://scene/menu.gd" id="4_ydjyx"]
+[ext_resource type="AudioStream" uid="uid://bxtqkjb7nlsx5" path="res://assets/Music/click.mp3" id="5_lve4d"]
+[ext_resource type="AudioStream" uid="uid://i2pfg4v2b8vn" path="res://assets/Music/hover.mp3" id="6_d5kn2"]
 
 [node name="Menu" type="Node3D" unique_id=269333631]
 transform = Transform3D(0.9974682, 0.07111445, 0, -0.07111445, 0.9974682, 0, 0, 0, 1, 0, 0, 0)
@@ -39,6 +41,13 @@ text = "Play
 [node name="Quit" type="Button" parent="VBoxContainer" unique_id=591535870]
 layout_mode = 2
 text = "Quit"
+
+[node name="SfxClick" type="AudioStreamPlayer" parent="VBoxContainer" unique_id=60143425]
+stream = ExtResource("5_lve4d")
+volume_db = 14.0
+
+[node name="SfxHover" type="AudioStreamPlayer" parent="VBoxContainer" unique_id=374154698]
+stream = ExtResource("6_d5kn2")
 
 [connection signal="pressed" from="VBoxContainer/Play" to="VBoxContainer" method="_on_play_pressed"]
 [connection signal="pressed" from="VBoxContainer/Quit" to="VBoxContainer" method="_on_quit_pressed"]
