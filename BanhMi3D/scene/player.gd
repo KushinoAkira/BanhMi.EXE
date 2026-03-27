@@ -33,27 +33,31 @@ func _input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			if Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
-				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-				get_viewport().set_input_as_handled()
+				if not Global.is_night_summary:
+					Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+					get_viewport().set_input_as_handled()
 
 	# 2. Xử lý xoay chuột
 	if event is InputEventMouseMotion:
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-			# Xoay toàn bộ thân người chơi theo trục Y (sang trái/phải)
 			rotate_y(-event.relative.x * MOUSE_SENSITIVITY)
-			
-			# Chỉ xoay Head/Camera theo trục X (lên/xuống)
 			camera.rotate_x(-event.relative.y * MOUSE_SENSITIVITY)
 			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
-			
-			# Đánh dấu đã xử lý để không truyền xuống các node dưới
 			get_viewport().set_input_as_handled()
 
 func _unhandled_input(event):
+	# ESC — toggle chuột
 	if event.is_action_pressed("ui_cancel"):
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		else:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+	# Alt — giữ để hiện chuột
+	if event is InputEventKey and event.keycode == KEY_ALT:
+		if event.pressed and not event.echo:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		elif not event.pressed:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _physics_process(delta):
@@ -63,7 +67,6 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 
-	# Di chuyển dựa trên hướng của thân người (transform.basis)
 	var input_dir := Vector2(
 		float(Input.is_key_pressed(KEY_D) or Input.is_action_pressed("ui_right")) -
 		float(Input.is_key_pressed(KEY_A) or Input.is_action_pressed("ui_left")),
@@ -116,7 +119,7 @@ func handle_interaction(target):
 	var item_name = target.item_name
 	var interaction_point = interaction_ray.get_collision_point()
 	
-	# Kiểm tra nếu là Khách hàng (Dựa trên danh sách tên trong cart_manager)
+	# Kiểm tra nếu là Khách hàng
 	var is_customer = manager != null and (item_name in ["Khoa", "Hiếu", "Hoàng", "Phương", "Huyền", "Nam", "Lan", "Tuấn", "Linh", "Đức", "Khách hàng 1", "Khách hàng 2", "Khách hàng 3"])
 	
 	# 1. Lấy bánh mì
@@ -144,15 +147,29 @@ func handle_interaction(target):
 	if is_customer:
 		if held_item_name == "Bánh mì hoàn chỉnh":
 			if item_name == current_order_customer:
+				# ===== THANH TOÁN & PHẢN HỒI =====
 				show_floating_text(interaction_point + Vector3(0, 1, 0), "Cảm ơn nhé!", Color.GREEN, 2.0)
+				
+				var payment = manager.finish_order(item_name)
 				drop_held_item()
-				if manager:
-					manager.finish_order(item_name)
-					hud.set_recipe_text(manager.get_recipe_info())
+				
+				if payment.size() > 0:
+					# Cộng tiền vào Global
+					Global.add_earnings(payment["base"], payment["tip"])
+					
+					# Thông báo chi tiết
+					var msg = "✓ Giao hàng cho %s!\n+%s VND (tip: +%s VND)" % [
+						item_name,
+						_format_money(payment["base"]),
+						_format_money(payment["tip"])
+					]
 					if hud:
-						hud.show_notification("Bánh mì EXE cảm ơn quý khách!", 2.0)
+						hud.show_notification(msg, 3.0)
+						hud.set_recipe_text(manager.get_recipe_info())
 			else:
 				show_floating_text(interaction_point + Vector3(0, 1, 0), "Ơ kìa, đây không phải bánh mì của tôi!", Color.RED, 2.0)
+				if hud:
+					hud.show_notification("Ơ kìa, đây không phải bánh mì của tôi!\n(Bánh này của " + current_order_customer + ")")
 		elif held_item_name == "":
 			if manager:
 				if manager.active_orders.has(item_name):
@@ -176,7 +193,6 @@ func show_floating_text(pos: Vector3, text_content: String, color: Color = Color
 	label.font_size = 32
 	label.outline_size = 8
 	
-	# Thêm vào Main scene
 	get_tree().root.add_child(label)
 	label.global_position = pos + Vector3(0, 0.5, 0)
 	label.scale = Vector3(1.2, 1.2, 1.2)
@@ -187,6 +203,17 @@ func show_floating_text(pos: Vector3, text_content: String, color: Color = Color
 	tween.tween_property(label, "modulate:a", 0.0, 0.5).set_delay(duration)
 	
 	get_tree().create_timer(duration + 0.5).timeout.connect(label.queue_free)
+
+func _format_money(amount: int) -> String:
+	var s = str(amount)
+	var result = ""
+	var count = 0
+	for i in range(s.length() - 1, -1, -1):
+		if count > 0 and count % 3 == 0:
+			result = "," + result
+		result = s[i] + result
+		count += 1
+	return result
 
 func pick_up_item(asset_path: String, type_name: String):
 	if held_item_node:

@@ -1,14 +1,16 @@
 extends Node
 
-# Định nghĩa các loại bánh mì và nguyên liệu cần thiết
+# Định nghĩa các loại bánh mì, nguyên liệu và GIÁ BÁN
 const RECIPES = {
 	"Bánh mì pate": {
 		"ingredients": ["Tô pate", "Tô rau thơm", "Tô đồ chua"],
-		"final_asset": "res://assets/banh_mi_items/banhmi_pate/banhmi_pate.glb"
+		"final_asset": "res://assets/banh_mi_items/banhmi_pate/banhmi_pate.glb",
+		"price": 15000
 	},
 	"Bánh mì thịt nguội": {
 		"ingredients": ["Tô pate", "Dĩa thịt nguội", "Tô rau thơm", "Tô đồ chua"],
-		"final_asset": "res://assets/banh_mi_items/banhmi_pate/banhmi_pate.glb"
+		"final_asset": "res://assets/banh_mi_items/banhmi_pate/banhmi_pate.glb",
+		"price": 20000
 	}
 }
 
@@ -83,12 +85,36 @@ func get_recipe_info():
 			progress += "[x] " + item + "\n"
 		else:
 			progress += "[ ] " + item + "\n"
-			
+		
 	return "Khách hàng: " + current_working_customer + "\n" + \
 		   "Yêu cầu: " + order["order_type"] + "\n" + progress
 
-func finish_order(customer_name: String):
+# ===== TÍNH TIỀN & TIP =====
+func get_payment(order_type: String) -> Dictionary:
+	var base_price: int = 0
+	if RECIPES.has(order_type):
+		base_price = RECIPES[order_type]["price"]
+	
+	# Tip ngẫu nhiên 5% đến 20%
+	var tip_pct = randf_range(0.05, 0.20)
+	var tip_amount = int(base_price * tip_pct)
+	# Làm tròn đến 500 VND
+	tip_amount = int(tip_amount / 500.0) * 500
+	if tip_amount == 0:
+		tip_amount = 500
+	
+	return {
+		"base": base_price,
+		"tip": tip_amount,
+		"total": base_price + tip_amount,
+		"order_type": order_type
+	}
+
+func finish_order(customer_name: String) -> Dictionary:
+	var payment = {}
 	if active_orders.has(customer_name):
+		var order_type = active_orders[customer_name]["order_type"]
+		payment = get_payment(order_type)
 		active_orders.erase(customer_name)
 		
 		# Tắt dấu chấm than chờ
@@ -101,3 +127,4 @@ func finish_order(customer_name: String):
 			# Nếu còn đơn khác thì chuyển sang đơn đó
 			if active_orders.size() > 0:
 				current_working_customer = active_orders.keys()[0]
+	return payment

@@ -19,6 +19,8 @@ config/icon="res://icon.svg"
 
 Global="*res://scripts/global.gd"
 FurnitureManager="*res://scripts/furniture_manager.gd"
+DayNightManager="*res://scripts/day_night_manager.gd"
+RainSystem="*res://scripts/rain_system.gd"
 
 [display]
 
