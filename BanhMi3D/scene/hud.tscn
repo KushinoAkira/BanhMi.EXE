@@ -44,7 +44,7 @@ offset_top = 20.0
 offset_right = -20.0
 offset_bottom = 200.0
 grow_horizontal = 0
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 text = "Đơn hàng: Bánh mì Pate
 [ ] Pate
 [ ] Rau thơm
