@@ -37,11 +37,20 @@ var manual_items_map = {
 }
 
 var assigned_names = []
+var customer_nodes = {} # { name: Node3D }
 
 func _ready():
+	add_to_group("CartManager")
 	await get_tree().process_frame
 	setup_interactions(self)
 	setup_manual_items()
+
+func set_waiting_indicator(customer_name: String, is_waiting: bool):
+	if customer_nodes.has(customer_name):
+		var node = customer_nodes[customer_name]
+		var alert = node.get_node_or_null("AlertLabel")
+		if alert:
+			alert.visible = is_waiting
 
 func setup_manual_items():
 	var environment = get_parent()
@@ -52,6 +61,7 @@ func setup_manual_items():
 			# Kiểm tra xem có phải khách hàng không
 			if child.name.contains("customer"):
 				display_name = get_random_customer_name()
+				add_customer_ui(child, display_name)
 			else:
 				for key in manual_items_map.keys():
 					if child.name.contains(key):
@@ -63,6 +73,34 @@ func setup_manual_items():
 				if mesh:
 					create_precise_interaction_area(mesh, display_name, display_name.contains("Tô"))
 
+func add_customer_ui(customer_node: Node3D, customer_name: String):
+	customer_nodes[customer_name] = customer_node
+	# Thêm Nhãn tên
+	var name_label = Label3D.new()
+	name_label.text = customer_name
+	name_label.font_size = 12 # Cực nhỏ
+	name_label.outline_size = 4
+	name_label.billboard = StandardMaterial3D.BILLBOARD_ENABLED
+	name_label.position = Vector3(0, 1.3, 0) # Thấp hẳn xuống
+	name_label.name = "NameLabel"
+	customer_node.add_child(name_label)
+	
+	# Thêm Dấu chấm than (thông báo chờ)
+	var alert_label = Label3D.new()
+	alert_label.text = "!"
+	alert_label.font_size = 24 # Nhỏ hơn
+	alert_label.modulate = Color.RED
+	alert_label.outline_size = 8
+	alert_label.billboard = StandardMaterial3D.BILLBOARD_ENABLED
+	alert_label.position = Vector3(0, 1.55, 0) # Thấp hơn
+	alert_label.name = "AlertLabel"
+	alert_label.visible = false # Mặc định ẩn
+	customer_node.add_child(alert_label)
+	
+	# Hiệu ứng di chuyển lên xuống cho dấu chấm than (Bobbing)
+	var tween = customer_node.get_tree().create_tween().set_loops()
+	tween.tween_property(alert_label, "position:y", 1.65, 0.6).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(alert_label, "position:y", 1.55, 0.6).set_trans(Tween.TRANS_SINE)
 func get_random_customer_name() -> String:
 	var available_names = []
 	for n in CUSTOMER_NAMES:

@@ -107,13 +107,25 @@ func set_crosshair_highlight(active: bool):
 	else:
 		crosshair.color = Color(1, 1, 1, 0.8)
 
-func show_notification(text: String, duration: float = 3.0):
+var original_notification_pos: Vector2 = Vector2.ZERO
+
+func show_notification(text: String, duration: float = 1.5):
 	if not notification_label: return
+	
+	if original_notification_pos == Vector2.ZERO:
+		original_notification_pos = notification_label.position
 	
 	notification_label.text = text
 	notification_label.modulate.a = 1.0
+	notification_label.scale = Vector2(1.0, 1.0)
+	notification_label.position = original_notification_pos
+	notification_label.pivot_offset = Vector2(300, 50) # Tâm của label (600x100)
+	notification_label.add_theme_font_size_override("font_size", 24)
 	
-	# Tạo hiệu ứng mờ dần sau một khoảng thời gian
+	# Tạo hiệu ứng chìm xuống và mờ dần
 	var tween = get_tree().create_tween()
-	tween.tween_interval(duration)
-	tween.tween_property(notification_label, "modulate:a", 0.0, 1.0)
+	tween.set_parallel(true)
+	# Đợi một chút rồi bắt đầu hiệu ứng biến mất
+	tween.tween_property(notification_label, "position:y", original_notification_pos.y + 30.0, 1.0).set_delay(duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_property(notification_label, "scale", Vector2.ZERO, 1.0).set_delay(duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_property(notification_label, "modulate:a", 0.0, 1.0).set_delay(duration)

@@ -114,61 +114,79 @@ func process_interaction():
 
 func handle_interaction(target):
 	var item_name = target.item_name
+	var interaction_point = interaction_ray.get_collision_point()
 	
 	# Kiểm tra nếu là Khách hàng (Dựa trên danh sách tên trong cart_manager)
-	var is_customer = manager != null and (item_name in ["Khoa", "Hiếu", "Hoàng", "Phương", "Huyền", "Nam", "Lan", "Tuấn", "Linh", "Đức"])
+	var is_customer = manager != null and (item_name in ["Khoa", "Hiếu", "Hoàng", "Phương", "Huyền", "Nam", "Lan", "Tuấn", "Linh", "Đức", "Khách hàng 1", "Khách hàng 2", "Khách hàng 3"])
 	
 	# 1. Lấy bánh mì
 	if item_name == "Bánh mì" and held_item_name == "":
 		if manager and manager.current_working_customer != "":
 			pick_up_item("res://assets/banh_mi_items/banh_mi.glb", "Bánh mì đang làm")
 			current_order_customer = manager.current_working_customer
-			print(">>> [LÀM BÁNH] Đang làm cho ", current_order_customer)
+			show_floating_text(interaction_point, "Đang làm bánh...", Color.WHITE, 0.5)
 		else:
 			if hud:
 				hud.show_notification("Hãy nhận đơn hàng từ khách trước!")
-			print(">>> [!] Hãy nhận đơn hàng từ khách trước!")
 		return
 	
 	# 2. Thêm nguyên liệu
 	if held_item_name == "Bánh mì đang làm":
 		if manager and manager.add_ingredient(item_name):
 			hud.set_recipe_text(manager.get_recipe_info())
+			show_floating_text(interaction_point, "+ " + item_name, Color.GREEN, 0.5)
 			if manager.is_finished():
 				var finished_asset = manager.RECIPES[manager.active_orders[current_order_customer]["order_type"]]["final_asset"]
 				pick_up_item(finished_asset, "Bánh mì hoàn chỉnh")
-				print(">>> [XONG] Đã hoàn thành bánh mì cho ", current_order_customer)
 		return
 	
 	# 3. Giao cho khách hoặc Nhận đơn
 	if is_customer:
 		if held_item_name == "Bánh mì hoàn chỉnh":
 			if item_name == current_order_customer:
-				print(">>> [GIAO HÀNG] Cảm ơn quý khách ", item_name, "!")
+				show_floating_text(interaction_point + Vector3(0, 1, 0), "Cảm ơn nhé!", Color.GREEN, 2.0)
 				drop_held_item()
 				if manager:
 					manager.finish_order(item_name)
 					hud.set_recipe_text(manager.get_recipe_info())
 					if hud:
-						hud.show_notification("Đã giao hàng cho " + item_name + ". Cảm ơn!", 2.0)
+						hud.show_notification("Bánh mì EXE cảm ơn quý khách!", 2.0)
 			else:
-				if hud:
-					hud.show_notification("Ơ kìa, đây không phải bánh mì của tôi! (Bánh này của " + current_order_customer + ")")
-				print(">>> [NHẦM KHÁCH] Ơ kìa, bánh này là của ", current_order_customer, " mà!")
+				show_floating_text(interaction_point + Vector3(0, 1, 0), "Ơ kìa, đây không phải bánh mì của tôi!", Color.RED, 2.0)
 		elif held_item_name == "":
 			if manager:
 				if manager.active_orders.has(item_name):
 					manager.current_working_customer = item_name
 					hud.set_recipe_text(manager.get_recipe_info())
-					if hud:
-						hud.show_notification("Đang tập trung làm cho " + item_name, 1.5)
-					print(">>> [TẬP TRUNG] Quay lại làm bánh cho ", item_name)
+					show_floating_text(interaction_point + Vector3(0, 1, 0), "Đang chờ: " + manager.active_orders[item_name]["order_type"], Color.YELLOW, 1.5)
 				else:
 					manager.generate_order_for_customer(item_name)
 					hud.set_recipe_text(manager.get_recipe_info())
-					if hud:
-						hud.show_notification(item_name + " muốn 1 ổ " + manager.active_orders[item_name]["order_type"])
+					var order_type = manager.active_orders[item_name]["order_type"]
+					show_floating_text(interaction_point + Vector3(0, 1, 0), order_type, Color.CYAN, 1.5)
 		return
+
+func show_floating_text(pos: Vector3, text_content: String, color: Color = Color.WHITE, duration: float = 1.0):
+	var label = Label3D.new()
+	label.text = text_content
+	label.modulate = color
+	label.billboard = StandardMaterial3D.BILLBOARD_ENABLED
+	label.no_depth_test = true
+	label.render_priority = 100
+	label.font_size = 32
+	label.outline_size = 8
+	
+	# Thêm vào Main scene
+	get_tree().root.add_child(label)
+	label.global_position = pos + Vector3(0, 0.5, 0)
+	label.scale = Vector3(1.2, 1.2, 1.2)
+	
+	var tween = get_tree().create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(label, "scale", Vector3.ZERO, 0.5).set_delay(duration).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	tween.tween_property(label, "modulate:a", 0.0, 0.5).set_delay(duration)
+	
+	get_tree().create_timer(duration + 0.5).timeout.connect(label.queue_free)
 
 func pick_up_item(asset_path: String, type_name: String):
 	if held_item_node:
