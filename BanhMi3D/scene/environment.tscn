@@ -143,7 +143,7 @@ transform = Transform3D(0.99993515, 0, -0.011396734, 0, 1, 0, 0.011396734, 0, 0.
 [node name="OldTown2" parent="." unique_id=1979543416 instance=ExtResource("1_po4na")]
 transform = Transform3D(-1.0000001, 0, -8.7422784e-08, 0, 1, 0, 8.7422784e-08, 0, -1.0000001, 48.98848, 0.28795528, 15.634483)
 
-[node name="cart" parent="." unique_id=1330667263 instance=ExtResource("2_tnamw")]
+[node name="cart" parent="." unique_id=2141582151 instance=ExtResource("2_tnamw")]
 transform = Transform3D(-4.4999094, 0, -0.028510224, 0, 4.5, 0, 0.028510224, 0, -4.4999094, 25.34301, 4.4701514, 9.110272)
 script = ExtResource("8_cart_script")
 

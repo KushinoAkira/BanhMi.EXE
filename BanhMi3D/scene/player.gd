@@ -61,6 +61,13 @@ func _unhandled_input(event):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _physics_process(delta):
+	# Dừng di chuyển và tương tác nếu đang hiện bảng tổng kết hoặc màn hình đen
+	if Global.is_night_summary or Global.is_transition_black:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+		velocity.z = move_toward(velocity.z, 0, SPEED)
+		move_and_slide()
+		return
+
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
@@ -124,6 +131,9 @@ func handle_interaction(target):
 	
 	# 1. Lấy bánh mì
 	if item_name == "Bánh mì" and held_item_name == "":
+		if not Global.is_shop_open:
+			if hud: hud.show_notification("Hãy bấm phím O để mở quán trước khi nhận đơn!")
+			return
 		if manager and manager.current_working_customer != "":
 			pick_up_item("res://assets/banh_mi_items/banh_mi.glb", "Bánh mì đang làm")
 			current_order_customer = manager.current_working_customer
@@ -171,6 +181,9 @@ func handle_interaction(target):
 				if hud:
 					hud.show_notification("Ơ kìa, đây không phải bánh mì của tôi!\n(Bánh này của " + current_order_customer + ")")
 		elif held_item_name == "":
+			if not Global.is_shop_open:
+				if hud: hud.show_notification("Xin lỗi, Bánh Mì EXE chưa mở cửa ạ")
+				return
 			if manager:
 				if manager.active_orders.has(item_name):
 					manager.current_working_customer = item_name
