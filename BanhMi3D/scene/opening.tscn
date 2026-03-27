@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://bkl6j7qsm1j2l"]
+
+[ext_resource type="Script" uid="uid://byv4t0xxledn4" path="res://opening.gd" id="1_s0yis"]
+[ext_resource type="AudioStream" uid="uid://cpukosnvmme6p" path="res://assets/Music/freesound_community-keyboard-sound-46875.mp3" id="2_gytcb"]
+
+[node name="Opening" type="Control" unique_id=1830446531]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_s0yis")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=794172391]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02617561, 0.026175609, 0.026175609, 1)
+
+[node name="DialogueLabel" type="Label" parent="." unique_id=1369213541]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.24131945
+anchor_top = 0.41512346
+anchor_right = 0.7708333
+anchor_bottom = 0.58487654
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 35
+metadata/_edit_use_anchors_ = true
+
+[node name="SfxTyping" type="AudioStreamPlayer2D" parent="." unique_id=1608920918]
+stream = ExtResource("2_gytcb")
+volume_db = 13.582
+
+[node name="LineTimer" type="Timer" parent="." unique_id=834489363]
