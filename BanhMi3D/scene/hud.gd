@@ -22,14 +22,9 @@ func _ready():
 
 func _process(_delta):
 	# Cập nhật thanh tiến trình thời gian mỗi frame
-	if day_progress_bar and Engine.has_singleton("DayNightManager") == false:
-		var dnm = get_node_or_null("/root/DayNightManager")
-		if dnm:
-			day_progress_bar.value = dnm.get_day_progress() * 100.0
-	else:
-		var dnm = get_node_or_null("/root/DayNightManager")
-		if dnm and day_progress_bar:
-			day_progress_bar.value = dnm.get_day_progress() * 100.0
+	var dnm = get_node_or_null("/root/DayNightManager")
+	if dnm and day_progress_bar:
+		day_progress_bar.value = dnm.get_day_progress() * 100.0
 
 func _setup_dynamic_ui():
 	var ui_container = Control.new()
@@ -346,13 +341,28 @@ func set_crosshair_highlight(active: bool):
 	else:
 		crosshair.color = Color(1, 1, 1, 0.8)
 
-func show_notification(text: String, duration: float = 3.0):
+var original_notification_pos: Vector2 = Vector2.ZERO
+
+func show_notification(text: String, duration: float = 2.5):
 	if not notification_label: return
+	
+	if original_notification_pos == Vector2.ZERO:
+		original_notification_pos = notification_label.position
+	
 	notification_label.text = text
 	notification_label.modulate.a = 1.0
+	notification_label.scale = Vector2(1.0, 1.0)
+	notification_label.position = original_notification_pos
+	notification_label.pivot_offset = Vector2(300, 50) # Tâm của label (600x100)
+	notification_label.add_theme_font_size_override("font_size", 24)
+	
+	# Hiển thị rõ trong duration giây, sau đó biến mất trong 1 giây
 	var tween = get_tree().create_tween()
-	tween.tween_interval(duration)
-	tween.tween_property(notification_label, "modulate:a", 0.0, 1.0)
+	tween.set_parallel(true)
+	# Đợi một chút rồi bắt đầu hiệu ứng biến mất
+	tween.tween_property(notification_label, "position:y", original_notification_pos.y + 30.0, 1.0).set_delay(duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_property(notification_label, "scale", Vector2.ZERO, 1.0).set_delay(duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_property(notification_label, "modulate:a", 0.0, 1.0).set_delay(duration)
 
 func _fmt(amount: int) -> String:
 	var s = str(amount)

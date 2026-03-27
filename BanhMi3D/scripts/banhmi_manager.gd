@@ -34,6 +34,11 @@ func generate_order_for_customer(customer_name: String):
 		"ingredients": []
 	}
 	
+	# Bật dấu chấm than chờ
+	var cart_managers = get_tree().get_nodes_in_group("CartManager")
+	if cart_managers.size() > 0:
+		cart_managers[0].set_waiting_indicator(customer_name, true)
+	
 	# Nếu chưa làm cho ai thì tập trung vào người này
 	if current_working_customer == "":
 		current_working_customer = customer_name
@@ -111,6 +116,12 @@ func finish_order(customer_name: String) -> Dictionary:
 		var order_type = active_orders[customer_name]["order_type"]
 		payment = get_payment(order_type)
 		active_orders.erase(customer_name)
+		
+		# Tắt dấu chấm than chờ
+		var cart_managers = get_tree().get_nodes_in_group("CartManager")
+		if cart_managers.size() > 0:
+			cart_managers[0].set_waiting_indicator(customer_name, false)
+
 		if current_working_customer == customer_name:
 			current_working_customer = ""
 			# Nếu còn đơn khác thì chuyển sang đơn đó
