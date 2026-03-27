@@ -2,15 +2,35 @@ extends Node
 
 # Định nghĩa các loại bánh mì, nguyên liệu và GIÁ BÁN
 const RECIPES = {
-	"Bánh mì pate": {
+	"Bánh mì Pate": {
 		"ingredients": ["Tô pate", "Tô rau thơm", "Tô đồ chua"],
 		"final_asset": "res://assets/banh_mi_items/banhmi_pate/banhmi_pate.glb",
 		"price": 15000
 	},
-	"Bánh mì thịt nguội": {
+	"Bánh mì Thịt nguội": {
 		"ingredients": ["Tô pate", "Dĩa thịt nguội", "Tô rau thơm", "Tô đồ chua"],
 		"final_asset": "res://assets/banh_mi_items/banhmi_pate/banhmi_pate.glb",
+		"price": 25000
+	},
+	"Bánh mì Chả lụa": {
+		"ingredients": ["Tô pate", "Dĩa chả lụa", "Tô rau thơm", "Tô đồ chua"],
+		"final_asset": "res://assets/banh_mi_items/banhmi_pate/banhmi_pate.glb",
 		"price": 20000
+	},
+	"Bánh mì Thịt nướng": {
+		"ingredients": ["Dĩa thịt nướng", "Tô đồ chua", "Tô rau thơm"],
+		"final_asset": "res://assets/banh_mi_items/banhmi_pate/banhmi_pate.glb",
+		"price": 25000
+	},
+	"Bánh mì Trứng ốp la": {
+		"ingredients": ["Dĩa trứng ốp la", "Tô pate", "Tô rau thơm"],
+		"final_asset": "res://assets/banh_mi_items/banhmi_pate/banhmi_pate.glb",
+		"price": 15000
+	},
+	"Bánh mì Đặc biệt": {
+		"ingredients": ["Tô pate", "Dĩa thịt nguội", "Dĩa chả lụa", "Tô đồ chua", "Tô rau thơm"],
+		"final_asset": "res://assets/banh_mi_items/banhmi_pate/banhmi_pate.glb",
+		"price": 35000
 	}
 }
 

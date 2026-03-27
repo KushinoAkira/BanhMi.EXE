@@ -16,15 +16,43 @@ var day_info_label: Label
 var weather_label: Label
 var summary_panel: Panel
 
+# Black Screen UI
+var black_overlay: ColorRect
+var black_clock_label: Label
+var black_quote_label: Label
+
 func _ready():
+	add_to_group("HUD")
 	item_label.text = ""
 	_setup_dynamic_ui()
+	_setup_black_screen()
 
 func _process(_delta):
 	# Cập nhật thanh tiến trình thời gian mỗi frame
 	var dnm = get_node_or_null("/root/DayNightManager")
 	if dnm and day_progress_bar:
 		day_progress_bar.value = dnm.get_day_progress() * 100.0
+		
+	# Cập nhật text trạng thái quán
+	if day_info_label:
+		var global = get_tree().root.get_node_or_null("Global")
+		var status = " [MỞ QUÁN]" if global and global.is_shop_open else " [ĐÓNG CỬA]"
+		var day_text = "📅 Ngày %d" % (global.day_number if global else 1)
+		day_info_label.text = day_text + status
+	
+	# Cập nhật đồng hồ trên màn hình đen nếu đang active
+	if black_overlay and black_overlay.visible and dnm:
+		var progress = dnm.get_day_progress()
+		var global = get_tree().root.get_node_or_null("Global")
+		if global:
+			var current_total_hours = global.DAY_START_HOUR + (progress * global.TOTAL_HOURS)
+			var hour = int(current_total_hours) % 24
+			var minute = int((current_total_hours - int(current_total_hours)) * 60.0)
+			black_clock_label.text = "%02d:%02d" % [hour, minute]
+			
+			# Tự ẩn màn hình đen khi sang ngày mới
+			if not global.is_transition_black:
+				black_overlay.visible = false
 
 func _setup_dynamic_ui():
 	var ui_container = Control.new()
@@ -32,7 +60,7 @@ func _setup_dynamic_ui():
 	ui_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(ui_container)
 
-	# ── Bảng tiền / ngày ──────────────────────────────
+	# ── Bảng tiền / ngày (Góc trên bên trái) ─────────────
 	var info_panel = PanelContainer.new()
 	info_panel.position = Vector2(12, 12)
 	info_panel.custom_minimum_size = Vector2(220, 0)
@@ -77,80 +105,72 @@ func _setup_dynamic_ui():
 	weather_label.add_theme_constant_override("outline_size", 2)
 	vbox.add_child(weather_label)
 
-	# ── Thanh tiến trình ngày ──────────────────────────
-	var progress_container = VBoxContainer.new()
-	progress_container.position = Vector2(12, 130)
-	progress_container.custom_minimum_size = Vector2(220, 0)
-	ui_container.add_child(progress_container)
+	# ── Thanh tiến trình ngày (Đã xóa theo yêu cầu) ──
 
-	var progress_label = Label.new()
-	progress_label.text = "⏳ Thời gian trong ngày"
-	progress_label.add_theme_font_size_override("font_size", 17)
-	progress_label.add_theme_color_override("font_color", Color(1, 1, 1, 0.8))
-	progress_label.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-	progress_label.add_theme_constant_override("outline_size", 2)
-	progress_container.add_child(progress_label)
-
-	day_progress_bar = ProgressBar.new()
-	day_progress_bar.min_value = 0
-	day_progress_bar.max_value = 100
-	day_progress_bar.value = 0
-	day_progress_bar.custom_minimum_size = Vector2(220, 14)
-	day_progress_bar.show_percentage = false
-	var fill_style = StyleBoxFlat.new()
-	fill_style.bg_color = Color(1.0, 0.75, 0.2)
-	fill_style.corner_radius_top_left = 6
-	fill_style.corner_radius_top_right = 6
-	fill_style.corner_radius_bottom_left = 6
-	fill_style.corner_radius_bottom_right = 6
-	day_progress_bar.add_theme_stylebox_override("fill", fill_style)
-	var bg_style = StyleBoxFlat.new()
-	bg_style.bg_color = Color(0, 0, 0, 0.5)
-	bg_style.corner_radius_top_left = 6
-	bg_style.corner_radius_top_right = 6
-	bg_style.corner_radius_bottom_left = 6
-	bg_style.corner_radius_bottom_right = 6
-	day_progress_bar.add_theme_stylebox_override("background", bg_style)
-	progress_container.add_child(day_progress_bar)
-
-	# ── Nút mua đồ + ngày đêm ────────────────────────
+	# ── Nút mua đồ ──
 	buy_btn = TextureButton.new()
 	buy_btn.texture_normal = load("res://assets/buy, bring in out furniture/buy furniture.png")
 	buy_btn.ignore_texture_size = true
 	buy_btn.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT
 	buy_btn.custom_minimum_size = Vector2(200, 120)
 	buy_btn.size = Vector2(200, 120)
-	buy_btn.position = Vector2(10, 160)
+	buy_btn.position = Vector2(10, 200)
 	buy_btn.pressed.connect(_on_buy_pressed)
 	buy_btn.focus_mode = Control.FOCUS_NONE
 	ui_container.add_child(buy_btn)
 
-	day_btn = TextureButton.new()
-	day_btn.ignore_texture_size = true
-	day_btn.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT
-	day_btn.custom_minimum_size = Vector2(200, 120)
-	day_btn.size = Vector2(200, 120)
-	day_btn.position = Vector2(10, 290)
-	day_btn.pressed.connect(_on_day_toggle_pressed)
-	day_btn.focus_mode = Control.FOCUS_NONE
-	ui_container.add_child(day_btn)
-
-	# ── Kết nối signals ───────────────────────────────
+	# ── Kết nối signals ──
 	var global = get_tree().root.get_node_or_null("Global")
 	if global:
 		global.money_changed.connect(_update_money_label)
-		global.day_changed.connect(_on_day_changed)
-		global.furniture_purchased.connect(func(c): _update_money_label(global.money))
 		global.day_ended.connect(_show_day_summary)
 		global.new_day_started.connect(_on_new_day_started)
 		global.weather_changed.connect(_update_weather_label)
 		_update_money_label(global.money)
-		_on_day_changed(global.is_day)
 		_update_weather_label(global.is_raining)
 		_update_day_label(global.day_number)
 
-	# ── Bảng tổng kết cuối ngày ───────────────────────
 	_build_summary_panel(ui_container)
+
+func _setup_black_screen():
+	black_overlay = ColorRect.new()
+	black_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	black_overlay.color = Color(0, 0, 0, 1)
+	black_overlay.visible = false
+	add_child(black_overlay)
+
+	var center = CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	black_overlay.add_child(center)
+
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 60)
+	center.add_child(vbox)
+
+	black_clock_label = Label.new()
+	black_clock_label.text = "02:30"
+	black_clock_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	black_clock_label.add_theme_font_size_override("font_size", 120)
+	black_clock_label.add_theme_color_override("font_color", Color(1, 1, 1, 0.8))
+	vbox.add_child(black_clock_label)
+
+	black_quote_label = Label.new()
+	black_quote_label.text = "Quote here..."
+	black_quote_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	black_quote_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	black_quote_label.custom_minimum_size = Vector2(800, 0)
+	black_quote_label.add_theme_font_size_override("font_size", 28)
+	black_quote_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
+	vbox.add_child(black_quote_label)
+
+func show_black_screen_quote():
+	var global = get_tree().root.get_node_or_null("Global")
+	if global:
+		black_quote_label.text = global.QUOTES[randi() % global.QUOTES.size()]
+		black_overlay.modulate.a = 0.0
+		black_overlay.visible = true
+		var tween = get_tree().create_tween()
+		tween.tween_property(black_overlay, "modulate:a", 1.0, 2.0)
 
 func _build_summary_panel(parent: Control):
 	summary_panel = Panel.new()
@@ -158,10 +178,8 @@ func _build_summary_panel(parent: Control):
 	summary_panel.custom_minimum_size = Vector2(480, 380)
 	summary_panel.offset_left = -240
 	summary_panel.offset_top = -190
-	summary_panel.offset_right = 240
-	summary_panel.offset_bottom = 190
 	summary_panel.visible = false
-
+	
 	var panel_style = StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.07, 0.07, 0.12, 0.97)
 	panel_style.border_width_left = 2
@@ -186,101 +204,50 @@ func _build_summary_panel(parent: Control):
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	summary_panel.add_child(vbox)
 
-	# Tiêu đề
 	var title = Label.new()
 	title.text = "🌙 Tổng kết cuối ngày"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 34)
-	title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
 	vbox.add_child(title)
 
-	var sep = HSeparator.new()
-	sep.add_theme_color_override("color", Color(1, 0.75, 0.2, 0.4))
-	vbox.add_child(sep)
-
-	# Các dòng thống kê — dùng tên node để tìm lại sau
 	var stats_labels = [
 		["lbl_day",      "📅 Ngày:          -"],
 		["lbl_orders",   "🥖 Số đơn đã bán: -"],
 		["lbl_base",     "💵 Doanh thu:      -"],
 		["lbl_tips",     "💝 Tiền tip:       -"],
 		["lbl_total",    "💰 Tổng cộng:      -"],
-		["lbl_weather",  "🌤️ Thời tiết:      -"],
 	]
 	for pair in stats_labels:
 		var lbl = Label.new()
 		lbl.name = pair[0]
 		lbl.text = pair[1]
-		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		lbl.add_theme_font_size_override("font_size", 24)
-		lbl.add_theme_color_override("font_color", Color(0.9, 0.95, 1.0))
-		lbl.add_theme_color_override("font_outline_color", Color(0,0,0))
-		lbl.add_theme_constant_override("outline_size", 2)
 		vbox.add_child(lbl)
 
-	var sep2 = HSeparator.new()
-	sep2.add_theme_color_override("color", Color(1, 0.75, 0.2, 0.4))
-	vbox.add_child(sep2)
-
-	# Nút bắt đầu ngày mới
-	var new_day_btn = Button.new()
-	new_day_btn.text = "☀️  Bắt đầu ngày mới!"
-	new_day_btn.custom_minimum_size = Vector2(280, 50)
-	new_day_btn.add_theme_font_size_override("font_size", 26)
-	new_day_btn.focus_mode = Control.FOCUS_NONE
-	var btn_style = StyleBoxFlat.new()
-	btn_style.bg_color = Color(0.95, 0.65, 0.1)
-	btn_style.corner_radius_top_left = 10
-	btn_style.corner_radius_top_right = 10
-	btn_style.corner_radius_bottom_left = 10
-	btn_style.corner_radius_bottom_right = 10
-	btn_style.content_margin_left = 20
-	btn_style.content_margin_right = 20
-	new_day_btn.add_theme_stylebox_override("normal", btn_style)
-	var btn_hover = btn_style.duplicate() as StyleBoxFlat
-	btn_hover.bg_color = Color(1.0, 0.75, 0.2)
-	new_day_btn.add_theme_stylebox_override("hover", btn_hover)
-	new_day_btn.add_theme_color_override("font_color", Color(0.1, 0.05, 0))
-	new_day_btn.pressed.connect(_on_new_day_pressed)
-
-	var btn_center = CenterContainer.new()
-	btn_center.add_child(new_day_btn)
-	vbox.add_child(btn_center)
-
 func _show_day_summary(stats: Dictionary):
-	if not summary_panel:
-		return
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-
-	# Điền số liệu
-	var earnings_no_tip = stats["earnings"] - stats["tips"]
+	if not summary_panel: return
 	
 	_set_summary_label("lbl_day",     "📅 Ngày:          %d" % stats["day_number"])
 	_set_summary_label("lbl_orders",  "🥖 Số đơn đã bán: %d" % stats["orders"])
-	_set_summary_label("lbl_base",    "💵 Doanh thu:      %s VND" % _fmt(earnings_no_tip))
+	_set_summary_label("lbl_base",    "💵 Doanh thu:      %s VND" % _fmt(stats["earnings"] - stats["tips"]))
 	_set_summary_label("lbl_tips",    "💝 Tiền tip:       %s VND" % _fmt(stats["tips"]))
 	_set_summary_label("lbl_total",   "💰 Tổng cộng:      %s VND" % _fmt(stats["earnings"]))
-	var wx = "🌧️ Có mưa" if stats.get("is_raining", false) else "☀️ Nắng đẹp"
-	_set_summary_label("lbl_weather", "🌤️ Thời tiết:      " + wx)
 
-	# Animate panel hiện ra
 	summary_panel.modulate.a = 0.0
 	summary_panel.visible = true
 	var tween = get_tree().create_tween()
 	tween.tween_property(summary_panel, "modulate:a", 1.0, 0.5)
+	
+	# Sau 10 giây (NIGHT_DURATION), tự ẩn bảng tổng kết để DayNightManager hiện màn hình đen
+	get_tree().create_timer(Global.NIGHT_DURATION).timeout.connect(func():
+		var tw = get_tree().create_tween()
+		tw.tween_property(summary_panel, "modulate:a", 0.0, 0.5)
+		tw.tween_callback(func(): summary_panel.visible = false)
+	)
 
 func _set_summary_label(node_name: String, text: String):
 	var lbl = summary_panel.find_child(node_name, true, false) as Label
-	if lbl:
-		lbl.text = text
-
-func _on_new_day_pressed():
-	if summary_panel:
-		var tween = get_tree().create_tween()
-		tween.tween_property(summary_panel, "modulate:a", 0.0, 0.3)
-		tween.tween_callback(func(): summary_panel.visible = false)
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	Global.start_new_day()
+	if lbl: lbl.text = text
 
 func _update_money_label(val):
 	var global = get_tree().root.get_node_or_null("Global")
@@ -295,23 +262,10 @@ func _update_day_label(day_num: int):
 func _update_weather_label(raining: bool):
 	if weather_label:
 		weather_label.text = "🌧️ Hôm nay có mưa" if raining else "☀️ Hôm nay nắng đẹp"
-		weather_label.add_theme_color_override("font_color",
-			Color(0.5, 0.8, 1.0) if raining else Color(1.0, 0.95, 0.5))
 
 func _on_new_day_started(day_num: int):
 	_update_day_label(day_num)
-	var global = get_tree().root.get_node_or_null("Global")
-	if global:
-		_update_weather_label(global.is_raining)
-		_update_money_label(global.money)
-
-func _on_day_changed(is_day_now):
-	if is_day_now:
-		if day_btn:
-			day_btn.texture_normal = load("res://assets/buy, bring in out furniture/furniture bring in.png")
-	else:
-		if day_btn:
-			day_btn.texture_normal = load("res://assets/buy, bring in out furniture/furniture bring out.png")
+	if black_overlay: black_overlay.visible = false
 
 func _on_buy_pressed():
 	var global = get_tree().root.get_node_or_null("Global")
@@ -322,46 +276,23 @@ func _on_buy_pressed():
 		global.money_changed.emit(global.money)
 		global.furniture_purchased.emit(global.furniture_count)
 
-func _on_day_toggle_pressed():
-	var global = get_tree().root.get_node_or_null("Global")
-	if not global: return
-	global.is_day = !global.is_day
-	global.day_changed.emit(global.is_day)
-
 func set_item_name(new_name: String):
-	item_label.text = new_name
+	if item_label:
+		item_label.text = new_name
 
 func set_recipe_text(text: String):
 	if recipe_label:
 		recipe_label.text = text
 
 func set_crosshair_highlight(active: bool):
-	if active:
-		crosshair.color = Color(1, 1, 0, 1.0)
-	else:
-		crosshair.color = Color(1, 1, 1, 0.8)
-
-var original_notification_pos: Vector2 = Vector2.ZERO
+	if crosshair:
+		crosshair.color = Color(1, 1, 0, 1.0) if active else Color(1, 1, 1, 0.8)
 
 func show_notification(text: String, duration: float = 2.5):
 	if not notification_label: return
-	
-	if original_notification_pos == Vector2.ZERO:
-		original_notification_pos = notification_label.position
-	
 	notification_label.text = text
 	notification_label.modulate.a = 1.0
-	notification_label.scale = Vector2(1.0, 1.0)
-	notification_label.position = original_notification_pos
-	notification_label.pivot_offset = Vector2(300, 50) # Tâm của label (600x100)
-	notification_label.add_theme_font_size_override("font_size", 24)
-	
-	# Hiển thị rõ trong duration giây, sau đó biến mất trong 1 giây
 	var tween = get_tree().create_tween()
-	tween.set_parallel(true)
-	# Đợi một chút rồi bắt đầu hiệu ứng biến mất
-	tween.tween_property(notification_label, "position:y", original_notification_pos.y + 30.0, 1.0).set_delay(duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tween.tween_property(notification_label, "scale", Vector2.ZERO, 1.0).set_delay(duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tween.tween_property(notification_label, "modulate:a", 0.0, 1.0).set_delay(duration)
 
 func _fmt(amount: int) -> String:
@@ -369,8 +300,7 @@ func _fmt(amount: int) -> String:
 	var result = ""
 	var count = 0
 	for i in range(s.length() - 1, -1, -1):
-		if count > 0 and count % 3 == 0:
-			result = "," + result
+		if count > 0 and count % 3 == 0: result = "," + result
 		result = s[i] + result
 		count += 1
 	return result

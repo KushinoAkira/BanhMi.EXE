@@ -44,6 +44,22 @@ func _ready():
 	await get_tree().process_frame
 	setup_interactions(self)
 	setup_manual_items()
+	
+	# Kết nối signal để ẩn/hiện khách theo trạng thái mở quán
+	Global.day_changed.connect(_on_shop_status_changed)
+	# Trạng thái ban đầu
+	_on_shop_status_changed(Global.is_shop_open)
+
+func _on_shop_status_changed(_is_open: bool):
+	# Khách hàng luôn hiển thị, không ẩn đi nữa
+	pass
+
+func find_interaction_collider(node: Node) -> CollisionShape3D:
+	if node is CollisionShape3D: return node
+	for child in node.get_children():
+		var res = find_interaction_collider(child)
+		if res: return res
+	return null
 
 func set_waiting_indicator(customer_name: String, is_waiting: bool):
 	if customer_nodes.has(customer_name):
