@@ -15,6 +15,11 @@ run/main_scene="res://scene/main.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Global="*res://scripts/global.gd"
+FurnitureManager="*res://scripts/furniture_manager.gd"
+
 [display]
 
 window/size/mode=3
