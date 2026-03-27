@@ -28,6 +28,8 @@
 [ext_resource type="PackedScene" uid="uid://bjwpb7gxl0pu7" path="res://assets/old_bicycle/scene.gltf" id="26_b1ytd"]
 [ext_resource type="PackedScene" uid="uid://c3d1jg7jxrvfq" path="res://assets/wardrobe_rack/scene.gltf" id="27_okolh"]
 [ext_resource type="PackedScene" uid="uid://4rva574agy2b" path="res://assets/tree_s2/scene.gltf" id="28_x2qnl"]
+[ext_resource type="PackedScene" uid="uid://btkplxdke7su0" path="res://assets/bicycle/Bicycle.fbx" id="21_cjf2n"]
+[ext_resource type="PackedScene" uid="uid://dbdgye8v0pvyn" path="res://assets/bicycle/Bicycle 2.fbx" id="22_vgaxo"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -70,6 +72,7 @@ shadow_enabled = true
 [node name="Floor" type="StaticBody3D" parent="." unique_id=1334272590]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=393860029]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.045984745, 2.3841858e-07, -0.025121212)
 shape = SubResource("WorldBoundaryShape3D_floor")
 
 [node name="Collisions" type="Node3D" parent="." unique_id=1513367707]
@@ -135,7 +138,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 10, 10)
 shape = SubResource("BoxShape3D_side_wall")
 
 [node name="OldTown" parent="." unique_id=1145031289 instance=ExtResource("1_po4na")]
-transform = Transform3D(0.99993515, 0, -0.011396734, 0, 1, 0, 0.011396734, 0, 0.99993515, 32.050934, 0.22559452, -10.81083)
+transform = Transform3D(0.99993515, 0, -0.011396734, 0, 1, 0, 0.011396734, 0, 0.99993515, 32.07727, 0.28795528, -10.72776)
 
 [node name="cart" parent="." unique_id=1330667263 instance=ExtResource("2_tnamw")]
 transform = Transform3D(-4.4999094, 0, -0.028510224, 0, 4.5, 0, 0.028510224, 0, -4.4999094, 25.34301, 4.4701514, 9.110272)
@@ -260,36 +263,3 @@ transform = Transform3D(1.1866436, 0, 0, 0, 1.0441734, 0, 0, 0, 1, 22.984463, 5.
 
 [node name="cha_lua" parent="." unique_id=1611717729 instance=ExtResource("20_cjf2n")]
 transform = Transform3D(1.2729228, 0, 0, 0, 0.8212328, 0, 0, 0, 1, 23.891853, 5.42339, 8.751352)
-
-[node name="thuoclao" parent="." unique_id=1140827014 instance=ExtResource("21_71yyv")]
-transform = Transform3D(-0.24985029, 0, 0.008650759, 0, 0.25, 0, -0.008650759, 0, -0.24985029, 5.9252195, 0.8407196, 12.510024)
-
-[node name="hang_thit" parent="." unique_id=529015457 instance=ExtResource("22_i1jpj")]
-transform = Transform3D(-1.0993551, 0, -0.037660483, 0, 1.1, 0, 0.037660483, 0, -1.0993551, -17.747261, 0.30887723, 8.580675)
-
-[node name="honda" parent="." unique_id=2053888966 instance=ExtResource("23_giber")]
-transform = Transform3D(29.11408, -0.9788685, 7.1702023, 1.0151782, 29.982807, -0.0288352, -7.165152, 0.27061796, 29.130518, -4.5193853, 0.3650974, -3.444671)
-
-[node name="honda2" parent="." unique_id=1290049220 instance=ExtResource("24_okolh")]
-transform = Transform3D(0.16987313, 0, -3.195488, 0, 3.2, 0, 3.195488, 0, 0.16987313, 5.2032566, 0.30339825, -4.679044)
-
-[node name="lemon_tree" parent="." unique_id=1790704165 instance=ExtResource("25_x2qnl")]
-transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 14.492063, 0.8222017, -7.609893)
-
-[node name="lemon_tree2" parent="." unique_id=68395716 instance=ExtResource("25_x2qnl")]
-transform = Transform3D(-0.27180052, 0, -7.9953814, 0, 8, 0, 7.9953814, 0, -0.27180052, 27.92805, 0.8222017, -7.609893)
-
-[node name="xedap" parent="." unique_id=1235398795 instance=ExtResource("26_b1ytd")]
-transform = Transform3D(0.3534605, 0, -0.18725829, 0, 0.4, 0, 0.18725829, 0, 0.3534605, -27.967756, 1.7172618, 7.7957387)
-
-[node name="wardrobe" parent="." unique_id=1818237307 instance=ExtResource("27_okolh")]
-transform = Transform3D(-0.011153931, 0, -0.6999111, 0, 0.7, 0, 0.6999111, 0, -0.011153931, -37.336445, 1.0848157, 14.055393)
-
-[node name="tree" parent="." unique_id=1521350649 instance=ExtResource("28_x2qnl")]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -56.922558, 0.79988766, 12.63051)
-
-[node name="tree3" parent="." unique_id=856156536 instance=ExtResource("28_x2qnl")]
-transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 33.688595, 0.79988766, -7.4852066)
-
-[node name="tree2" parent="." unique_id=2081911567 instance=ExtResource("28_x2qnl")]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -71.420944, 0.79875946, 12.821543)
