@@ -314,14 +314,17 @@ transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 28.414673, 5.5259686, 9
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 22.034582, 5.886458, 8.988017)
 
 [node name="Character1" parent="." unique_id=1629598693 instance=ExtResource("31_q0tgb")]
-transform = Transform3D(0.0011664573, 0, -0.031978734, 0, 0.031999998, 0, 0.031978734, 0, 0.0011664573, 30.490805, 0.3764391, -2.956975)
+transform = Transform3D(0.0011612172, 0.0030298145, -0.03183507, -0.00011044217, 0.03185624, 0.0030278007, 0.03197873, 2.5982706e-12, 0.0011664574, 30.490805, 0.3764391, -1.3793759)
 script = ExtResource("32_r5n28")
 
+[node name="Object_96" parent="Character1/Sketchfab_model/f7e3098d5300474b9e256c093de3b37e_fbx/Object_2/RootNode/rp_nathan_animated_003_walking/rp_nathan_animated_003_walking_CTRL/Object_6/Skeleton3D" parent_id_path=PackedInt32Array(1629598693, 467073399) index="0" unique_id=99694468]
+transform = Transform3D(1, -1.5168863e-10, 3.7252903e-09, 2.3283064e-10, 0.99999994, -7.450581e-09, 0, 7.45354e-09, 1, -0.0136528015, 3.9380722, 0.37426758)
+
 [node name="Character2" parent="." unique_id=360302756 instance=ExtResource("33_e7hh8")]
-transform = Transform3D(0.083158344, 0, 1.9982705, 0, 2, 0, -1.9982705, 0, 0.083158344, 19.76587, 0.49662292, -0.21525383)
+transform = Transform3D(0.029319981, 0.13587028, 1.7946253, -0.0022195047, 1.7948647, -0.13585207, -1.7997599, 5.1211535e-10, 0.029403873, 19.787268, 0.48329246, 1.7237248)
 script = ExtResource("34_eosfh")
 
-[node name="Skeleton3D" parent="Character2/Sketchfab_model/root/GLTF_SceneRootNode/AvatarRoot_1_0/GLTF_created_0" parent_id_path=PackedInt32Array(360302756, 490287115) index="0" unique_id=52668579]
+[node name="Skeleton3D" parent="Character2/Sketchfab_model/root/GLTF_SceneRootNode/AvatarRoot_1_0/GLTF_created_0" parent_id_path=PackedInt32Array(360302756, 672171653) index="0" unique_id=1922054948]
 bones/1/position = Vector3(-0.0036203382, 0.91387767, -0.017062156)
 bones/1/rotation = Quaternion(0.0083212005, 0.024746694, -0.024313074, 0.9993634)
 bones/2/rotation = Quaternion(-0.058736376, 0.001222148, 0.013538997, 0.9981809)

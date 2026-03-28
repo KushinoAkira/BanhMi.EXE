@@ -1,0 +1,110 @@
+[gd_scene format=3 uid="uid://c7sssxwsre5ss"]
+
+[ext_resource type="Texture2D" uid="uid://dwsymeg1mykpa" path="res://assets/opening/open1.jpg" id="1_ij44v"]
+[ext_resource type="AudioStream" uid="uid://bs2msuefbeokx" path="res://assets/Music/sep1.wav" id="2_idh18"]
+[ext_resource type="Texture2D" uid="uid://b7ucgtaftyfue" path="res://assets/opening/open2.jpg" id="3_gp4dj"]
+[ext_resource type="Texture2D" uid="uid://csuqtp7xuh86t" path="res://assets/opening/open3.jpg" id="4_mt657"]
+[ext_resource type="AudioStream" uid="uid://nm3kg5idbb6v" path="res://assets/Music/sep2.wav" id="4_nmdkp"]
+[ext_resource type="Texture2D" uid="uid://dmgqaa7jmwgna" path="res://assets/opening/open4.jpg" id="5_cewbh"]
+[ext_resource type="AudioStream" uid="uid://ut1w3yrkww8m" path="res://assets/Music/sep3.wav" id="5_nmdkp"]
+[ext_resource type="Texture2D" uid="uid://dx0e3lftgmm4w" path="res://assets/opening/open5.jpg" id="6_jmy1s"]
+[ext_resource type="Texture2D" uid="uid://ckngk3wd6v5hr" path="res://assets/opening/open6.jpg" id="7_ssik1"]
+[ext_resource type="Texture2D" uid="uid://pi3lqg5im7h0" path="res://assets/opening/z7666314276433_f1f5f382861943592a01112d2d5c237a.jpg" id="8_jhhia"]
+[ext_resource type="Texture2D" uid="uid://rtn3tgah0ao" path="res://assets/opening/open7.jpg" id="9_wmju4"]
+[ext_resource type="Texture2D" uid="uid://bfae0ivicrk0f" path="res://assets/opening/open8.jpg" id="10_3htx3"]
+[ext_resource type="AudioStream" uid="uid://ch4rbvwuum8y4" path="res://assets/Music/an1.wav" id="11_wmju4"]
+[ext_resource type="AudioStream" uid="uid://bysivjanrdogy" path="res://assets/Music/ringphone.mp3" id="12_3htx3"]
+[ext_resource type="AudioStream" uid="uid://cvby6qw2g7shi" path="res://assets/Music/ba1.wav" id="13_mr5bw"]
+[ext_resource type="AudioStream" uid="uid://bx7gaj80loy32" path="res://assets/Music/ba2.wav" id="16_mr5bw"]
+[ext_resource type="AudioStream" uid="uid://cab7sgh2ovvf6" path="res://assets/Music/ba3.wav" id="17_ubcrc"]
+[ext_resource type="AudioStream" uid="uid://2pl1cpcd3dr0" path="res://assets/Music/ba4.wav" id="18_c45ct"]
+
+[sub_resource type="Animation" id="Animation_tban4"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Background:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("1_ij44v")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("VoicePlayer:stream")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("2_idh18")]
+}
+
+[sub_resource type="Animation" id="Animation_idh18"]
+resource_name = "intro"
+length = 28.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Background:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.7, 1.78, 4.5, 4.6, 7.5, 7.6, 10.28, 10.4, 13.28, 13.4, 17.71, 17.8, 20, 20.1, 24.19, 24.2, 24.3, 27.91),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("1_ij44v"), ExtResource("1_ij44v"), ExtResource("3_gp4dj"), ExtResource("3_gp4dj"), ExtResource("4_mt657"), ExtResource("4_mt657"), ExtResource("5_cewbh"), ExtResource("5_cewbh"), ExtResource("6_jmy1s"), ExtResource("6_jmy1s"), ExtResource("7_ssik1"), ExtResource("7_ssik1"), ExtResource("8_jhhia"), ExtResource("8_jhhia"), ExtResource("9_wmju4"), ExtResource("9_wmju4"), ExtResource("9_wmju4"), ExtResource("10_3htx3"), ExtResource("10_3htx3")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("VoicePlayer:stream")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.7, 1.78, 4.5, 4.6, 7.5, 7.6, 10.28, 10.4, 13.28, 13.4, 17.71, 17.8, 20, 20.1, 24.19, 24.3, 27.91),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("2_idh18"), ExtResource("2_idh18"), ExtResource("4_nmdkp"), ExtResource("4_nmdkp"), ExtResource("5_nmdkp"), ExtResource("5_nmdkp"), ExtResource("11_wmju4"), ExtResource("11_wmju4"), ExtResource("12_3htx3"), ExtResource("12_3htx3"), ExtResource("13_mr5bw"), ExtResource("13_mr5bw"), ExtResource("16_mr5bw"), ExtResource("16_mr5bw"), ExtResource("17_ubcrc"), ExtResource("17_ubcrc"), ExtResource("18_c45ct"), ExtResource("18_c45ct")]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tban4"]
+_data = {
+&"RESET": SubResource("Animation_tban4"),
+&"intro": SubResource("Animation_idh18")
+}
+
+[node name="Opening2" type="Control" unique_id=1579652440]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="Background" type="TextureRect" parent="." unique_id=1485335335]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_ij44v")
+expand_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="VoicePlayer" type="AudioStreamPlayer" parent="." unique_id=1580685296]
+stream = ExtResource("2_idh18")
+volume_db = 14.625
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1324258815]
+libraries/ = SubResource("AnimationLibrary_tban4")
