@@ -1,5 +1,7 @@
 extends Node
 
+signal order_finished(customer_name: String)
+
 # Định nghĩa các loại bánh mì, nguyên liệu và GIÁ BÁN
 const RECIPES = {
 	"Bánh mì Pate": {
@@ -147,4 +149,6 @@ func finish_order(customer_name: String) -> Dictionary:
 			# Nếu còn đơn khác thì chuyển sang đơn đó
 			if active_orders.size() > 0:
 				current_working_customer = active_orders.keys()[0]
+
+		order_finished.emit(customer_name)
 	return payment

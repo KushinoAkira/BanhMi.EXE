@@ -253,7 +253,7 @@ func _show_day_summary(stats: Dictionary):
 	
 	# Sau 10 giây (NIGHT_DURATION), tự ẩn bảng tổng kết để DayNightManager hiện màn hình đen
 	get_tree().create_timer(Global.NIGHT_DURATION).timeout.connect(func():
-		var tw = get_tree().create_tween()
+		var tw = get_tree().create_tween()	
 		tw.tween_property(summary_panel, "modulate:a", 0.0, 0.5)
 		tw.tween_callback(func(): summary_panel.visible = false)
 	)

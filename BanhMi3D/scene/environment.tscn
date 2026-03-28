@@ -3,9 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://c8cuc3krm6ser" path="res://assets/vietnams_old_town/scene.gltf" id="1_po4na"]
 [ext_resource type="PackedScene" uid="uid://kh5ijqbbd2l0" path="res://assets/low_poly_banh_mi_cart/scene.gltf" id="2_tnamw"]
 [ext_resource type="PackedScene" uid="uid://8vpjcwvfty0x" path="res://assets/vietnamese_bamboo_furniture/scene.gltf" id="3_560hc"]
-[ext_resource type="PackedScene" uid="uid://jd1xwwyvacg6" path="res://assets/customer1/customer.fbx" id="4_u78ad"]
-[ext_resource type="PackedScene" uid="uid://bgva831jkus4k" path="res://assets/cusomter2/customer 2.fbx" id="5_j14fg"]
-[ext_resource type="PackedScene" uid="uid://df3xkddnjjsqh" path="res://assets/customer3/customer 3.fbx" id="6_cqi1n"]
 [ext_resource type="PackedScene" uid="uid://b10qcdxwnvacd" path="res://assets/dog/scene.gltf" id="7_sel54"]
 [ext_resource type="Script" uid="uid://c1uqk2dgeduwf" path="res://scripts/cart_manager.gd" id="8_cart_script"]
 [ext_resource type="PackedScene" uid="uid://csvravulv6rvt" path="res://assets/banh_mi_items/banh_mi.glb" id="9_560hc"]
@@ -34,6 +31,7 @@
 [ext_resource type="Script" uid="uid://cfyqccqar2606" path="res://assets/customer/Character1.gd" id="32_r5n28"]
 [ext_resource type="PackedScene" uid="uid://bc7pnbmcvg1c0" path="res://assets/customer/trump_walking.glb" id="33_e7hh8"]
 [ext_resource type="Script" uid="uid://bv7c6m7yitatq" path="res://assets/customer/character2.gd" id="34_eosfh"]
+[ext_resource type="Script" path="res://scripts/customer_queue_manager.gd" id="35_queue_mgr"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -99,24 +97,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.0847, 0.75, 4.901)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Collisions/Furniture2Collision" unique_id=421226600]
 shape = SubResource("BoxShape3D_furniture")
 
-[node name="Customer1Collision" type="StaticBody3D" parent="Collisions" unique_id=126078203]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.6665, 1, 9.165)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Collisions/Customer1Collision" unique_id=1908842430]
-shape = SubResource("CapsuleShape3D_human")
-
-[node name="Customer2Collision" type="StaticBody3D" parent="Collisions" unique_id=65499377]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.8149, 1, 7.56)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Collisions/Customer2Collision" unique_id=1435802159]
-shape = SubResource("CapsuleShape3D_human")
-
-[node name="Customer3Collision" type="StaticBody3D" parent="Collisions" unique_id=1841952453]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.0304, 1, 8.027)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Collisions/Customer3Collision" unique_id=143675163]
-shape = SubResource("CapsuleShape3D_human")
-
 [node name="DogCollision" type="StaticBody3D" parent="Collisions" unique_id=533160836]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.11, 1, 5.43)
 
@@ -156,15 +136,6 @@ transform = Transform3D(0.13849634, 0, -0.02046371, 0, 0.14, 0, 0.02046371, 0, 0
 
 [node name="furniture2" parent="." unique_id=1982421202 instance=ExtResource("3_560hc")]
 transform = Transform3D(0.13895765, 0, 0.017052008, 0, 0.14, 0, -0.017052008, 0, 0.13895765, 22.084679, 0.7856991, 4.901662)
-
-[node name="customer" parent="." unique_id=393717317 instance=ExtResource("4_u78ad")]
-transform = Transform3D(0.551127, 0, -4.8689075, 0, 4.9, 0, 4.8689075, 0, 0.551127, 30.666512, 0.31222248, 9.165287)
-
-[node name="customer 2" parent="." unique_id=1594784637 instance=ExtResource("5_j14fg")]
-transform = Transform3D(2.4352884, 0, -4.0198717, 0, 4.7, 0, 4.0198717, 0, 2.4352884, 32.814922, 0.31184125, 7.560415)
-
-[node name="customer 3" parent="." unique_id=1974921566 instance=ExtResource("6_cqi1n")]
-transform = Transform3D(3.5600793, 0, 3.2196014, 0, 4.7999997, 0, -3.2196014, 0, 3.5600793, 20.030403, 0.24272776, 8.027645)
 
 [node name="dog" parent="." unique_id=691001572 instance=ExtResource("7_sel54")]
 transform = Transform3D(-2.9422636, 0, -0.5857331, 0, 3, 0, 0.5857331, 0, -2.9422636, 18.110172, 1.4714084, 5.43234)
@@ -320,6 +291,9 @@ script = ExtResource("32_r5n28")
 [node name="Character2" parent="." unique_id=360302756 instance=ExtResource("33_e7hh8")]
 transform = Transform3D(0.083158344, 0, 1.9982705, 0, 2, 0, -1.9982705, 0, 0.083158344, 19.76587, 0.49662292, -0.21525383)
 script = ExtResource("34_eosfh")
+
+[node name="CustomerQueueManager" type="Node" parent="."]
+script = ExtResource("35_queue_mgr")
 
 [node name="Skeleton3D" parent="Character2/Sketchfab_model/root/GLTF_SceneRootNode/AvatarRoot_1_0/GLTF_created_0" parent_id_path=PackedInt32Array(360302756, 490287115) index="0" unique_id=52668579]
 bones/1/position = Vector3(-0.0036203382, 0.91387767, -0.017062156)

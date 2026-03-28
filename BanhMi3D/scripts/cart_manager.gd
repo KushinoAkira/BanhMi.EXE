@@ -38,6 +38,7 @@ var manual_items_map = {
 
 var assigned_names = []
 var customer_nodes = {} # { name: Node3D }
+var customer_names_by_node = {} # { Node3D: String }
 
 func _ready():
 	add_to_group("CartManager")
@@ -68,6 +69,67 @@ func set_waiting_indicator(customer_name: String, is_waiting: bool):
 		if alert:
 			alert.visible = is_waiting
 
+func is_customer_name(customer_name: String) -> bool:
+	return customer_nodes.has(customer_name)
+
+func get_customer_name_for_node(customer_node: Node3D) -> String:
+	if customer_names_by_node.has(customer_node):
+		return customer_names_by_node[customer_node]
+	return ""
+
+func assign_customer_to_node(customer_node: Node3D, preferred_name: String = "") -> String:
+	if customer_node == null:
+		return ""
+
+	var chosen_name = preferred_name.strip_edges()
+	if chosen_name != "":
+		var existing_node = customer_nodes.get(chosen_name, null)
+		if existing_node != null and existing_node != customer_node:
+			chosen_name = ""
+
+	if chosen_name == "":
+		chosen_name = get_random_customer_name()
+
+	add_customer_ui(customer_node, chosen_name)
+	var interaction_body = find_customer_interaction_body(customer_node)
+	if interaction_body:
+		interaction_body.item_name = chosen_name
+	return chosen_name
+
+func remove_customer_registration(customer_node: Node3D):
+	if customer_node == null:
+		return
+
+	var old_name = get_customer_name_for_node(customer_node)
+	if old_name != "":
+		if customer_nodes.get(old_name, null) == customer_node:
+			customer_nodes.erase(old_name)
+		assigned_names.erase(old_name)
+
+	customer_names_by_node.erase(customer_node)
+	set_customer_interactable(customer_node, false)
+
+	var alert = customer_node.get_node_or_null("AlertLabel")
+	if alert:
+		alert.visible = false
+
+func set_customer_interactable(customer_node: Node3D, enabled: bool):
+	var interaction_body = find_customer_interaction_body(customer_node)
+	if interaction_body:
+		interaction_body.set_collision_layer_value(2, enabled)
+
+func find_customer_interaction_body(node: Node) -> StaticBody3D:
+	if node is StaticBody3D and node.get_script() != null:
+		if node.get_script().resource_path == "res://scripts/interactable_item.gd":
+			return node
+
+	for child in node.get_children():
+		var found = find_customer_interaction_body(child)
+		if found:
+			return found
+
+	return null
+
 func setup_manual_items():
 	var environment = get_parent()
 	if environment:
@@ -90,33 +152,48 @@ func setup_manual_items():
 					create_precise_interaction_area(mesh, display_name, display_name.contains("Tô"))
 
 func add_customer_ui(customer_node: Node3D, customer_name: String):
+	var old_name = get_customer_name_for_node(customer_node)
+	if old_name != "" and old_name != customer_name:
+		if customer_nodes.get(old_name, null) == customer_node:
+			customer_nodes.erase(old_name)
+		assigned_names.erase(old_name)
+
 	customer_nodes[customer_name] = customer_node
+	customer_names_by_node[customer_node] = customer_name
+	if not assigned_names.has(customer_name):
+		assigned_names.append(customer_name)
+
 	# Thêm Nhãn tên
-	var name_label = Label3D.new()
+	var name_label = customer_node.get_node_or_null("NameLabel") as Label3D
+	if name_label == null:
+		name_label = Label3D.new()
+		name_label.font_size = 12 # Cực nhỏ
+		name_label.outline_size = 4
+		name_label.billboard = StandardMaterial3D.BILLBOARD_ENABLED
+		name_label.position = Vector3(0, 1.3, 0) # Thấp hẳn xuống
+		name_label.name = "NameLabel"
+		customer_node.add_child(name_label)
 	name_label.text = customer_name
-	name_label.font_size = 12 # Cực nhỏ
-	name_label.outline_size = 4
-	name_label.billboard = StandardMaterial3D.BILLBOARD_ENABLED
-	name_label.position = Vector3(0, 1.3, 0) # Thấp hẳn xuống
-	name_label.name = "NameLabel"
-	customer_node.add_child(name_label)
 	
 	# Thêm Dấu chấm than (thông báo chờ)
-	var alert_label = Label3D.new()
-	alert_label.text = "!"
-	alert_label.font_size = 24 # Nhỏ hơn
-	alert_label.modulate = Color.RED
-	alert_label.outline_size = 8
-	alert_label.billboard = StandardMaterial3D.BILLBOARD_ENABLED
-	alert_label.position = Vector3(0, 1.55, 0) # Thấp hơn
-	alert_label.name = "AlertLabel"
-	alert_label.visible = false # Mặc định ẩn
-	customer_node.add_child(alert_label)
-	
-	# Hiệu ứng di chuyển lên xuống cho dấu chấm than (Bobbing)
-	var tween = customer_node.get_tree().create_tween().set_loops()
-	tween.tween_property(alert_label, "position:y", 1.65, 0.6).set_trans(Tween.TRANS_SINE)
-	tween.tween_property(alert_label, "position:y", 1.55, 0.6).set_trans(Tween.TRANS_SINE)
+	var alert_label = customer_node.get_node_or_null("AlertLabel") as Label3D
+	if alert_label == null:
+		alert_label = Label3D.new()
+		alert_label.text = "!"
+		alert_label.font_size = 24 # Nhỏ hơn
+		alert_label.modulate = Color.RED
+		alert_label.outline_size = 8
+		alert_label.billboard = StandardMaterial3D.BILLBOARD_ENABLED
+		alert_label.position = Vector3(0, 1.55, 0) # Thấp hơn
+		alert_label.name = "AlertLabel"
+		alert_label.visible = false # Mặc định ẩn
+		customer_node.add_child(alert_label)
+
+		# Hiệu ứng di chuyển lên xuống cho dấu chấm than (Bobbing)
+		var tween = customer_node.get_tree().create_tween().set_loops()
+		tween.tween_property(alert_label, "position:y", 1.65, 0.6).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(alert_label, "position:y", 1.55, 0.6).set_trans(Tween.TRANS_SINE)
+
 func get_random_customer_name() -> String:
 	var available_names = []
 	for n in CUSTOMER_NAMES:
@@ -124,10 +201,12 @@ func get_random_customer_name() -> String:
 			available_names.append(n)
 	
 	if available_names.size() == 0:
-		available_names = CUSTOMER_NAMES
+		assigned_names.clear()
+		available_names = CUSTOMER_NAMES.duplicate()
 	
 	var picked = available_names[randi() % available_names.size()]
-	assigned_names.append(picked)
+	if not assigned_names.has(picked):
+		assigned_names.append(picked)
 	return picked
 
 func setup_interactions(node):
