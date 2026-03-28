@@ -62,47 +62,47 @@ func _setup_dynamic_ui():
 
 	# ── Bảng tiền / ngày (Góc trên bên trái) ─────────────
 	var info_panel = PanelContainer.new()
-	info_panel.position = Vector2(12, 12)
-	info_panel.custom_minimum_size = Vector2(220, 0)
+	info_panel.position = Vector2(16, 16)
+	info_panel.custom_minimum_size = Vector2(280, 0)
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0, 0, 0, 0.55)
-	style.corner_radius_top_left = 10
-	style.corner_radius_top_right = 10
-	style.corner_radius_bottom_left = 10
-	style.corner_radius_bottom_right = 10
-	style.content_margin_left = 10
-	style.content_margin_right = 10
-	style.content_margin_top = 8
-	style.content_margin_bottom = 8
+	style.bg_color = Color(0, 0, 0, 0.65)
+	style.corner_radius_top_left = 12
+	style.corner_radius_top_right = 12
+	style.corner_radius_bottom_left = 12
+	style.corner_radius_bottom_right = 12
+	style.content_margin_left = 15
+	style.content_margin_right = 15
+	style.content_margin_top = 12
+	style.content_margin_bottom = 12
 	info_panel.add_theme_stylebox_override("panel", style)
 	ui_container.add_child(info_panel)
 
 	var vbox = VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 4)
+	vbox.add_theme_constant_override("separation", 8)
 	info_panel.add_child(vbox)
 
 	# Số ngày
 	day_info_label = Label.new()
-	day_info_label.add_theme_font_size_override("font_size", 26)
-	day_info_label.add_theme_color_override("font_color", Color(1, 0.9, 0.5))
+	day_info_label.add_theme_font_size_override("font_size", 32)
+	day_info_label.add_theme_color_override("font_color", Color(1.0, 0.9, 0.5))
 	day_info_label.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-	day_info_label.add_theme_constant_override("outline_size", 3)
+	day_info_label.add_theme_constant_override("outline_size", 4)
 	day_info_label.text = "📅 Ngày 1"
 	vbox.add_child(day_info_label)
 
 	# Tiền
 	money_label = Label.new()
-	money_label.add_theme_font_size_override("font_size", 28)
-	money_label.add_theme_color_override("font_color", Color(0.3, 1, 0.4))
+	money_label.add_theme_font_size_override("font_size", 34)
+	money_label.add_theme_color_override("font_color", Color(0.3, 1.0, 0.4))
 	money_label.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-	money_label.add_theme_constant_override("outline_size", 3)
+	money_label.add_theme_constant_override("outline_size", 4)
 	vbox.add_child(money_label)
 
 	# Thời tiết
 	weather_label = Label.new()
-	weather_label.add_theme_font_size_override("font_size", 22)
+	weather_label.add_theme_font_size_override("font_size", 28)
 	weather_label.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-	weather_label.add_theme_constant_override("outline_size", 2)
+	weather_label.add_theme_constant_override("outline_size", 3)
 	vbox.add_child(weather_label)
 
 	# ── Thanh tiến trình ngày (Đã xóa theo yêu cầu) ──
@@ -112,12 +112,25 @@ func _setup_dynamic_ui():
 	buy_btn.texture_normal = load("res://assets/buy, bring in out furniture/buy furniture.png")
 	buy_btn.ignore_texture_size = true
 	buy_btn.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT
-	buy_btn.custom_minimum_size = Vector2(200, 120)
-	buy_btn.size = Vector2(200, 120)
-	buy_btn.position = Vector2(10, 200)
+	buy_btn.custom_minimum_size = Vector2(250, 150)
+	buy_btn.size = Vector2(250, 150)
+	buy_btn.position = Vector2(16, 260)
 	buy_btn.pressed.connect(_on_buy_pressed)
 	buy_btn.focus_mode = Control.FOCUS_NONE
 	ui_container.add_child(buy_btn)
+
+	# ── Hướng dẫn Mở/Đóng cửa hàng ──
+	var guide_label = Label.new()
+	guide_label.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	guide_label.position = Vector2(20, -180) # Căn tương đối nhưng set bằng top-left position có thể trôi theo resolution nếu ko update, nên dùng anchor + offset
+	guide_label.offset_left = 20
+	guide_label.offset_top = -180
+	guide_label.text = "HƯỚNG DẪN:\n[O] Mở cửa (Từ 5:00 - trước 6:30)\n[C] Đóng cửa (2:30 sáng)\n*Trễ giờ sẽ bị phạt tiền liên tục!*"
+	guide_label.add_theme_font_size_override("font_size", 28)
+	guide_label.add_theme_color_override("font_color", Color(1.0, 0.9, 0.6))
+	guide_label.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+	guide_label.add_theme_constant_override("outline_size", 4)
+	ui_container.add_child(guide_label)
 
 	# ── Kết nối signals ──
 	var global = get_tree().root.get_node_or_null("Global")

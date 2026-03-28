@@ -87,21 +87,24 @@ func _process(delta: float):
 		return
 
 	if current_hour > 6.5 and not Global.furniture_out:
-		Global.money -= 1
-		Global.money_changed.emit(Global.money)
 		if Global.day_elapsed - _last_morning_notif_time > 10.0:
 			_last_morning_notif_time = Global.day_elapsed
-			_show_hud_notification("🚨 TRỄ GIỜ MỞ QUÁN!", 2.5)
+			Global.money -= 50
+			Global.money_changed.emit(Global.money)
+			_show_hud_notification("🚨 TRỄ GIỜ MỞ QUÁN! PHẠT 50 VND", 2.5)
 
 	if current_hour >= Global.SHOP_CLOSE_HOUR and Global.furniture_out:
 		if not Global.is_overtime:
 			Global.is_overtime = true
-			_show_hud_notification("🚨 QUÁ GIỜ ĐÓNG CỬA!", 5.0)
-		Global.money -= 3
-		Global.money_changed.emit(Global.money)
-		if Global.day_elapsed - _last_night_notif_time > 10.0:
 			_last_night_notif_time = Global.day_elapsed
-			_show_hud_notification("🚨 QUÁ GIỜ ĐÓNG CỬA!", 2.5)
+			Global.money -= 100
+			Global.money_changed.emit(Global.money)
+			_show_hud_notification("🚨 QUÁ GIỜ ĐÓNG CỬA! PHẠT 100 VND", 5.0)
+		elif Global.day_elapsed - _last_night_notif_time > 10.0:
+			_last_night_notif_time = Global.day_elapsed
+			Global.money -= 50
+			Global.money_changed.emit(Global.money)
+			_show_hud_notification("🚨 VẪN CHƯA ĐÓNG CỬA! PHẠT THÊM 50 VND", 2.5)
 
 func _update_lighting(hour: float):
 	if not _directional_light: return
