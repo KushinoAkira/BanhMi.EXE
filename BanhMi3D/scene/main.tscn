@@ -3,11 +3,11 @@
 [ext_resource type="PackedScene" uid="uid://cieg6vroipuy8" path="res://scene/environment.tscn" id="1_env"]
 [ext_resource type="PackedScene" path="res://scene/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scene/hud.tscn" id="3_hud"]
-[ext_resource type="Script" path="res://scripts/banhmi_manager.gd" id="4_mgr"]
+[ext_resource type="Script" uid="uid://c63ecxc5442g6" path="res://scripts/banhmi_manager.gd" id="4_mgr"]
 
 [node name="Main" type="Node3D" unique_id=269333631]
 
-[node name="Environment" parent="." unique_id=1861050769 instance=ExtResource("1_env")]
+[node name="Environment" parent="." unique_id=1804278490 instance=ExtResource("1_env")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.025587559, 5.0980086, -0.008270025)
 
 [node name="Player" parent="." unique_id=615081474 instance=ExtResource("2_player")]
@@ -15,5 +15,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3381, 2, 11.5)
 
 [node name="HUD" parent="." unique_id=1650798524 instance=ExtResource("3_hud")]
 
-[node name="BanhMiManager" type="Node" parent="."]
+[node name="BanhMiManager" type="Node" parent="." unique_id=302988904]
 script = ExtResource("4_mgr")
