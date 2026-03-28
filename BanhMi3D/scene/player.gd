@@ -14,6 +14,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var hud: CanvasLayer
 var last_highlighted_target = null
 var manager: Node
+var cart_manager: Node
 
 var held_item_name: String = ""
 var held_item_node: Node3D = null
@@ -23,6 +24,7 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	hud = get_node_or_null("/root/Main/HUD")
 	manager = get_node_or_null("/root/Main/BanhMiManager")
+	cart_manager = get_tree().get_first_node_in_group("CartManager")
 	interaction_ray.collision_mask = 2 # Chỉ nhìn Layer 2
 	
 	if hud and manager:
@@ -127,7 +129,11 @@ func handle_interaction(target):
 	var interaction_point = interaction_ray.get_collision_point()
 	
 	# Kiểm tra nếu là Khách hàng
-	var is_customer = manager != null and (item_name in ["Khoa", "Hiếu", "Hoàng", "Phương", "Huyền", "Nam", "Lan", "Tuấn", "Linh", "Đức", "Khách hàng 1", "Khách hàng 2", "Khách hàng 3"])
+	var is_customer = false
+	if cart_manager and cart_manager.has_method("is_customer_name"):
+		is_customer = cart_manager.is_customer_name(item_name)
+	else:
+		is_customer = manager != null and (item_name in ["Khoa", "Hiếu", "Hoàng", "Phương", "Huyền", "Nam", "Lan", "Tuấn", "Linh", "Đức", "Khách hàng 1", "Khách hàng 2", "Khách hàng 3"])
 	
 	# 1. Lấy bánh mì
 	if item_name == "Bánh mì" and held_item_name == "":
