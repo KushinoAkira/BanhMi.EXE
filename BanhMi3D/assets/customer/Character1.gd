@@ -1,6 +1,6 @@
 extends Node3D # Hoặc PathFollow3D
 
-const SPEED = 40.0
+const SPEED = 50.0
 @onready var anim_player = $AnimationPlayer
 
 func _ready():

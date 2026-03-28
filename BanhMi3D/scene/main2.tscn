@@ -2,7 +2,6 @@
 
 [ext_resource type="PackedScene" uid="uid://cieg6vroipuy8" path="res://scene/environment.tscn" id="1_x5hgm"]
 [ext_resource type="PackedScene" path="res://scene/player.tscn" id="2_ydjyx"]
-[ext_resource type="PackedScene" path="res://scene/hud.tscn" id="3_lve4d"]
 [ext_resource type="Script" uid="uid://rs0cjo80wuu8" path="res://scene/menu.gd" id="4_ydjyx"]
 [ext_resource type="AudioStream" uid="uid://bxtqkjb7nlsx5" path="res://assets/Music/click.mp3" id="5_lve4d"]
 [ext_resource type="AudioStream" uid="uid://i2pfg4v2b8vn" path="res://assets/Music/hover.mp3" id="6_d5kn2"]
@@ -15,8 +14,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.025587559, 5.0980086, -0.00
 
 [node name="Player" parent="." unique_id=615081474 instance=ExtResource("2_ydjyx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3381, 2, 11.5)
-
-[node name="HUD" parent="." unique_id=1650798524 instance=ExtResource("3_lve4d")]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1213642879]
 anchors_preset = 8
