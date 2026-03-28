@@ -31,7 +31,7 @@
 [ext_resource type="Script" uid="uid://cfyqccqar2606" path="res://assets/customer/Character1.gd" id="32_r5n28"]
 [ext_resource type="PackedScene" uid="uid://bc7pnbmcvg1c0" path="res://assets/customer/trump_walking.glb" id="33_e7hh8"]
 [ext_resource type="Script" uid="uid://bv7c6m7yitatq" path="res://assets/customer/character2.gd" id="34_eosfh"]
-[ext_resource type="Script" path="res://scripts/customer_queue_manager.gd" id="35_queue_mgr"]
+[ext_resource type="Script" uid="uid://w5ta8otrsgxj" path="res://scripts/customer_queue_manager.gd" id="35_queue_mgr"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -122,7 +122,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 10, 10)
 shape = SubResource("BoxShape3D_side_wall")
 
 [node name="OldTown" parent="." unique_id=1145031289 instance=ExtResource("1_po4na")]
-transform = Transform3D(0.99993515, 0, -0.011396734, 0, 1, 0, 0.011396734, 0, 0.99993515, 32.07727, 0.28795528, -10.72776)
+transform = Transform3D(0.9999351, 0, -0.011396734, 0, 1, 0, 0.011396734, 0, 0.9999351, 32.07077, 0.28795528, -10.711405)
 
 [node name="OldTown2" parent="." unique_id=1979543416 instance=ExtResource("1_po4na")]
 transform = Transform3D(-1.0000001, 0, -8.7422784e-08, 0, 1, 0, 8.7422784e-08, 0, -1.0000001, 48.98848, 0.28795528, 15.634483)
@@ -292,10 +292,7 @@ script = ExtResource("32_r5n28")
 transform = Transform3D(0.083158344, 0, 1.9982705, 0, 2, 0, -1.9982705, 0, 0.083158344, 19.76587, 0.49662292, -0.21525383)
 script = ExtResource("34_eosfh")
 
-[node name="CustomerQueueManager" type="Node" parent="."]
-script = ExtResource("35_queue_mgr")
-
-[node name="Skeleton3D" parent="Character2/Sketchfab_model/root/GLTF_SceneRootNode/AvatarRoot_1_0/GLTF_created_0" parent_id_path=PackedInt32Array(360302756, 490287115) index="0" unique_id=52668579]
+[node name="Skeleton3D" parent="Character2/Sketchfab_model/root/GLTF_SceneRootNode/AvatarRoot_1_0/GLTF_created_0" parent_id_path=PackedInt32Array(360302756, 1280079641) index="0" unique_id=2076292985]
 bones/1/position = Vector3(-0.0036203382, 0.91387767, -0.017062156)
 bones/1/rotation = Quaternion(0.0083212005, 0.024746694, -0.024313074, 0.9993634)
 bones/2/rotation = Quaternion(-0.058736376, 0.001222148, 0.013538997, 0.9981809)
@@ -350,6 +347,33 @@ bones/69/rotation = Quaternion(-0.07438791, 0.11012143, 0.9905326, -0.034421682)
 bones/70/rotation = Quaternion(-0.20566721, -0.07117262, 0.01386116, 0.9759321)
 bones/71/rotation = Quaternion(0.55360734, -0.014332859, -0.072137095, 0.82952386)
 bones/72/rotation = Quaternion(0.32838234, 0.06699796, -0.021568088, 0.94191885)
+
+[node name="CustomerQueueManager" type="Node" parent="." unique_id=1381005251]
+script = ExtResource("35_queue_mgr")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=52058047]
+transform = Transform3D(-0.9984766, 1.4680845e-09, 0.055176713, 0.045290176, 0.5711865, 0.81956995, -0.03151619, 0.82082033, -0.57031626, 20.73096, 11.6543865, -8.562235)
+light_energy = 16.0
+light_indirect_energy = 8.129
+spot_range = 120.222
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="." unique_id=633799990]
+transform = Transform3D(-0.9984766, 7.0475075e-09, 0.055176716, 0.045290176, 0.5711865, 0.8195699, -0.03151619, 0.82082033, -0.5703163, -0.39107943, 11.6543865, -7.100871)
+light_energy = 16.0
+light_indirect_energy = 8.129
+spot_range = 120.222
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="." unique_id=838121425]
+transform = Transform3D(-0.9984766, 7.0475075e-09, 0.055176716, 0.045290176, 0.5711865, 0.8195699, -0.03151619, 0.82082033, -0.5703163, -21.86419, 11.745191, -7.5487194)
+light_energy = 16.0
+light_indirect_energy = 8.129
+spot_range = 120.222
+
+[node name="SpotLight3D4" type="SpotLight3D" parent="." unique_id=295551763]
+transform = Transform3D(0.9849462, -0.16253605, 0.05884797, 0.045290172, 0.5711865, 0.8195699, -0.16682282, -0.804567, 0.56994927, -41.73263, 11.699535, 11.929179)
+light_energy = 16.0
+light_indirect_energy = 8.129
+spot_range = 120.222
 
 [editable path="Character1"]
 [editable path="Character2"]

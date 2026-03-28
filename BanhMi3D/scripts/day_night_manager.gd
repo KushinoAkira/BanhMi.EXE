@@ -14,6 +14,7 @@ var _last_night_notif_time: float = -100.0
 var _directional_light: DirectionalLight3D = null
 var _world_env: WorldEnvironment = null
 var _street_lights: Array = []
+var _street_light_energies: Dictionary = {} # Light -> Original Energy
 var _cart_timer: Label3D = null
 
 # Cấu hình màu sắc bầu trời
@@ -171,7 +172,21 @@ func _update_lighting(hour: float):
 			mat.sky_horizon_color = sky_color.lightened(0.1)
 			mat.ground_horizon_color = sky_color.darkened(0.1)
 
-	_set_street_lights(hour >= 18.3 or hour < 5.2)
+	# --- Logic đèn đường (Street Lights) với hiệu ứng fade ---
+	var street_light_factor = 0.0
+	var h = hour
+	if h >= 24.0: h -= 24.0 # Đưa về dải 0-24
+	
+	if h >= 18.0 and h < 19.0: # 18h - 19h: Sáng dần
+		street_light_factor = (h - 18.0) / 1.0
+	elif h >= 19.0 or h < 5.0: # 19h - 5h: Sáng tối đa
+		street_light_factor = 1.0
+	elif h >= 5.0 and h < 6.0: # 5h - 6h: Tắt dần
+		street_light_factor = 1.0 - (h - 5.0) / 1.0
+	else:
+		street_light_factor = 0.0
+		
+	_set_street_lights_energy(street_light_factor)
 
 func _update_clocks(progress: float):
 	var current_total_hours = Global.DAY_START_HOUR + (progress * Global.TOTAL_HOURS)
@@ -194,12 +209,19 @@ func _find_scene_nodes():
 			cart_node.add_child(_cart_timer)
 			_cart_timer.text = "05:00"; _cart_timer.font_size = 20; _cart_timer.outline_size = 6
 			_cart_timer.position = Vector3(0, 0.8, 0.5); _cart_timer.modulate = Color(1, 0.8, 0.2)
+		
 		_street_lights.clear()
+		_street_light_energies.clear()
 		for child in env_node.get_children():
-			if child is OmniLight3D or child is SpotLight3D: _street_lights.append(child)
+			if child is OmniLight3D or child is SpotLight3D: 
+				_street_lights.append(child)
+				_street_light_energies[child] = child.light_energy
 
-func _set_street_lights(on: bool):
-	for light in _street_lights: light.visible = on
+func _set_street_lights_energy(factor: float):
+	for light in _street_lights:
+		var original_energy = _street_light_energies.get(light, 1.0)
+		light.light_energy = original_energy * factor
+		light.visible = factor > 0.001
 
 func _reset_player_position():
 	var player = get_tree().root.find_child("Player", true, false)
