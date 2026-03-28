@@ -16,6 +16,8 @@ var _world_env: WorldEnvironment = null
 var _street_lights: Array = []
 var _street_light_energies: Dictionary = {} # Light -> Original Energy
 var _cart_timer: Label3D = null
+var _active_scene: Node = null
+var _next_scene_probe_ms: int = 0
 
 # Cấu hình màu sắc bầu trời
 const SKY_COLOR_MORNING = Color(0.53, 0.81, 0.98) # Xanh nhạt
@@ -23,11 +25,13 @@ const SKY_COLOR_NOON = Color(0.25, 0.55, 0.95)    # Xanh đậm
 const SKY_COLOR_AFTERNOON = Color(0.8, 0.5, 0.2)  # Vàng xế
 const SKY_COLOR_EVENING = Color(0.9, 0.3, 0.1)    # Cam đỏ hoàng hôn
 const SKY_COLOR_NIGHT = Color(0.01, 0.01, 0.05)   # Đêm tối
+const SFX_SHOP_OPEN = "res://assets/Sounds/sfx/shop_open_bell.wav"
+const SFX_SHOP_CLOSE = "res://assets/Sounds/sfx/shop_close_bell.wav"
 
 func _ready():
 	await get_tree().process_frame
 	await get_tree().process_frame
-	_find_scene_nodes()
+	_refresh_scene_nodes_if_needed(true)
 	_update_lighting(Global.DAY_START_HOUR)
 
 func _input(event: InputEvent):
@@ -43,6 +47,7 @@ func _input(event: InputEvent):
 			if not Global.furniture_out:
 				Global.furniture_out = true
 				Global.is_shop_open = true
+				_play_ui_sfx(SFX_SHOP_OPEN, -8.0, 1.0)
 				Global.day_changed.emit(true)
 				_show_hud_notification("🥖 Đã dọn bàn ghế ra và MỞ QUÁN!")
 
@@ -53,11 +58,13 @@ func _input(event: InputEvent):
 			if Global.furniture_out:
 				Global.furniture_out = false
 				Global.is_shop_open = false
+				_play_ui_sfx(SFX_SHOP_CLOSE, -9.0, 0.96)
 				Global.day_changed.emit(false)
 				_show_hud_notification("🌙 Đã dọn dẹp và ĐÓNG CỬA quán.")
 				Global.end_day()
 
 func _process(delta: float):
+	_refresh_scene_nodes_if_needed()
 	if not Global: return
 	var time_multiplier = 1.0
 	if Global.is_transition_black: time_multiplier = 0.67
@@ -217,6 +224,29 @@ func _find_scene_nodes():
 				_street_lights.append(child)
 				_street_light_energies[child] = child.light_energy
 
+func _refresh_scene_nodes_if_needed(force: bool = false):
+	var current_scene = get_tree().current_scene
+	var same_scene = current_scene == _active_scene
+
+	if same_scene and is_instance_valid(_directional_light) and not force:
+		return
+
+	if same_scene and not force:
+		var now_ms = Time.get_ticks_msec()
+		if now_ms < _next_scene_probe_ms:
+			return
+		_next_scene_probe_ms = now_ms + 500
+	else:
+		_next_scene_probe_ms = 0
+
+	_active_scene = current_scene
+	_directional_light = null
+	_world_env = null
+	_cart_timer = null
+	_street_lights.clear()
+	_street_light_energies.clear()
+	_find_scene_nodes()
+
 func _set_street_lights_energy(factor: float):
 	for light in _street_lights:
 		var original_energy = _street_light_energies.get(light, 1.0)
@@ -232,6 +262,19 @@ func _reset_player_position():
 func _show_hud_notification(text: String, duration: float = 2.5):
 	var hud = get_tree().get_first_node_in_group("HUD")
 	if hud and hud.has_method("show_notification"): hud.show_notification(text, duration)
+
+func _play_ui_sfx(path: String, volume_db: float = -8.0, pitch: float = 1.0):
+	var stream = load(path)
+	if stream == null:
+		return
+
+	var player = AudioStreamPlayer.new()
+	player.stream = stream
+	player.volume_db = volume_db
+	player.pitch_scale = pitch
+	get_tree().root.add_child(player)
+	player.play()
+	player.finished.connect(player.queue_free)
 
 func get_day_progress() -> float:
 	return clamp(Global.day_elapsed / Global.DAY_DURATION, 0.0, 1.0)

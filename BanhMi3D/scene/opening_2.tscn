@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://c7sssxwsre5ss"]
 
+[ext_resource type="Script" path="res://scene/opening_2.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dwsymeg1mykpa" path="res://assets/opening/open1.jpg" id="1_ij44v"]
 [ext_resource type="AudioStream" uid="uid://bs2msuefbeokx" path="res://assets/Music/sep1.wav" id="2_idh18"]
 [ext_resource type="Texture2D" uid="uid://b7ucgtaftyfue" path="res://assets/opening/open2.jpg" id="3_gp4dj"]
@@ -89,6 +90,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource("1_script")
 metadata/_edit_use_anchors_ = true
 
 [node name="Background" type="TextureRect" parent="." unique_id=1485335335]

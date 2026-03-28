@@ -19,9 +19,32 @@ var cart_manager: Node
 var held_item_name: String = ""
 var held_item_node: Node3D = null
 var current_order_customer: String = "" # Tên khách mà chiếc bánh này thuộc về
+var _step_timer: float = 0.0
+var _rng := RandomNumberGenerator.new()
+
+var _sfx_banhmi_pick := [
+	"res://assets/Sounds/sfx/banhmi_pick_01.wav",
+	"res://assets/Sounds/sfx/banhmi_pick_02.wav"
+]
+
+var _sfx_ingredient_generic := [
+	"res://assets/Sounds/sfx/ingredient_generic_01.wav",
+	"res://assets/Sounds/sfx/ingredient_generic_02.wav"
+]
+
+var _sfx_ingredient_veg := ["res://assets/Sounds/sfx/ingredient_veg_01.wav"]
+var _sfx_ingredient_meat := ["res://assets/Sounds/sfx/ingredient_meat_01.wav"]
+var _sfx_ingredient_sauce := ["res://assets/Sounds/sfx/ingredient_sauce_01.wav"]
+
+var _sfx_walk := [
+	"res://assets/Sounds/sfx/walk_step_01.wav",
+	"res://assets/Sounds/sfx/walk_step_02.wav",
+	"res://assets/Sounds/sfx/walk_step_03.wav"
+]
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	_rng.randomize()
 	hud = get_node_or_null("/root/Main/HUD")
 	manager = get_node_or_null("/root/Main/BanhMiManager")
 	cart_manager = get_tree().get_first_node_in_group("CartManager")
@@ -87,9 +110,15 @@ func _physics_process(delta):
 	if direction:
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
+		if is_on_floor():
+			_step_timer -= delta
+			if _step_timer <= 0.0:
+				_play_sfx_pool(_sfx_walk, -18.0, 0.96, 1.04)
+				_step_timer = 0.34
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
+		_step_timer = 0.0
 
 	move_and_slide()
 	process_interaction()
@@ -142,6 +171,7 @@ func handle_interaction(target):
 			return
 		if manager and manager.current_working_customer != "":
 			pick_up_item("res://assets/banh_mi_items/banh_mi.glb", "Bánh mì đang làm")
+			_play_sfx_pool(_sfx_banhmi_pick, -9.0, 0.97, 1.03)
 			current_order_customer = manager.current_working_customer
 			show_floating_text(interaction_point, "Đang làm bánh...", Color.WHITE, 0.5)
 		else:
@@ -152,6 +182,7 @@ func handle_interaction(target):
 	# 2. Thêm nguyên liệu
 	if held_item_name == "Bánh mì đang làm":
 		if manager and manager.add_ingredient(item_name):
+			_play_ingredient_sfx(item_name)
 			hud.set_recipe_text(manager.get_recipe_info())
 			show_floating_text(interaction_point, "+ " + item_name, Color.GREEN, 0.5)
 			if manager.is_finished():
@@ -259,3 +290,37 @@ func drop_held_item():
 		held_item_node = null
 	held_item_name = ""
 	current_order_customer = ""
+
+func _play_sfx_pool(paths: Array, volume_db: float = -10.0, pitch_min: float = 0.97, pitch_max: float = 1.03):
+	if paths.is_empty():
+		return
+
+	var idx = _rng.randi_range(0, paths.size() - 1)
+	var stream = load(paths[idx])
+	if stream == null:
+		return
+
+	var player = AudioStreamPlayer.new()
+	player.stream = stream
+	player.volume_db = volume_db
+	player.pitch_scale = _rng.randf_range(pitch_min, pitch_max)
+	get_tree().root.add_child(player)
+	player.play()
+	player.finished.connect(player.queue_free)
+
+func _play_ingredient_sfx(item_name: String):
+	var normalized = item_name.to_lower()
+
+	if "rau" in normalized or "đồ chua" in normalized:
+		_play_sfx_pool(_sfx_ingredient_veg, -11.0, 0.98, 1.04)
+		return
+
+	if "thịt" in normalized or "chả" in normalized or "trứng" in normalized:
+		_play_sfx_pool(_sfx_ingredient_meat, -10.0, 0.95, 1.02)
+		return
+
+	if "pate" in normalized or "sốt" in normalized:
+		_play_sfx_pool(_sfx_ingredient_sauce, -10.0, 0.98, 1.03)
+		return
+
+	_play_sfx_pool(_sfx_ingredient_generic, -11.0, 0.98, 1.03)

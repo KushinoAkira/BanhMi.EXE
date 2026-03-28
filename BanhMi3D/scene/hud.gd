@@ -13,6 +13,7 @@ var buy_btn: TextureButton
 var day_btn: TextureButton
 var day_progress_bar: ProgressBar
 var day_info_label: Label
+var time_label: Label
 var weather_label: Label
 var summary_panel: Panel
 
@@ -30,12 +31,19 @@ func _ready():
 func _process(_delta):
 	# Cập nhật thanh tiến trình thời gian mỗi frame
 	var dnm = get_node_or_null("/root/DayNightManager")
+	var global = get_tree().root.get_node_or_null("Global")
 	if dnm and day_progress_bar:
 		day_progress_bar.value = dnm.get_day_progress() * 100.0
+
+	# Cập nhật giờ hiện tại ở góc trên bên trái
+	if dnm and global and time_label:
+		var current_total_hours = global.DAY_START_HOUR + (dnm.get_day_progress() * global.TOTAL_HOURS)
+		var hour = int(current_total_hours) % 24
+		var minute = int((current_total_hours - int(current_total_hours)) * 60.0)
+		time_label.text = "🕒 %02d:%02d" % [hour, minute]
 		
 	# Cập nhật text trạng thái quán
 	if day_info_label:
-		var global = get_tree().root.get_node_or_null("Global")
 		var status = " [MỞ QUÁN]" if global and global.is_shop_open else " [ĐÓNG CỬA]"
 		var day_text = "📅 Ngày %d" % (global.day_number if global else 1)
 		day_info_label.text = day_text + status
@@ -43,7 +51,6 @@ func _process(_delta):
 	# Cập nhật đồng hồ trên màn hình đen nếu đang active
 	if black_overlay and black_overlay.visible and dnm:
 		var progress = dnm.get_day_progress()
-		var global = get_tree().root.get_node_or_null("Global")
 		if global:
 			var current_total_hours = global.DAY_START_HOUR + (progress * global.TOTAL_HOURS)
 			var hour = int(current_total_hours) % 24
@@ -89,6 +96,15 @@ func _setup_dynamic_ui():
 	day_info_label.add_theme_constant_override("outline_size", 4)
 	day_info_label.text = "📅 Ngày 1"
 	vbox.add_child(day_info_label)
+
+	# Đồng hồ (thời gian trong ngày)
+	time_label = Label.new()
+	time_label.add_theme_font_size_override("font_size", 28)
+	time_label.add_theme_color_override("font_color", Color(0.85, 0.95, 1.0))
+	time_label.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+	time_label.add_theme_constant_override("outline_size", 3)
+	time_label.text = "🕒 05:00"
+	vbox.add_child(time_label)
 
 	# Tiền
 	money_label = Label.new()

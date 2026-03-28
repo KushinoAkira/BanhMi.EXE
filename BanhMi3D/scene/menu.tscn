@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://d0q60yh1bm7j3"]
 
+[ext_resource type="Script" path="res://scene/menu_main.gd" id="1_menu_main"]
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_su00k"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e5g8k"]
@@ -11,6 +13,7 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_15se8"]
 
 [node name="Menu" type="CanvasLayer" unique_id=749236393]
+script = ExtResource("1_menu_main")
 
 [node name="Control" type="Control" parent="." unique_id=2120278222]
 layout_mode = 3
@@ -55,7 +58,7 @@ theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_e5g8k")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_8hxod")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_bo06a")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_15se8")
-text = "Start Game"
+text = "Play"
 
 [node name="Settings" type="Button" parent="Control/MarginContainer/VBoxContainer" unique_id=1890250783]
 layout_mode = 2

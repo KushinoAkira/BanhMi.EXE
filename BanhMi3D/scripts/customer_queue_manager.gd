@@ -9,7 +9,7 @@ enum CustomerState {
 
 @export var spawn_interval_min: float = 5.0
 @export var spawn_interval_max: float = 12.0
-@export var move_speed: float = 2.2
+@export var move_speed: float = 1.8
 @export var arrive_distance: float = 0.25
 @export var leave_distance: float = 0.4
 @export var cart_focus_point: Vector3 = Vector3(25.34, 0.35, 9.11)
@@ -58,6 +58,10 @@ var _cart_min_x := 0.0
 var _cart_max_x := 0.0
 var _cart_min_z := 0.0
 var _cart_max_z := 0.0
+var _customer_arrival_sfx := [
+	"res://assets/Sounds/sfx/customer_arrive_01.wav",
+	"res://assets/Sounds/sfx/customer_arrive_02.wav"
+]
 
 var _cart_manager: Node = null
 var _banhmi_manager: Node = null
@@ -264,6 +268,7 @@ func _update_customer_movement(delta: float):
 					if _cart_manager and _cart_manager.has_method("set_customer_interactable"):
 						_cart_manager.set_customer_interactable(customer_node, true)
 					_stop_walk_animation(customer_node)
+					_play_customer_arrival_sfx(customer_node)
 				_slots[i] = slot_data
 		elif state == CustomerState.WAITING:
 			_face_target(customer_node, cart_focus_point, delta)
@@ -767,3 +772,22 @@ func _stop_walk_animation(node: Node):
 	var anim_player = node.find_child("AnimationPlayer", true, false) as AnimationPlayer
 	if anim_player:
 		anim_player.stop()
+
+func _play_customer_arrival_sfx(customer_node: Node3D):
+	if customer_node == null:
+		return
+	if _customer_arrival_sfx.is_empty():
+		return
+
+	var path = _customer_arrival_sfx[randi() % _customer_arrival_sfx.size()]
+	var stream = load(path)
+	if stream == null:
+		return
+
+	var player = AudioStreamPlayer3D.new()
+	player.stream = stream
+	player.volume_db = -11.0
+	player.pitch_scale = randf_range(0.97, 1.03)
+	customer_node.add_child(player)
+	player.play()
+	player.finished.connect(player.queue_free)
