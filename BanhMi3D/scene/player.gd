@@ -173,6 +173,13 @@ func handle_interaction(target):
 					# Cộng tiền vào Global
 					Global.add_earnings(payment["base"], payment["tip"])
 					
+					# Phát tiếng máy tính tiền
+					var cash_sound = AudioStreamPlayer.new()
+					cash_sound.stream = load("res://assets/Sounds/Cash Register.wav")
+					get_tree().root.add_child(cash_sound)
+					cash_sound.play()
+					cash_sound.finished.connect(cash_sound.queue_free)
+					
 					# Thông báo chi tiết
 					var msg = "✓ Giao hàng cho %s!\n+%s VND (tip: +%s VND)" % [
 						item_name,
