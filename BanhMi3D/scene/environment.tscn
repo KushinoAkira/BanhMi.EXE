@@ -111,15 +111,6 @@ light_volumetric_fog_energy = 1.475
 spot_range = 101.958824
 spot_angle = 34.2
 
-[node name="SpotLight3D12" type="SpotLight3D" parent="." unique_id=1082007237]
-transform = Transform3D(-0.05127707, -0.9984668, 0.020848788, 0.6090054, -0.014716868, 0.79302967, -0.79150695, 0.05336131, 0.6088264, 24.984032, 9.733203, 14.697061)
-layers = 1023
-light_energy = 16.0
-light_indirect_energy = 16.0
-light_volumetric_fog_energy = 1.475
-spot_range = 101.958824
-spot_angle = 34.2
-
 [node name="SpotLight3D13" type="SpotLight3D" parent="." unique_id=1940517267]
 transform = Transform3D(-0.051277068, -0.99846685, 0.020848826, 0.6090054, -0.014716839, 0.79302955, -0.7915069, 0.053361278, 0.60882634, -18.978077, 11.775229, 11.411993)
 layers = 1023
